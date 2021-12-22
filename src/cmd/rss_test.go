@@ -74,8 +74,7 @@ func TestSortRSS(t *testing.T) {
 		return mek.Channel.Items[p].PubDateAsDate.After(mek.Channel.Items[q].PubDateAsDate)
 	})
 
-	if mek.Channel.Items[0].Title != "WILT: Behat, Mink and ShadowDom" {
+	if mek.Channel.Items[0].Title != "Bookmark: Scaling the Practice of Architecture, Conversationally" {
 		t.Fatalf(`Did not sort the right way %s`, mek.Channel.Items[0].Title)
 	}
-
 }
