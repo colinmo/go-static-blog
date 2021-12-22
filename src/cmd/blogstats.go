@@ -932,11 +932,10 @@ func generateIViewStats() {
 	stats = updateIViewStats(stats)
 }
 
-// @todo: Get the date of the entry to add.
 func updateIViewStats(stats IViewStats) IViewStats {
 	client := http.Client{}
-	//	l, _ := time.LoadLocation("Australia/Brisbane")
-	//	startOfEverything := time.Date(1970, 1, 1, 0, 0, 0, 0, l)
+	l, _ := time.LoadLocation("Australia/Brisbane")
+	startOfEverything := time.Date(1970, 1, 1, 0, 0, 0, 0, l)
 	request, _ := http.NewRequest("GET", ConfigData.AboutMe.IView.HistoryURL, bytes.NewBuffer([]byte{}))
 	request.Header.Set("Accept-language", "en")
 	resp, err := client.Do(request)
@@ -948,8 +947,15 @@ func updateIViewStats(stats IViewStats) IViewStats {
 	json.NewDecoder(resp.Body).Decode(&res)
 	if len(res.Data) > 0 {
 		var appendToUrl []string
+		watchedDates := make(map[string]string)
 		for _, x := range res.Data {
 			appendToUrl = append(appendToUrl, x.Key)
+			y, z := parseUnknownDateFormat(x.LastAccessed)
+			if z == nil {
+				watchedDates[x.Key] = "0000"
+			} else {
+				watchedDates[x.Key] = fmt.Sprintf("%.0f", y.Sub(startOfEverything).Hours()/24)
+			}
 		}
 		request, _ := http.NewRequest("GET", ConfigData.AboutMe.IView.DetailURL+strings.Join(appendToUrl, ","), bytes.NewBuffer([]byte{}))
 		request.Header.Set("Accept-language", "en")
@@ -962,18 +968,19 @@ func updateIViewStats(stats IViewStats) IViewStats {
 		json.NewDecoder(resp.Body).Decode(&res)
 		if len(res.Items) > 0 {
 			for _, x := range res.Items {
-				_, exists := stats.Values["dude"]
+				dateToFind := watchedDates[x.ID]
+				me, exists := stats.Values[dateToFind]
 				if exists {
 					if x.Type == "episode" {
-						//						stats.Values["dude"].Episodes++
+						stats.Values[dateToFind] = IVMeasure{Episodes: me.Episodes + 1, Movies: me.Movies}
 					} else {
-						//						stats.Values["dude"].Movies++
+						stats.Values[dateToFind] = IVMeasure{Episodes: me.Episodes, Movies: me.Movies + 1}
 					}
 				} else {
 					if x.Type == "episode" {
-						//						stats.Values["dude"].Episodes = 1
+						stats.Values[dateToFind] = IVMeasure{Episodes: 1, Movies: 0}
 					} else {
-						//						stats.Values["dude"].Movies = 1
+						stats.Values[dateToFind] = IVMeasure{Episodes: 0, Movies: 1}
 					}
 				}
 			}
