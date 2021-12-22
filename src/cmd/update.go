@@ -72,7 +72,7 @@ var updateCmd = &cobra.Command{
 				fmt.Print("Changed\n")
 			}
 			// Get all posts from the all published posts RSS file
-			allPosts, _ = ReadRSS(ConfigData.BaseDir + "/rss-published.xml")
+			allPosts, _ = ReadRSS(ConfigData.BaseDir + "/rss.xml")
 			for _, i := range allPosts.Channel.Items {
 				postsById[i.GUID] = i
 			}
@@ -100,7 +100,7 @@ var updateCmd = &cobra.Command{
 			allPosts.Channel.Items = append(allPosts.Channel.Items, i)
 			allItems = append(allItems, ItemToPost(i))
 		}
-		WriteRSS(allPosts, "/rss-published.xml")
+		WriteRSS(allPosts, "/rss.xml")
 		WriteListHTML(allItems, "index", "Journal")
 		for _, top := range allItems {
 			if top.Type != "indieweb" && top.Status != "draft" {
@@ -298,7 +298,7 @@ func createPageAndRSSForTags(tags map[string][]FrontMatter, filesToDelete map[st
 				Copyright:     "",
 				LastBuildDate: time.Now().String(),
 				Generator:     "Hand crafted nonsense written in Go",
-				WebMaster:     "professor@vonexplaino.com",
+				WebMaster:     "professor@vonexplaino.com (Colin Morris)",
 				TimeToLive:    "3600",
 				Items:         []Item{},
 			}

@@ -88,7 +88,7 @@ func WriteRSS(feed RSS, filename string) error {
 	byteValue, _ := xml.MarshalIndent(feed, "", "    ")
 	byteValue = []byte(strings.Replace(string(byteValue), `rssTags=""`, `xmlns:atom="http://www.w3.org/2005/Atom" xmlns:featureImage="https://vonexplaino.com/featureImage" xmlns:rssTags="https://vonexplaino.com/rssTags"`, 1))
 	byteValue = []byte(strings.ReplaceAll(string(byteValue), "tag>", "rssTags:tag>"))
-	byteValue = []byte(strings.Replace(string(byteValue), "<item>", `<atom:link href="https://vonexplaino.com/blog/rss-published.xml" rel="self" type="application/rss+xml" /><item>`, 1))
+	byteValue = []byte(strings.Replace(string(byteValue), "<item>", `<atom:link href="https://vonexplaino.com/blog/rss.xml" rel="self" type="application/rss+xml" /><item>`, 1))
 	byteValue = []byte(strings.ReplaceAll(string(byteValue), "featureImage>", "featureImage:featureImage>"))
 
 	err := ioutil.WriteFile(ConfigData.BaseDir+filename, append([]byte("<?xml version=\"1.0\"?>\n"), byteValue...), 0777)

@@ -88,7 +88,7 @@ var blogstatsCmd = &cobra.Command{
 func generateBlogStats() {
 	filenameOfBlogSvg := ConfigData.BaseDir + "../regenerate/data/blog.svg"
 	// Read the XML file
-	known, err := ReadRSS(ConfigData.BaseDir + "rss-published.xml")
+	known, err := ReadRSS(ConfigData.BaseDir + "rss.xml")
 	if err != nil {
 		// Empty
 		known = RSS{}
