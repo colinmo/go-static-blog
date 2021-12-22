@@ -1,0 +1,60 @@
+{% extends "base.html.twig" %}
+{% block extraheaders %}
+{% set cdate = created_date|date('c') %}
+{% set udate = updated_date|date('c') %}
+<meta property="og:site_name" content="Professor von Explaino" />
+<meta property="og:title" content="{{ title }}" />
+<meta property="og:url" content="{{ link|raw }}" />
+<meta property="og:type" content="article" />
+<meta property="og:description" content="{{ (synopsis|default('Personal site for Colin Morris/ Professor von Explaino. Contains PHP code, Steampunk')) }}" />
+<meta property="og:image" content="{{ metadata.feature_image|default("https://s0.wordpress.com/mshots/v1/" ~ link|url_encode ~ "?w=480&h=480") }}" />
+<meta property="og:image:url" content="{{ metadata.feature_image|default("https://s0.wordpress.com/mshots/v1/" ~ link|url_encode ~ "?w=480&h=480") }}" />
+<meta property="og:image:secure_url" content="{{ metadata.feature_image|default("https://s0.wordpress.com/mshots/v1/" ~ link|url_encode ~ "?w=480&h=480") }}" />
+<meta property="article:published_time" content="{{ cdate }}" />
+<meta property="article:modified_time" content="{{ udate }}" />
+<meta property="og:updated_time" content="{{ udate }}" />
+<meta property="article:section" content="Blog" />
+
+<meta itemprop="name" content="{{ title }}" />
+<meta itemprop="headline" content="{{ title }}" />
+<meta itemprop="description" content="{{ (synopsis|default('Personal site for Colin Morris/ Professor von Explaino. Contains PHP code, Steampunk')) }}" />
+<meta itemprop="image" content="{{ metadata.feature_image|default("https://s0.wordpress.com/mshots/v1/" ~ link|url_encode ~ "?w=480&h=480") }}" />
+<meta itemprop="datePublished" content="{{ cdate }}" />
+<meta itemprop="dateModified" content="{{ udate }}" />
+<meta itemprop="author" content="Colin Morris/ Professor von Explaino" />
+
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:creator" content="@vonexplaino" />
+<meta name="twitter:site" content="@vonexplaino" />
+{% endblock %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+{% set cdate = created_date|date('c') %}
+{% set udate = updated_date|date('c') %}
+    <article class="h-entry" data-article-id="{{ id }}">
+        <header>
+            <h1 class="p-name"><a href="{{ link|raw }}" class="u-url">{% if type !="reply"%}{{ title }}{% endif %}</a></h1>
+            <section class="post-meta">
+                <time class="dt-published" datetime="{{ cdate }}">{{ created_date|date('j M Y, h:i a T') }}</time>
+                {% if cdate != udate %}(&Delta; <time class="dt-updated" datetime="{{ udate }}">{% if created_date|date('j M Y') == updated_date|date('j M Y') %}{{ updated_date|date('h:i a') }}{% else %}{{ updated_date|date('j M Y, h:i a T') }}{% endif %}</time>){% endif %}
+                <p class="tags">{% for tag in tags %}<a href="/blog/{{ tag|tag_link }}-1.html" class="p-category">{{ tag|lower }}</a> {% endfor %}</p>
+
+            </section>
+        </header>
+        <div>
+            <section class="e-content">
+            {{ content|raw }}
+            </section>
+            <section class="post-meta">
+                <a class="p-author h-card" href="https://vonexplaino.com/">Professor von Explaino</a>
+                {% if inreplyto %}<p> In reply to <a href="{{ inreplyto }}" class="u-in-reply-to h-cite">{{ inreplyto }}</a></p>{% endif %}
+                {% if repostof %}<p> A repost of <a href="{{ repostof }}" class="u-repost-of h-cite">{{ repostof }}</a></p>{% endif %}
+                {% if likeof %}<p> A like of <a href="{{ likeof }}" class="u-like-of h-cite">{{ likeof }}</a></p>{% endif %}
+                {% if favoriteof %}<p> A favourite of <a href="{{ favoriteof }}" class="u-favorite-of h-cite">{{ favoriteof }}</a></p>{% endif %}
+                {% if bookmarkof %}<p> A bookmark of <a href="{{ bookmarkof }}" class="u-bookmark-of h-cite">{{ bookmarkof }}</a></p>{% endif %}
+                {% include "syndication.html.twig" with {'links': metadata['syndication_links']} %}
+            </section>
+            <hr style="clear:both;" />
+        </div>
+    </article>
+{% endblock %}

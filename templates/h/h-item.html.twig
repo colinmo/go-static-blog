@@ -1,0 +1,12 @@
+<a class="h-item" href="{{ url }}">
+{% if image %}
+    <figure style="float:right; text-align:center;margin-top:0">
+        <img src="{{ image }}" alt="" style="max-width:150px"/>
+        <figcaption>
+{% endif %}
+  {{ name }}
+{% if image %}
+        </figcaption>
+    </figure>
+{% endif %}
+</a>

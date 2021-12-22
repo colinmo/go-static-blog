@@ -1,0 +1,14 @@
+vonblog
+vonblog.exe
+*.exe
+.scannerwork
+.vscode
+docker
+features/tests
+js/indieweb.js
+src/github.com
+theme
+coverage.out
+Dockerfile
+docker-compose.yml
+indieweb

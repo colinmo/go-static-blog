@@ -1,0 +1,74 @@
+{% extends "base.html.twig" %}
+{% block title %}Web post{% endblock %}
+{% block content %}
+        <style>
+        label, textarea, input[type=text], input[type=submit], input[type=password] {
+            display: block;
+            width: 100%;
+            font-family: Poppins, Arial, Helvetica, sans-serif;
+        }
+        #previewpane {
+            margin-left: 45px;
+            margin-right: 45px;
+            min-height: 550px;
+            width: calc(100% - 90px);
+            border: thin solid grey;
+        }
+        </style>
+
+        <form method="post" enctype="multipart/form-data" target="previewpane">
+            <input type="hidden" name="MAX_FILE_SIZE" value="300000000" />
+            <label for="title">Title</label><input type="text" name="title" id="title" value="{{ title }}" />
+            <label for="created">Created</label><input type="text" name="created" id="created" value="{{ created|default('now') }}" />
+            <label for="tags">Tags</label><input type="text" name="tags" id="tags" value="{{ tags }}" />
+            <fieldset>
+                <legend>Type</legend>
+                <label><input type="radio" id="type" name="type" value="article" checked /> Article</label>
+                <label><input type="radio" id="type" name="type" value="like" /> Reply</label>
+                <label><input type="radio" id="type" name="type" value="tweet" /> Tweet</label>
+                <label><input type="radio" id="type" name="type" value="indieweb" /> Indieweb</label>
+            </fieldset>
+            <label for="synopsis">Synopsis</label><input type="text" name="synopsis" id="synopsis" value="{{ synopsis }}" />
+            <label for="featureimage">Feature image</label><input type="text" name="featureimage" id="featureimage" value="{{ featureimage }}" />
+            <fieldset>
+                <legend>Syndication</legend>
+                <label><input type="checkbox" id="type" name="syndication[]" value="twitter" /> Twitter</label>
+            </fieldset>
+            <label for="body">Body</label><textarea name="body" id="body" rows="10">{{ body }}</textarea>
+            <fieldset>
+                <legend>Extra types</legend>
+                <label><input type="checkbox" id="extratype-reply" name="extratype[reply]" value="x" /> Reply</label>
+                <label><input type="checkbox" id="extratype-like" name="extratype[like]" value="x" /> Like</label>
+                <label><input type="checkbox" id="extratype-bookmark" name="extratype[bookmark]" value="x" /> Bookmark</label>
+                <label><input type="checkbox" id="extratype-repost" name="extratype[repost]" value="x" /> Repost</label>
+                <label for="url">URL</label><input type="text" name="url" id="url" value="{{ url }}" />
+            </fieldset>
+            <fieldset>
+                <legend>Media</legend>
+                <input type="file" name="media[]" id="media" multiple />
+            </fieldset>
+            <fieldset>
+                <legend>Auth</legend>
+                <label for="usr">User</label><input type="text" name="usr" id="usr" />
+                <label for="pwd">Password</label><input type="password" name="pwd" id="pwd" />
+            </fieldset>
+            <input type="submit" id="publish" name="publish" value="Publish" />
+            <input type="submit" id="preview" name="preview" value="Preview" />
+            <input type="button" style="width:100%;" id="preview2" name="preview2" onclick="previewmarkdown" value="Markdown Preview"/>
+
+            <iframe id="previewpane" name="previewpane">
+            </iframe>
+            <section id="previewshow" style="width:90%;height:auto;margin: 0 5%;border: thin solid black;"></section>
+        </form>
+<script src="/blog/js/showdown.min.js"></script>
+<script>
+var converter = new showdown.Converter()
+
+function previewmarkdown() {
+    let html = converter.makeHtml(document.querySelector("#body").value)
+    document.querySelector("#previewshow").innerHTML = html;
+        window.console.log(html);
+}
+
+document.querySelector("#preview2").onclick = previewmarkdown;
+</script>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+ <html class="no-js" lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width" />
+  <meta name="author" content="Colin Morris">
+  <title>{% if title != "" %}{{ title}} | {% endif %}Professor von Explaino</title>
+  <link rel="pingback" href="https://webmention.io/vonexplaino.com/xmlrpc" />
+  <link rel="webmention" href="https://webmention.io/vonexplaino.com/webmention" />
+  <link href="https://vonexplaino.com/blog/style/blog.css" rel="stylesheet" />
+  <link href="https://vonexplaino.com/blog/style/whostyle.css" rel="whostyle" />
+  <link rel="alternate" type="application/rss+xml" title="Professor von Explaino's Journal RSS Feed" href="https://vonexplaino.com/blog/rss.xml" />
+<link rel="apple-touch-icon" sizes="57x57" href="/theme/images/favicon/apple-icon-57x57.png">
+<link rel="apple-touch-icon" sizes="60x60" href="/theme/images/favicon/apple-icon-60x60.png">
+<link rel="apple-touch-icon" sizes="72x72" href="/theme/images/favicon/apple-icon-72x72.png">
+<link rel="apple-touch-icon" sizes="76x76" href="/theme/images/favicon/apple-icon-76x76.png">
+<link rel="apple-touch-icon" sizes="114x114" href="/theme/images/favicon/apple-icon-114x114.png">
+<link rel="apple-touch-icon" sizes="120x120" href="/theme/images/favicon/apple-icon-120x120.png">
+<link rel="apple-touch-icon" sizes="144x144" href="/theme/images/favicon/apple-icon-144x144.png">
+<link rel="apple-touch-icon" sizes="152x152" href="/theme/images/favicon/apple-icon-152x152.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/theme/images/favicon/apple-icon-180x180.png">
+<link rel="icon" type="image/png" sizes="192x192" href="/theme/images/favicon/android-icon-192x192.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/theme/images/favicon/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="96x96" href="/theme/images/favicon/favicon-96x96.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/theme/images/favicon/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="msapplication-TileColor" content="#ffffff" />
+<meta name="msapplication-TileImage" content="/theme/images/favicon/ms-icon-144x144.png" />
+<meta name="theme-color" content="#ffffff" />
+<meta name="description" content="{{ (synopsis|default('Personal site for Colin Morris/ Professor von Explaino. Contains PHP code, Steampunk')) }}" />
+<meta property="og:image" content="{{ metadata.feature_image|default("https://s0.wordpress.com/mshots/v1/" ~ link|url_encode ~ "?w=480&h=480") }}" />
+{% block extraheaders %}{% endblock %}
+</head>
+<body class="container">
+    <!-- Actual template -->
+    <main id="professor-paper" class="panel">
+        <img src="/theme/images/top-left.png" style="position:absolute;top:-4px;left:-4px;z-index:2;pointer-events:none;" alt=""/>
+        <img src="/theme/images/top-right.png" style="position:absolute;top:-4px;right:-4px;z-index:2;pointer-events:none;" alt=""/>
+        <img src="/theme/images/bottom-left.png" style="position:absolute;bottom:-4px;left:-4px;z-index:2;pointer-events:none;" alt=""/>
+        <img src="/theme/images/bottom-right.png" style="position:absolute;bottom:-4px;right:-4px;z-index:2;pointer-events:none;" alt=""/>
+        {% block content %}{% endblock %}
+    </main>
+    <section id="header">
+        <nav>
+            <a href="/">Home</a><wbr><a href="https://vonexplaino.com/blog">Blog</a><wbr><a href="https://vonexplaino.com/blog/posts/page/steampunk.html">Steampunk</a><wbr><a href="https://vonexplaino.com/blog/posts/page/code.html">Code</a><wbr><a href="https://vonexplaino.com/blog/posts/resume/resume-of-colin-morris.html">Resume</a>
+        </nav>
+    </section>
+    <script src="https://vonexplaino.com/blog/js/blog.js" defer></script>
+    <link rel="stylesheet"
+      href="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.3.1/build/styles/default.min.css">
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.3.1/build/highlight.min.js" integrity="sha384-zDX/4RkDnpVxZkjJjxdzDsT1Kk2XThh7u47fXdgZ1W8AMjb//F4ZK4G4y7oNVHM1" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.3.1/languages/go.min.js" integrity="sha384-A6CJZ7OeaXXC4LutjeFo0FxlK24jyAHVL9XOabzyQq+HjDPuBg+18Zx9oyqMHheI" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.3.1/languages/dockerfile.min.js" integrity="sha384-3ilAVZi+IwUNRoAID8Q+ks9keix7cmed6fRtA8x9+PHtSRL8NA93caMUHxbhgb6G" crossorigin="anonymous"></script>
+    <script>hljs.highlightAll();</script>
+    <style>
+    .hljs{display:block;overflow-x:auto;padding:.5em;background:#23241f}.hljs,.hljs-tag,.hljs-subst{color:#f8f8f2}.hljs-strong,.hljs-emphasis{color:#a8a8a2}.hljs-bullet,.hljs-quote,.hljs-number,.hljs-regexp,.hljs-literal,.hljs-link{color:#ae81ff}.hljs-code,.hljs-title,.hljs-section,.hljs-selector-class{color:#a6e22e}.hljs-strong{font-weight:bold}.hljs-emphasis{font-style:italic}.hljs-keyword,.hljs-selector-tag,.hljs-name,.hljs-attr{color:#f92672}.hljs-symbol,.hljs-attribute{color:#66d9ef}.hljs-params,.hljs-class .hljs-title{color:#f8f8f2}.hljs-string,.hljs-type,.hljs-built_in,.hljs-builtin-name,.hljs-selector-id,.hljs-selector-attr,.hljs-selector-pseudo,.hljs-addition,.hljs-variable,.hljs-template-variable{color:#e6db74}.hljs-comment,.hljs-deletion,.hljs-meta{color:#75715e}
+    </style>
+</body>
+</html>

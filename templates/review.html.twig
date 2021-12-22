@@ -1,0 +1,49 @@
+{% extends "base.html.twig" %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+    <article class="h-entry" data-info="{{ metadata|json_encode }}" data-tags="{{ metadata.tags|json_encode }}" data-article-id="{{ metadata.id }}">
+        <header>
+            <h1 class="p-name" style=""><a href="{{ link|raw }}" class="u-url">{% if type !="reply"%}{{ title }}{% endif %}</a></h1>
+            <section class="post-meta">
+                <a class="p-author h-card" href="https://vonexplaino.com/">Professor von Explaino</a>, 
+                <time class="dt-published" datetime="{{ created_date|date('c') }}">{{ created_date|date('j M Y, h:i a T') }}</time>
+                {% if created_date != updated_date %}(&Delta; <time class="dt-updated" datetime="{{ updated_date|date('c') }}">{{ updated_date|date('j M Y, h:i a T') }}</time>){% endif %}
+                <p class="tags">{% for tag in tags %}<a href="/blog/{{tag|tag_link}}-1.html" class="p-category">{{ tag }}</a> {% endfor %}</p>
+
+                {% if metadata['in-reply-to']|length > 0 %}
+                <p> In reply to <a href="{{ metadata['in-reply-to'] }}" class="u-in-reply-to h-cite">{{ metadata['in-reply-to'] }}</a></p>
+                {% endif %}
+                {% if metadata['repost-of']|length > 0 %}
+                <p> A repost of <a href="{{ metadata['repost-of'] }}" class="u-repost-of h-cite">{{ metadata['repost-of'] }}</a></p>
+                {% endif %}
+                {% include "syndication.html.twig" with {'links': metadata['syndication_links']} %}
+            </section>
+        </header>
+        <div>
+            <div class="rating star-{{ item.rating|replace({'.':'-'}) }}">
+                <span class="star"></span>
+                <span class="star"></span>
+                <span class="star"></span>
+                <span class="star"></span>
+                <span class="star"></span>
+                (<span class="p-rating">{{ item.rating }}</span> / 5)
+            </div>
+            <div class="item">
+                {% set include_file = "h/h-" ~ item.type|default('item') ~ ".html.twig" %}
+                {% include include_file with item|default([]) %}
+            </div>
+            <section class="e-content review-type">
+            {{ content|raw }}
+            </section>
+            <hr style="clear:both;" />
+             {#
+            <script>
+            var idcomments_acct = '5fb5eed1e7a8c298f9848f358f11756f';
+            var idcomments_post_id;
+            var idcomments_post_url;
+            </script>
+            <span id="IDCommentsPostTitle" style="display:none"></span>
+            <script type='text/javascript' src='https://www.intensedebate.com/js/genericCommentWrapperV2.js'></script>
+            #}        </div>
+    </article>
+{% endblock %}

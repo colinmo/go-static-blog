@@ -1,0 +1,106 @@
+{% extends "base.html.twig" %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+{% set cdate = created_date|date('c') %}
+{% set udate = updated_date|date('c') %}
+    <article class="h-resume" data-info="" data-tags="{{ metadata.tags|json_encode }}" data-article-id="{{ metadata.id }}">
+        <h1>Resume of <span class="p-name">
+            <a class="p-contact h-card" href="{{ resume.Contact.URL|default('#') }}">
+                {{ resume.Contact.Name }}                        
+                <img src="{{ resume.Contact.Photo }}" class="u-photo" alt="" style="float:right" />
+            </a></span></h1>
+        <section class="post-meta">                     
+            {% if cdate != udate %}Last updated <time class="dt-updated" datetime="{{ udate }}">{{ updated_date|date('j M Y, h:i a') }} </time>{% endif %}
+        </section>
+        <section class="p-summary">{{ content|raw }}</section>
+        <section class="experience">
+            <h2>Experience</h2>
+            {% for experience in resume.Experience %}
+            <div class="p-experience experience-{{ (experience.Category|lower)|replace({' ':'-'}) }}" style="clear:both">
+                {% if experience.Category == "Work History" %}
+                <div class="h-event">
+                    <h3 class="p-name">{{ experience.Name }} {% if experience.URL %} [<a class="u-url" href="{{ experience.URL}}">Details</a>]{% endif %}<br /> <time class="dt-start" datetime="{{ experience.StartDate|date('c') }}">{{ experience.StartDate|date('Y') }}</time> - 
+                    {% if experience.End|length > 0 %}
+                    <time class="dt-end" datetime="{{ experience.EndDate|date('c') }}">{{ experience.EndDate|date('Y') }}</time>
+                    {% endif %}</h3>
+                    <p class="p-location">{{ experience.Location }}</p>
+                    <p class="p-summary">{{ experience.Summary}}</p>
+                    <span class="p-description">{{ experience.Description }}</span>
+                </div>
+                {% elseif experience.Category == "Publication" %}
+                <div class="h-cite">                    
+                    <h3>Publication: <cite class="p-name">{{ experience.Name }}</cite> {% if experience.URL %} [<a class="u-url u-uid" href="{{ experience.URL}}">Details</a>]{% endif %}<br /><time class="dt-published" datetime="{{ experience.PublishedDate|date('c') }}">{{ experience.PublishedDate|date('Y-m-d') }} </time></h3>
+                    <span class="p-summary">{{ experience.Summary }}</span>
+                </div>
+                {% elseif experience.Category == "Presentation" %}
+                <div class="h-cite">
+                    <h3>Presentation: <cite class="p-name">{{ experience.Name }}</cite> {% if experience.URL %} [<a class="u-url u-uid" href="{{ experience.URL}}">Details</a>]{% endif %}<br /><time class="dt-start" datetime="{{ experience.StartDate|date('c') }}">{{ experience.StartDate|date('Y') }} </time></h3>                        
+                    <span class="p-summary">{{ experience.Summary }}</span>      
+                    <p class="p-location">Delivered at the {{ experience.Location }}</p>                
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </section>
+        <section class="skill">
+            <h2>Skillset</h2>
+                <h3>Programming</h3>
+                    <table border="1" cellspacing="0" width="100%">
+                        <thead>
+                            <tr>
+                                <th>5+ years</th>
+                                <th>1-5 years</th>
+                                <th>&lt;1 year</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                            <td>{% for skill_sub_sub in resume.Skill.Programming.FivePlus %}{{ skill_sub_sub }}<br />{% endfor %}</td>
+                            <td>{% for skill_sub_sub in resume.Skill.Programming.OneToFive %}{{ skill_sub_sub }}<br />{% endfor %}</td>
+                            <td>{% for skill_sub_sub in resume.Skill.Programming.New %}{{ skill_sub_sub }}<br />{% endfor %}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                <h3>Libraries</h3>
+                    <table border="1" cellspacing="0" width="100%">
+                        <thead>
+                            <tr>
+                                <th>5+ years</th>
+                                <th>1-5 years</th>
+                                <th>&lt;1 year</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                            <td>{% for skill_sub_sub in resume.Skill.Libraries.FivePlus %}{{ skill_sub_sub }}<br />{% endfor %}</td>
+                            <td>{% for skill_sub_sub in resume.Skill.Libraries.OneToFive %}{{ skill_sub_sub }}<br />{% endfor %}</td>
+                            <td>{% for skill_sub_sub in resume.Skill.Libraries.New %}{{ skill_sub_sub }}<br />{% endfor %}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                <h3>Principal methodology accreditations</h3>
+                <ul>
+                {% for index2, skill_sub in resume.Skill.Accreditations %}<li>{{ skill_sub }}</li>
+                {% endfor %}                </ul>
+        </section>
+        <section class="education">
+            <h2>Education</h2>
+            {% for education in resume.Education %}
+            <div class="p-education education-{{ (education.Category|lower)|replace({' ':'-'}) }}">
+                <h3 class="p-name">{{ education.Name }}{% if education.URL %} [<a href="{{ education.URL}}">Confirm</a>]{% endif %}</h3>                  
+                <p style="text-align: center;">
+                {% if education.Category == "Tertiary" %}
+                Institution: {{ education.Location }}
+                {% elseif education.Category == "Certification" %}
+                Group: {{ education.Location }}
+                {% else %}
+                {{ education.Location }}
+                {% endif %}: 
+                <time class="dt-start" datetime="{{ education.StartDate|date('c') }}">{{ education.StartDate|date('Y') }}</time>      
+                {% if education.End %} - <time class="dt-end" datetime="{{ education.EndDate|date('c') }}">{{ education.EndDate|date('Y') }} </time>{% endif %}
+                </p>
+            </div>
+            {% endfor %}
+        </section>
+    </article>
+{% endblock %}

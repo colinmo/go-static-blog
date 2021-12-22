@@ -1,0 +1,20 @@
+Title: "{{ title }}"
+Tags: [{{ tags }}]
+Created: "{{ created }}"
+Updated: "{{ created }}"
+Type: {{ type }}
+{% if extratype.reply is defined %}in-reply-to: "{{ url|raw }}"
+{% endif %}{% if extratype.repost is defined %}repost-of: "{{ url|raw }}"
+{% endif %}{% if extratype.like is defined %}like-of: "{{ url|raw }}"
+{% endif %}{% if extratype.bookmark is defined %}bookmark-of: "{{ url|raw }}"
+{% endif %}
+{% if featureimage > "" %}
+FeatureImage: "{{ featureimage }}"
+{% endif %}
+Syndication:
+{% for target in syndication %}
+    {{ target|capitalize }}: ~
+{% endfor %}
+Synopsis: "{{ synopsis }}" 
+===
+{{ body|raw }}

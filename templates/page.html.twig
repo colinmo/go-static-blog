@@ -1,0 +1,23 @@
+{% extends "base.html.twig" %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+{% set cdate = created_date|date('c') %}
+{% set udate = updated_date|date('c') %}
+    <article class="h-entry" data-tags="{{ tag|json_encode }}" data-article-id="{{ id }}">
+        <header>
+            <h1 class="p-name" style="">{{ title }}</h1>
+            <section class="post-meta">
+                <a class="p-author h-card" href="https://vonexplaino.com/">Professor von Explaino</a>
+                <time class="dt-published" datetime="{{ cdate }}">{{ created_date|date('j M Y, h:i a') }}</time>
+                {% if cdate != udate %}(&Delta; <time class="dt-updated" datetime="{{ udate }}">{{ updated_date|date('j M Y, h:i a') }}</time>){% endif %}
+                <p class="tags">{% for tag in tags %}<a href="/blog/{{tag|tag_link}}-1.html" class="p-category">{{ tag }}</a> {% endfor %}</p>
+            </section>
+        </header>
+        <div>
+            <div class="e-content">
+            {{ content|raw }}
+            </div>
+            <hr style="clear:both;" />
+        </div>
+    </article>
+{% endblock %}
