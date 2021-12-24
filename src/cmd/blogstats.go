@@ -881,7 +881,7 @@ func getWithingsStatsForDays(days int, stats WithingsStats) (map[int]float64, ma
 	for i = 0; i < len(steps); i++ {
 		steps2[days-i-1] = steps[i]
 	}
-	return weight2, steps2, weightMax, weightMin, weightFirst - weightLast, stepsMax, stepsMin
+	return weight2, steps2, weightMax, weightMin, weightLast - weightFirst, stepsMax, stepsMin
 
 }
 
