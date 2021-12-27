@@ -940,7 +940,8 @@ func updateIViewStats(stats IViewStats) IViewStats {
 	request.Header.Set("Accept-language", "en")
 	resp, err := client.Do(request)
 	if err != nil {
-		log.Fatalf("Failed to get shows")
+		fmt.Printf("Failed to get iView shows %s\n", ConfigData.AboutMe.IView.HistoryURL)
+		return stats
 	}
 
 	var res IViewResponse1
@@ -1139,4 +1140,5 @@ func init() {
 	blogstatsCmd.Flags().BoolVarP(&SVGOptions.Blog, "blog", "b", false, "Create blog")
 	blogstatsCmd.Flags().BoolVarP(&SVGOptions.Feedly, "feedly", "f", false, "Create Feedly")
 	blogstatsCmd.Flags().BoolVarP(&SVGOptions.Withings, "withings", "w", false, "Create Withings")
+	blogstatsCmd.Flags().BoolVarP(&SVGOptions.IView, "iview", "i", false, "Create IView")
 }

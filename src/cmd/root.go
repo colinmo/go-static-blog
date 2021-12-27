@@ -169,6 +169,8 @@ func initConfig() {
 		ConfigData.AboutMe.Withings.OauthURL = viper.GetString("aboutme.withings.oauthurl")
 		ConfigData.AboutMe.Withings.MassURL = viper.GetString("aboutme.withings.massurl")
 		ConfigData.AboutMe.Withings.StepsURL = viper.GetString("aboutme.withings.stepsurl")
-
+		ConfigData.AboutMe.IView.DetailURL = viper.GetString("aboutme.iview.detailurl")
+		ConfigData.AboutMe.IView.UID = viper.GetString("aboutme.iview.url")
+		ConfigData.AboutMe.IView.HistoryURL = viper.GetString("aboutme.iview.historyurl")
 	}
 }
