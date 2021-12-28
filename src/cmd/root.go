@@ -70,6 +70,12 @@ type AboutMe struct {
 	Withings Withings
 	IView    IView
 }
+type Thumbnails struct {
+	Height    uint
+	Width     uint
+	Extension string
+	Type      string
+}
 type ConfigDataStruct struct {
 	BaseDir       string
 	BaseURL       string
@@ -79,6 +85,7 @@ type ConfigDataStruct struct {
 	Metadata      Metadata
 	BlogStats     BlogStats
 	AboutMe       AboutMe
+	Thumbnails    Thumbnails
 }
 
 var ConfigData ConfigDataStruct
@@ -172,5 +179,9 @@ func initConfig() {
 		ConfigData.AboutMe.IView.DetailURL = viper.GetString("aboutme.iview.detailurl")
 		ConfigData.AboutMe.IView.UID = viper.GetString("aboutme.iview.url")
 		ConfigData.AboutMe.IView.HistoryURL = viper.GetString("aboutme.iview.historyurl")
+		ConfigData.Thumbnails.Width = uint(viper.GetInt("thumbnails.width"))
+		ConfigData.Thumbnails.Height = uint(viper.GetInt("thumbnails.height"))
+		ConfigData.Thumbnails.Extension = viper.GetString("thumbnails.extension")
+		ConfigData.Thumbnails.Type = viper.GetString("thumbnails.type")
 	}
 }
