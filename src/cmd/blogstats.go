@@ -41,7 +41,6 @@ var SVGOptions struct {
 	Feedly    bool
 	Withings  bool
 	Steps     bool
-	IView     bool
 }
 
 // blogstatsCmd represents the Blog Stats command
@@ -61,7 +60,6 @@ var blogstatsCmd = &cobra.Command{
 			SVGOptions.Feedly = true
 			SVGOptions.Withings = true
 			SVGOptions.Steps = true
-			SVGOptions.IView = true
 		}
 		// Process
 		if SVGOptions.Blog {
@@ -78,9 +76,6 @@ var blogstatsCmd = &cobra.Command{
 		}
 		if SVGOptions.Withings {
 			generateWithingsStats()
-		}
-		if SVGOptions.IView {
-			generateIViewStats()
 		}
 	},
 }
@@ -682,8 +677,8 @@ func writeWithingsStats(filename string, stats WithingsStats) error {
 		ioutil.WriteFile(filename, marshalled, 0666)
 	}
 	return err
-
 }
+
 func updateWithingsStats(stats WithingsStats) WithingsStats {
 	client := http.Client{}
 	l, _ := time.LoadLocation("Australia/Brisbane")
@@ -829,6 +824,7 @@ func updateWithingsStats(stats WithingsStats) WithingsStats {
 
 	return stats
 }
+
 func getWithingsStatsForDays(days int, stats WithingsStats) (map[int]float64, map[int]float64, float64, float64, float64, float64, float64) {
 	weight := make(map[int]float64)
 	steps := make(map[int]float64)
@@ -882,112 +878,6 @@ func getWithingsStatsForDays(days int, stats WithingsStats) (map[int]float64, ma
 		steps2[days-i-1] = steps[i]
 	}
 	return weight2, steps2, weightMax, weightMin, weightLast - weightFirst, stepsMax, stepsMin
-}
-
-type IViewResponse2 struct {
-	Items []struct {
-		ID              string `json:"id"`
-		Type            string `json:"type"`
-		HouseNumber     string `json:"houseNumber"`
-		Title           string `json:"title"`
-		ShowTitle       string `json:"showTitle"`
-		DisplayTitle    string `json:"displayTitle"`
-		DisplaySubtitle string `json:"displaySubTitle"`
-		Entity          string `json:"_entity"`
-	} `json:"items"`
-}
-type IViewResponse1 struct {
-	Meta struct {
-		Count      int `json:"count"`
-		StatusCode int `json:"status_code"`
-	} `json:"meta"`
-	Data []struct {
-		UID              string `json:"uid"`
-		OID              string `json:"oid"`
-		Source           string `json:"source"`
-		Slug             string `json:"slug"`
-		Namespace        string `json:"namespace"`
-		Key              string `json:"key"`
-		Progress         int    `json:"progress"`
-		Done             bool   `json:"done"`
-		LastAccessed     string `json:"lastAccessed"`
-		LastAccessedDate time.Time
-	} `json:"data"`
-}
-type IVMeasure struct {
-	Episodes float64 `json:"shows"`
-	Movies   int     `json:"movies"`
-}
-type IViewStats struct {
-	LastUpdated     string `json:"last_updated"`
-	LastUpdatedDate time.Time
-	Values          map[string]IVMeasure `json:"values"`
-}
-
-// IVIEW
-func generateIViewStats() {
-	// filenameOfIViewSvg := ConfigData.BaseDir + "../regenerate/data/iview.svg"
-	var stats IViewStats
-	stats = updateIViewStats(stats)
-}
-
-func updateIViewStats(stats IViewStats) IViewStats {
-	client := http.Client{}
-	l, _ := time.LoadLocation("Australia/Brisbane")
-	startOfEverything := time.Date(1970, 1, 1, 0, 0, 0, 0, l)
-	request, _ := http.NewRequest("GET", ConfigData.AboutMe.IView.HistoryURL, bytes.NewBuffer([]byte{}))
-	request.Header.Set("Accept-language", "en")
-	resp, err := client.Do(request)
-	if err != nil {
-		fmt.Printf("Failed to get iView shows %s\n", ConfigData.AboutMe.IView.HistoryURL)
-		return stats
-	}
-
-	var res IViewResponse1
-	json.NewDecoder(resp.Body).Decode(&res)
-	if len(res.Data) > 0 {
-		var appendToUrl []string
-		watchedDates := make(map[string]string)
-		for _, x := range res.Data {
-			appendToUrl = append(appendToUrl, x.Key)
-			y, z := parseUnknownDateFormat(x.LastAccessed)
-			if z == nil {
-				watchedDates[x.Key] = "0000"
-			} else {
-				watchedDates[x.Key] = fmt.Sprintf("%.0f", y.Sub(startOfEverything).Hours()/24)
-			}
-		}
-		request, _ := http.NewRequest("GET", ConfigData.AboutMe.IView.DetailURL+strings.Join(appendToUrl, ","), bytes.NewBuffer([]byte{}))
-		request.Header.Set("Accept-language", "en")
-		resp, err := client.Do(request)
-		if err != nil {
-			log.Fatalf("Failed to get details")
-		}
-
-		var res IViewResponse2
-		json.NewDecoder(resp.Body).Decode(&res)
-		if len(res.Items) > 0 {
-			for _, x := range res.Items {
-				dateToFind := watchedDates[x.ID]
-				me, exists := stats.Values[dateToFind]
-				if exists {
-					if x.Type == "episode" {
-						stats.Values[dateToFind] = IVMeasure{Episodes: me.Episodes + 1, Movies: me.Movies}
-					} else {
-						stats.Values[dateToFind] = IVMeasure{Episodes: me.Episodes, Movies: me.Movies + 1}
-					}
-				} else {
-					if x.Type == "episode" {
-						stats.Values[dateToFind] = IVMeasure{Episodes: 1, Movies: 0}
-					} else {
-						stats.Values[dateToFind] = IVMeasure{Episodes: 0, Movies: 1}
-					}
-				}
-			}
-		}
-
-	}
-	return stats
 }
 
 //GENERIC FUNCTIONS
@@ -1139,5 +1029,4 @@ func init() {
 	blogstatsCmd.Flags().BoolVarP(&SVGOptions.Blog, "blog", "b", false, "Create blog")
 	blogstatsCmd.Flags().BoolVarP(&SVGOptions.Feedly, "feedly", "f", false, "Create Feedly")
 	blogstatsCmd.Flags().BoolVarP(&SVGOptions.Withings, "withings", "w", false, "Create Withings")
-	blogstatsCmd.Flags().BoolVarP(&SVGOptions.IView, "iview", "i", false, "Create IView")
 }

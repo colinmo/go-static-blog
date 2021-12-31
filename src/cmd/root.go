@@ -59,16 +59,10 @@ type Withings struct {
 	MassURL      string
 	StepsURL     string
 }
-type IView struct {
-	UID        string
-	HistoryURL string
-	DetailURL  string
-}
 type AboutMe struct {
 	Trakt    Trakt
 	Feedly   Feedly
 	Withings Withings
-	IView    IView
 }
 type Thumbnails struct {
 	Height    uint
@@ -176,9 +170,6 @@ func initConfig() {
 		ConfigData.AboutMe.Withings.OauthURL = viper.GetString("aboutme.withings.oauthurl")
 		ConfigData.AboutMe.Withings.MassURL = viper.GetString("aboutme.withings.massurl")
 		ConfigData.AboutMe.Withings.StepsURL = viper.GetString("aboutme.withings.stepsurl")
-		ConfigData.AboutMe.IView.DetailURL = viper.GetString("aboutme.iview.detailurl")
-		ConfigData.AboutMe.IView.UID = viper.GetString("aboutme.iview.url")
-		ConfigData.AboutMe.IView.HistoryURL = viper.GetString("aboutme.iview.historyurl")
 		ConfigData.Thumbnails.Width = uint(viper.GetInt("thumbnails.width"))
 		ConfigData.Thumbnails.Height = uint(viper.GetInt("thumbnails.height"))
 		ConfigData.Thumbnails.Extension = viper.GetString("thumbnails.extension")
