@@ -183,10 +183,16 @@ func updateTraktStats(stats TraktStats) TraktStats {
 	client := http.Client{}
 	page := 1
 	limit := 20
-	baseFrom := stats.LastUpdatedDate.Format("2006-01-02T15:04:05.0000Z")
+	baseFrom := stats.LastUpdatedDate.Add(time.Hour * -24 * 15).Format("2006-01-02T15:04:05.0000Z")
+	// @todo: replace this with the latest movie/ show found date.
 	stats.LastUpdatedDate = time.Now()
 	stats.LastUpdated = stats.LastUpdatedDate.Format("2006-01-02T15:04:05.0000Z")
 	for {
+		fmt.Printf("Lookup https://api.trakt.tv/users/colinmo/history/?start_at=%s&page=%d&limit=%d",
+			baseFrom,
+			page,
+			limit,
+		)
 		url := fmt.Sprintf("https://api.trakt.tv/users/colinmo/history/?start_at=%s&page=%d&limit=%d",
 			baseFrom,
 			page,

@@ -143,9 +143,8 @@ func convertGallery(mep []byte) []byte {
 			mep2[i][4],
 		)
 	}
-
 	// Print out the converted HTML, removing the "markdown="1"""
-	return []byte(fmt.Sprintf(
+	temp := []byte(fmt.Sprintf(
 		`%s%s<input type="radio" name="gallery-2020-4-%d" id="gallery-2020-4-%d-0" />
 				<label></label><figure></figure>%s<input type="radio" name="gallery-2020-4-%d" id="gallery-2020-4-%d-close" />
 				<label for="gallery-2020-4-%d-close">X</label>%s`,
@@ -159,6 +158,8 @@ func convertGallery(mep []byte) []byte {
 		gallery_index,
 		mep1[0][4],
 	))
+	gallery_index++
+	return temp
 }
 
 func convertMarkdownHtml(mep []byte) []byte {
