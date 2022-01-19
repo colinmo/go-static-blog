@@ -3,11 +3,12 @@ package main
 import (
 	"bytes"
 	"encoding/base64"
+	"errors"
 	"fmt"
-	"log"
 	"net/http"
 	"net/http/cgi"
 	"net/url"
+	"os"
 	"regexp"
 	"strings"
 	"time"
@@ -16,10 +17,11 @@ import (
 )
 
 func errorResponse(code int, msg string) {
-	fmt.Printf("Status:%d %s\r\n", code, msg)
+	fmt.Printf("Status:%d %s\r\n", code, http.StatusText(code))
 	fmt.Printf("Content-Type: text/plain\r\n")
 	fmt.Printf("\r\n")
 	fmt.Printf("%s\r\n", msg)
+	os.Exit(-99)
 }
 
 type Indieweb struct {
@@ -29,6 +31,7 @@ type Indieweb struct {
 	RepostOf   string `yaml:"repost-of"`
 	LikeOf     string `yaml:"like-of"`
 }
+
 type FrontMatter struct {
 	ID            string   `yaml:"Id"`
 	Title         string   `yaml:"Title"`
@@ -62,16 +65,18 @@ func main() {
 	// Receive a request
 	var req *http.Request
 	var err error
+	var messages []string
 	req, err = cgi.Request()
 	if err != nil {
-		errorResponse(500, "cannot get cgi request"+err.Error())
-		return
+		errorResponse(500, "parse: cannot get cgi request"+err.Error())
 	}
 
 	// Use req to handle request
-	fmt.Printf("Content-Type: text/plain\r\n")
-	fmt.Printf("\r\n")
+	messages = append(messages, "Processing the submission")
 	req.ParseForm()
+	if len(req.PostFormValue("username")) == 0 || len(req.PostFormValue("password")) == 0 {
+		errorResponse(500, "parse: username and password is required")
+	}
 
 	postType := "indieweb"
 	if req.PostFormValue("article") == "article" {
@@ -118,13 +123,18 @@ func main() {
 	frontMatter.ID = strings.ToLower(string(re.ReplaceAll([]byte(frontMatter.Title), []byte("-"))))
 	frontMatter.Slug = frontMatter.ID + ".html"
 
+	errorMessages, err := errorChecking(frontMatter)
+	if err != nil {
+		errorResponse(400, strings.Join(errorMessages, "\r\n"))
+	}
+	fmt.Printf("Content-Type: text/plain\r\n")
 	if err = sendToBitbucket(
 		frontMatter.ID,
 		frontMatter.Type,
 		createPage(frontMatter, req.PostFormValue("content")),
 		req.PostFormValue("username"),
 		req.PostFormValue("password")); err == nil {
-		fmt.Printf("Splendid!")
+		fmt.Printf("%s", strings.Join(messages, "\r\n"))
 	} else {
 		fmt.Printf("Bogus %v\n", err)
 	}
@@ -133,7 +143,7 @@ func main() {
 func createPage(frontmatter FrontMatter, post string) string {
 	dude, err := yaml.Marshal(frontmatter)
 	if err != nil {
-		fmt.Printf("Failed to marshal the frontmatter")
+		errorResponse(500, "parse: failed to marshal the frontmatter")
 	}
 	re := regexp.MustCompile("relativelink.*\ncreated.*\nupdated.*\n")
 
@@ -168,7 +178,23 @@ func sendToBitbucket(filename string, articleType string, contents string, usern
 	}
 	if resp.StatusCode >= 200 && resp.StatusCode <= 299 {
 	} else {
-		log.Fatalf("Argh! Broken: %d\n", resp.StatusCode)
+		errorResponse(400, fmt.Sprintf("post: failed to talk to bitbucket %d - %s\n", resp.StatusCode, http.StatusText(resp.StatusCode)))
 	}
 	return nil
+}
+
+func errorChecking(frontmatter FrontMatter) ([]string, error) {
+	var message []string
+
+	if len(frontmatter.Title) == 0 {
+		message = append(message, "Title is required")
+	}
+	if len(frontmatter.Synopsis) == 0 {
+		message = append(message, "Synopsis is required")
+	}
+
+	if len(message) > 0 {
+		return message, errors.New("validation: failed to validate the post")
+	}
+	return message, nil
 }
