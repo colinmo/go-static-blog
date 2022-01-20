@@ -318,6 +318,7 @@ type Contact struct {
 	Photo     string `yaml:"u-photo"`
 	URL       string `yaml:"u-url"`
 	Key       string `yaml:"u-key"`
+	LinkedIn  string `yaml:"linkedin"`
 }
 
 type Education struct {

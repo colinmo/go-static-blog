@@ -57,7 +57,7 @@ Cucumber style Go testing
 cmd
 set GOOS=linux
 set GOARCH=amd64
-go build -ldflags '-w -s'
+go build -ldflags "-w -s"
 ``` 
 
 ### On Unix

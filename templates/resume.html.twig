@@ -7,12 +7,12 @@
         <h1>Resume of <span class="p-name">
             <a class="p-contact h-card" href="{{ resume.Contact.URL|default('#') }}">
                 {{ resume.Contact.Name }}                        
-                <img src="{{ resume.Contact.Photo }}" class="u-photo" alt="" style="float:right" />
+                <!--<img src="{{ resume.Contact.Photo }}" class="u-photo" alt="" style="float:right" />-->
             </a></span></h1>
         <section class="post-meta">                     
             {% if cdate != udate %}Last updated <time class="dt-updated" datetime="{{ udate }}">{{ updated_date|date('j M Y, h:i a') }} </time>{% endif %}
         </section>
-        <section class="p-summary">{{ content|raw }}</section>
+        <section class="p-summary">{{ content|raw }}{% if resume.Contact.LinkedIn|length > 0%}<br />Contact me via <a href="{{ resume.Contact.LinkedIn}}">LinkedIn</a>{% endif %}</section>
         <section class="experience">
             <h2>Experience</h2>
             {% for experience in resume.Experience %}
