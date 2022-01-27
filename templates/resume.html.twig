@@ -180,7 +180,7 @@
             <div class="p-experience experience-{{ (experience.Category|lower)|replace({' ':'-'}) }}" style="clear:both">
                 {% if experience.Category == "Work History" %}
                 <div class="h-event">
-                    <h3 class="p-name">{{ experience.Name }} {% if experience.URL %} [<a class="u-url" href="{{ experience.URL}}">Details</a>]{% endif %}<br /><p class="p-location">{{ experience.Location }}</p>, <time class="dt-start" datetime="{{ experience.StartDate|date('c') }}">{{ experience.StartDate|date('Y') }}</time> - 
+                    <h3 class="p-name">{{ experience.Name }} {% if experience.URL %} [<a class="u-url" href="{{ experience.URL}}">Details</a>]{% endif %}<br /><span class="p-location">{{ experience.Location }}</span>, <time class="dt-start" datetime="{{ experience.StartDate|date('c') }}">{{ experience.StartDate|date('Y') }}</time> - 
                     {% if experience.End|length > 0 %}
                     <time class="dt-end" datetime="{{ experience.EndDate|date('c') }}">{{ experience.EndDate|date('Y') }}</time>
                     {% endif %}</h3>
