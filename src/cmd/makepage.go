@@ -319,6 +319,8 @@ type Contact struct {
 	URL       string `yaml:"u-url"`
 	Key       string `yaml:"u-key"`
 	LinkedIn  string `yaml:"linkedin"`
+	Logo      string `yaml:"u-logo"`
+	Title     string `yaml:"p-job-title"`
 }
 
 type Education struct {
@@ -352,7 +354,18 @@ type TimedExperience struct {
 	New       []string `yaml:"<1 year"`
 }
 
+type SkillGroup struct {
+	Name    string   `yaml:"name"`
+	Members []string `yaml:"members"`
+}
+
 type Skill struct {
+	SeniorDev      []SkillGroup    `yaml:"seniordev"`
+	Developer      []SkillGroup    `yaml:"developer"`
+	Intern         []SkillGroup    `yaml:"intern"`
+	HobbyPro       []SkillGroup    `yaml:"hobbypro"`
+	Hobbiest       []SkillGroup    `yaml:"hobbiest"`
+	Dabbler        []SkillGroup    `yaml:"dabbler"`
 	Programming    TimedExperience `yaml:"Programming languages"`
 	Libraries      TimedExperience `yaml:"Libraries/ services/ technologies"`
 	Accreditations []string        `yaml:"Principal methodology accreditations"`

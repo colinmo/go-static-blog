@@ -3,27 +3,187 @@
 {% block content %}
 {% set cdate = created_date|date('c') %}
 {% set udate = updated_date|date('c') %}
-    <article class="h-resume" data-info="" data-tags="{{ metadata.tags|json_encode }}" data-article-id="{{ metadata.id }}">
-        <h1>Resume of <span class="p-name">
-            <a class="p-contact h-card" href="{{ resume.Contact.URL|default('#') }}">
-                {{ resume.Contact.Name }}                        
-                <!--<img src="{{ resume.Contact.Photo }}" class="u-photo" alt="" style="float:right" />-->
-            </a></span></h1>
-        <section class="post-meta">                     
-            {% if cdate != udate %}Last updated <time class="dt-updated" datetime="{{ udate }}">{{ updated_date|date('j M Y, h:i a') }} </time>{% endif %}
+    <article class="h-resume" data-tags="{{ metadata.tags|json_encode }}">
+        <style>
+            #business-card {
+                margin:0 auto;
+                max-width:500px;
+                display:flex;
+                background-color: transparent;
+                perspective: 1000px;
+                height: 190px;
+                margin-bottom: 44px;
+            }
+            #business-flip:checked + #business-card > div {
+                transform: rotateY(180deg);
+                -webkit-transform: rotateY(180deg);
+                }
+            #business-card img { border-radius: 3px; }
+            #business-card > div > div {
+                position:absolute;
+                width: calc(100% - 44px);
+                height: 100%;
+                backface-visibility: hidden;
+                -webkit-backface-visibility: hidden;
+                border: 2px solid grey;
+                padding:20px;
+                border-radius: 15px;
+                margin: 0 30px 30px 0;
+                -webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.27), 0 0 40px rgba(0, 0, 0, 0.06) inset;
+                -moz-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.27), 0 0 40px rgba(0, 0, 0, 0.06) inset;
+                box-shadow: 0 1px 4px rgba(0, 0, 0, 0.27), 0 0 40px rgba(0, 0, 0, 0.06) inset;
+                background: {% if resume.Contact.Logo|length > 0 %}url({{resume.Contact.Logo}}) no-repeat bottom center, {% endif %}var(--paper-image) repeat top left;
+                border-bottom-right-radius: 60px;
+                background-size: 25%;
+                }
+            #business-card-back {
+                transform: rotateY(180deg);
+                -webkit-transform: rotateY(180deg);
+                border-bottom-right-radius: 15px !important;
+                border-bottom-left-radius: 60px !important;
+                }
+            #business-card * {
+                backface-visibility: hidden !important;
+                -webkit-backface-visibility: hidden !important;
+                }
+            .flipper { position: absolute; right: 0; bottom: 0;cursor: pointer; font-size: x-large;}
+        </style>
+        <input type="checkbox" id="business-flip" name="business-flip" style="width: 0; height: 0; position: absolute; left: -9999px;">
+        <section id="business-card" class="h-card">
+            <div style="position:relative;width: 100%;height: 100%;transition: transform 0.5s;transform-style: preserve-3d;-webkit-transform-style: preserve-3d">
+                <div id="business-card-front" style="display:flex;">
+                    <img class="u-photo" alt="" src="{{ resume.Contact.Photo }}" style="width:150px;height:187px;border: thin solid black;flex-basis: 150px;flex-grow: 0;flex-shrink: 0;">
+                    <section id="business-card-text" style="margin-left: 20px;">
+                        <h1 class="p-name" style="margin-top:0;margin-bottom:0;">
+                            <a class="p-contact" href="{{ resume.Contact.URL|default('#') }}">{{ resume.Contact.Name }}</a>
+                        </h1>
+                        <section class="post-meta" style="font-size: 0.6em;margin-bottom: 10px;">Last updated <time class="dt-updated" datetime="{{ udate }}">{{ updated_date|date('j M Y, h:i a') }}</time></section>
+                        <h2 style="font-size: smaller;margin-bottom:0;">{{ resume.Contact.Title }}</h2>
+                        {% if resume.Contact.LinkedIn|length > 0%}<a href="{{ resume.Contact.LinkedIn }}" style="font-size: 0.9em; background: url(/blog/media/2022/01/23/LinkedIn.png) no-repeat left center; background-size: 30%;padding-left: 20px;min-height: 30px;">LinkedIn</a>{% endif %}
+                    </section>
+                </div>
+                <div id="business-card-back" class="p-summary">
+                    {{ content|raw }}
+                </div>
+            </div>
+            <label class="flipper" for="business-flip" style="position:absolute;bottom:-50px;">&#x27A5;</label>
         </section>
-        <section class="p-summary">{{ content|raw }}{% if resume.Contact.LinkedIn|length > 0%}<br />Contact me via <a href="{{ resume.Contact.LinkedIn}}">LinkedIn</a>{% endif %}</section>
+        <section class="skill">
+            <h2>Skillset</h2>
+            <p class="hide-if-narrow">A passing similarity to the Gartner<sup>&reg;</sup> Magic Quadrant<sup>&trade;</sup>, the Scientific Hextant has Casual/Profession as the X-axis, and Experience on the Y-axis.</p>
+            <style>
+                @media (max-width: 576px) { 
+                    #skills-grid {
+                        grid-template-columns: 1fr !important;
+                        grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr !important;
+                        grid-template-areas: 'seniordev' 'developer' 'intern' 'hobbypro' 'hobbiest' 'dabbler' !important;
+                        background: none !important;
+                    }
+                    .hide-if-narrow {
+                        display: none !important;
+                    }
+                }
+                #skills-grid {
+                    display:grid;
+                    grid-template-columns: 1fr 1fr;
+                    grid-template-rows: 1fr 1fr 1fr;
+                    grid-template-areas: 
+                        'hobbypro seniordev'
+                        'hobbiest developer'
+                        'dabbler intern';
+                    border: 5px solid #532109;
+                    background: url(/blog/media/2022/01/23/experience-professional.png) no-repeat left 4px bottom 4px;
+                }
+                #skills-grid .shaded {
+                    background: #53210933;
+                }
+                #skills-grid > section {
+                    border:1.5px solid #532109aa;
+                    position: relative;
+                }
+                #skills-grid > section > div {
+                    position:absolute;
+                    top: -1px;
+                    right: -1px;
+                    background: rgba(128,0,0,0.8);
+                    border-bottom-left-radius: 15px;
+                    color: white;
+                    padding-left: 15px;
+                    padding-right: 10px;
+                }
+                #skills-grid > section ul {
+                    column-count: 2;
+                    -moz-column-count: 2;
+                    -o-column-count: 2;
+                    -webkit-column-count: 2;
+                    list-style-type: none;
+                }
+                li.Languages:before {
+                    content: "❴❵"
+                }
+                li.Libraries:before {
+                    content: "\1f4d6"
+                }
+                li.Methodologies:before {
+                    content: "\1f9e0"
+                }
+                li.Skills:before {
+                    content: "\1f589"
+                }
+            </style>
+            <section id="skills-grid">
+                <section style="grid-area: seniordev;" class="shaded">
+                    <div>Senior Dev</div>
+                    <ul>{% for skill_sub_sub in resume.Skill.SeniorDev %}{% for member in skill_sub_sub.Members %}
+                    <li class="{{ skill_sub_sub.Name }}">{{member}}</li>
+                    {% endfor %}{% endfor %}
+                    </ul>
+                </section>
+                <section style="grid-area: developer">
+                    <div>Developer</div>
+                    <ul>{% for skill_sub_sub in resume.Skill.Developer %}{% for member in skill_sub_sub.Members %}
+                    <li class="{{ skill_sub_sub.Name }}">{{member}}</li>
+                    {% endfor %}{% endfor %}
+                    </ul>
+                </section>
+                <section style="grid-area: intern" class="shaded">
+                    <div>Intern</div>
+                    <ul>{% for skill_sub_sub in resume.Skill.Intern %}{% for member in skill_sub_sub.Members %}
+                    <li class="{{ skill_sub_sub.Name }}">{{member}}</li>
+                    {% endfor %}{% endfor %}</ul>
+                </section>
+                <section style="grid-area: hobbypro;">
+                    <div>Hobby-Pro</div>
+                    <ul>{% for skill_sub_sub in resume.Skill.HobbyPro %}{% for member in skill_sub_sub.Members %}
+                    <li class="{{ skill_sub_sub.Name }}">{{member}}</li>
+                    {% endfor %}{% endfor %}</ul>
+                </section>
+                <section style="grid-area: hobbiest" class="shaded">
+                    <div>Hobbiest</div>
+                    <ul>{% for skill_sub_sub in resume.Skill.Hobbiest %}{% for member in skill_sub_sub.Members %}
+                    <li class="{{ skill_sub_sub.Name }}">{{member}}</li>
+                    {% endfor %}{% endfor %}
+                    </ul>
+                </section>
+                <section style="grid-area: dabbler;">
+                    <div>Dabbler</div>
+                    <ul>{% for skill_sub_sub in resume.Skill.Dabbler %}{% for member in skill_sub_sub.Members %}
+                    <li class="{{ skill_sub_sub.Name }}">{{member}}</li>
+                    {% endfor %}{% endfor %}
+                    </ul>
+                </section>
+            </section>
+        </section>        
         <section class="experience">
             <h2>Experience</h2>
             {% for experience in resume.Experience %}
             <div class="p-experience experience-{{ (experience.Category|lower)|replace({' ':'-'}) }}" style="clear:both">
                 {% if experience.Category == "Work History" %}
                 <div class="h-event">
-                    <h3 class="p-name">{{ experience.Name }} {% if experience.URL %} [<a class="u-url" href="{{ experience.URL}}">Details</a>]{% endif %}<br /> <time class="dt-start" datetime="{{ experience.StartDate|date('c') }}">{{ experience.StartDate|date('Y') }}</time> - 
+                    <h3 class="p-name">{{ experience.Name }} {% if experience.URL %} [<a class="u-url" href="{{ experience.URL}}">Details</a>]{% endif %}<br /><p class="p-location">{{ experience.Location }}</p>, <time class="dt-start" datetime="{{ experience.StartDate|date('c') }}">{{ experience.StartDate|date('Y') }}</time> - 
                     {% if experience.End|length > 0 %}
                     <time class="dt-end" datetime="{{ experience.EndDate|date('c') }}">{{ experience.EndDate|date('Y') }}</time>
                     {% endif %}</h3>
-                    <p class="p-location">{{ experience.Location }}</p>
                     <p class="p-summary">{{ experience.Summary}}</p>
                     <span class="p-description">{{ experience.Description }}</span>
                 </div>
@@ -42,47 +202,7 @@
             </div>
             {% endfor %}
         </section>
-        <section class="skill">
-            <h2>Skillset</h2>
-                <h3>Programming</h3>
-                    <table border="1" cellspacing="0" width="100%">
-                        <thead>
-                            <tr>
-                                <th>5+ years</th>
-                                <th>1-5 years</th>
-                                <th>&lt;1 year</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                            <td>{% for skill_sub_sub in resume.Skill.Programming.FivePlus %}{{ skill_sub_sub }}<br />{% endfor %}</td>
-                            <td>{% for skill_sub_sub in resume.Skill.Programming.OneToFive %}{{ skill_sub_sub }}<br />{% endfor %}</td>
-                            <td>{% for skill_sub_sub in resume.Skill.Programming.New %}{{ skill_sub_sub }}<br />{% endfor %}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                <h3>Libraries</h3>
-                    <table border="1" cellspacing="0" width="100%">
-                        <thead>
-                            <tr>
-                                <th>5+ years</th>
-                                <th>1-5 years</th>
-                                <th>&lt;1 year</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                            <td>{% for skill_sub_sub in resume.Skill.Libraries.FivePlus %}{{ skill_sub_sub }}<br />{% endfor %}</td>
-                            <td>{% for skill_sub_sub in resume.Skill.Libraries.OneToFive %}{{ skill_sub_sub }}<br />{% endfor %}</td>
-                            <td>{% for skill_sub_sub in resume.Skill.Libraries.New %}{{ skill_sub_sub }}<br />{% endfor %}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                <h3>Principal methodology accreditations</h3>
-                <ul>
-                {% for index2, skill_sub in resume.Skill.Accreditations %}<li>{{ skill_sub }}</li>
-                {% endfor %}                </ul>
-        </section>
+
         <section class="education">
             <h2>Education</h2>
             {% for education in resume.Education %}
