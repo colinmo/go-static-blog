@@ -46,6 +46,13 @@
                 backface-visibility: hidden !important;
                 -webkit-backface-visibility: hidden !important;
                 }
+            #skills-grid > section ul {
+                padding-left: 1em;
+            }
+            .h-resume .experience h3, .h-resume .education h3 {
+                clear-both;
+                text-align:left;
+            }
             .flipper { position: absolute; right: 0; bottom: 0;cursor: pointer; font-size: x-large;}
         </style>
         <input type="checkbox" id="business-flip" name="business-flip" style="width: 0; height: 0; position: absolute; left: -9999px;">
@@ -117,6 +124,13 @@
                     -o-column-count: 2;
                     -webkit-column-count: 2;
                     list-style-type: none;
+                    padding-left: 1em;
+                }
+                #skills-grid > section ul li:before {
+                  width: 1.5em;
+                  display: inline-block;
+                  text-align: right;
+                  margin-right: 0.2em;
                 }
                 li.Languages:before {
                     content: "❴❵"
