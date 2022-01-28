@@ -126,25 +126,35 @@
                     list-style-type: none;
                     padding-left: 1em;
                 }
-                #skills-grid > section ul li:before {
+                #skills-grid > section ul li:before, ul.legend li:before {
                   width: 1.5em;
                   display: inline-block;
                   text-align: right;
                   margin-right: 0.2em;
                 }
                 li.Languages:before {
-                    content: "❴❵"
+                    content: "\1F4BB"
                 }
                 li.Libraries:before {
                     content: "\1f4d6"
                 }
                 li.Methodologies:before {
-                    content: "\1f9e0"
+                    content: "\2699\FE0F"
                 }
                 li.Skills:before {
-                    content: "\1f589"
+                    content: "\1f9e0"
+                }
+                ul.legend {
+                    list-style-type: none;
+                    margin: 0 0 0.5em 0;
+                    text-align: center;
+                }
+                ul.legend li {
+                    display:inline;
+                    margin-right: 3em;
                 }
             </style>
+            <ul class="legend"><li class="Languages">Languages</li><li class="Libraries">Libraries</li><li class="Methodologies">Methodologies</li><li class="Skills">Skills</li></ul>
             <section id="skills-grid">
                 <section style="grid-area: seniordev;" class="shaded">
                     <div>Senior Dev</div>
