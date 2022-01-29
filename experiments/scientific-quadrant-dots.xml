@@ -1,0 +1,72 @@
+<svg aria-hidden="true"
+    class="icon"
+    style="width:1024px;height:960px;"
+    xmlns="http://www.w3.org/2000/svg"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+    <style>
+        text {
+            font-family: "Trebuchet MS", Helvetica, sans-serif ;
+        }
+        .labels text {
+            fill: white;
+            font-family: arial;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+        .legends text {
+            fill: rgba(128, 0, 0, 0.8);
+            font-family: arial;
+            text-transform: uppercase;
+            font-size: 1.3em; 
+        }
+        circle {
+            r: 4px;
+            fill: rgba(128, 0, 0, 0.8);
+            stroke: rgba(128, 0, 0, 0.8);
+        }
+        g.dots text {
+            transform: translate(5px, 5px);
+        }
+        g.dots .invert {
+            text-anchor: end;
+            transform: translate(-5px, 5px);
+        }
+    </style>
+    <!-- borders and quadrants -->
+    <rect x="536px" y="1px" width="486px" height="303px" style="fill:#53210933;stroke:#532109aa;stroke-width:3px;"></rect>
+    <rect x="50px" y="304px" width="486px" height="303px" style="fill:#53210933;stroke:#532109aa;stroke-width:3px;"></rect>
+    <rect x="536px" y="607px" width="486px" height="303px" style="fill:#53210933;stroke:#532109aa;stroke-width:3px;"></rect>
+    <rect x="50px" y="2px" width="972px" height="910px" style="fill:transparent;stroke:#532109;stroke-width:5px;"></rect>    
+    <!-- labels and axis -->
+    <g class="legends">
+    <text style="transform: rotate(-90deg) translate(-910px, 45px);">Experience &#10132;</text>
+    <text x="50px" y="933px">Competance &#10132;</text>
+    </g>
+    <g class="labels">
+        <path d="M52,607 l150,0 l0,16 a-8,-8 1 0 1 -8 8 l-142 0 Z" style="fill:rgba(128,0,0,0.8);"></path>
+        <text x="55px" y="627px">Dabbler</text>
+        <path d="M52,305 l150,0 l0,16 a-8,-8 1 0 1 -8 8 l-142 0 Z" style="fill:rgba(128,0,0,0.8);"></path>
+        <text x="55px" y="325px">Hobbiest</text>
+        <path d="M52,3 l150,0 l0,16 a-8,-8 1 0 1 -8 8 l-142 0 Z" style="fill:rgba(128,0,0,0.8);"></path>
+        <text x="55px" y="23px">Optimist</text>
+        
+        <path d="M1020,607 l-150,0 l0,16 a8,-8 1 0 0 8 8 l142 0 Z" style="fill:rgba(128,0,0,0.8);"></path>
+        <text style="text-anchor: end;" x="1016px" y="627px">Unicorn</text>
+        <path d="M1020,305 l-150,0 l0,16 a8,-8 1 0 0 8 8 l142 0 Z" style="fill:rgba(128,0,0,0.8);"></path>
+        <text style="text-anchor: end;" x="1016px" y="325px">Developer</text>
+        <path d="M1020,3 l-150,0 l0,16 a8,-8 1 0 0 8 8 l142 0 Z" style="fill:rgba(128,0,0,0.8);"></path>
+        <text style="text-anchor: end;" x="1016px" y="23px">Senior Dev</text>
+    </g>
+    <!-- dots -->
+    <g class="dots">
+        <g transform="translate(850, 60)">
+            <circle cx="0px" cy="0px"></circle><text x="0px" y="0px">PHP</text>
+        </g>
+        <g transform="translate(800, 50)">
+            <circle cx="0px" cy="0px"></circle><text class="invert" x="0px" y="0px">JavaScript</text>
+        </g>
+        <g transform="translate(297, 758.5)">
+            <circle cx="0px" cy="0px"></circle><text class="invert" x="0px" y="0px">Ruby</text>
+        </g>
+    </g>
+</svg>

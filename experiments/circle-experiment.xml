@@ -1,0 +1,14 @@
+<svg aria-hidden="true"
+    class="icon"
+    style="height:350px;width:350px;"
+    xmlns="http://www.w3.org/2000/svg"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+    <use xlink:href="#icon-phone" style=""></use>
+    <rect x="0" y="0" width="350" height="350" style="fill:green;"></rect>
+    <circle cx="175" cy="175" r="150" style="fill:blue"></circle>
+    <circle cx="175" cy="175" r="100" style="fill:yellow;"></circle>
+    <circle cx="175" cy="175" r="50" style="fill:red;"></circle>
+    <text text-anchor="middle" x="175" y="140">5+</text>
+    <text text-anchor="middle" x="175" y="90">1-4</text>
+    <text text-anchor="middle" x="175" y="40">&lt;1</text>
+</svg>
