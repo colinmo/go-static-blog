@@ -14,7 +14,7 @@ func TestReadRSS(t *testing.T) {
 	if err != nil {
 		t.Fatalf(`Failed to parse %s`, err)
 	}
-	if mek.Version != "1.0" {
+	if mek.Version != "2.0" {
 		t.Fatalf(`Version didn't parse %s`, mek.Version)
 	}
 	if mek.Channel.Title != "Professor von Explaino" {
@@ -35,7 +35,7 @@ func TestReadWriteRSS(t *testing.T) {
 		t.Fatalf(`Failed to parse %s`, err)
 	}
 
-	err = WriteRSS(mek, `f:/Dropbox/swap/golang/vonblog/features/tests/rss/rss1_out.xml`)
+	err = WriteRSS(mek, `f:\Dropbox\swap\golang\vonblog\features\tests\rss\rss1_out.xml`)
 	if err != nil {
 		t.Fatalf(`Failed to save the file %s`, err)
 	}
@@ -48,15 +48,15 @@ func TestReadWriteRSS(t *testing.T) {
 
 	rep := regexp.MustCompile(`\n\s*`)
 
-	rep2 := regexp.MustCompile(`<lastBuildDate>[a-zA-Z]{3}, \d{1,2} [a-zA-Z]{3} \d{4} \d{2}:\d{2}:\d{2} \+1000</lastBuildDate>`)
+	rep2 := regexp.MustCompile(`<lastBuildDate>.*</lastBuildDate>`)
 	f1s := rep.ReplaceAllString(rep2.ReplaceAllString(string(f1), ""), "")
 	f2s := rep.ReplaceAllString(rep2.ReplaceAllString(string(f2), ""), "")
-	fmt.Printf("Basd %s\n", f1s[600:700])
-
 	if f1s != f2s {
 		for i := range f1s {
 			if f1s[i:i+1] != f2s[i:i+1] {
 				fmt.Printf("Index %d is different %s:%s\n", i, f1s[i:i+1], f2s[i:i+1])
+				fmt.Printf("\n%s\n%s\n", f1s[(i-10):(i+10)], f2s[(i-10):(i+10)])
+
 				t.Fatalf(`Nuts`)
 			}
 		}
