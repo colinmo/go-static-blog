@@ -46,8 +46,10 @@ Cucumber style Go testing
   * Docker: `docker run -d --name sonarqube -e SONAR_ES_BOOTSTRAP_CHECKS_DISABLE=true -p 9000:9000 sonarqube:latest`
 * Client
   * [Local run client](https://docs.sonarqube.org/latest/analysis/scan/sonarscanner/)
-  * Docker: `docker run --rm -v "<dir>:/usr/src" sonarsource/sonar-scanner-cli`
+  * Docker: `docker run --rm -v "%cd%:/usr/src" sonarsource/sonar-scanner-cli`
+  * Docker: `docker run --rm -v ${PWD}:/usr/src sonarsource/sonar-scanner-cli`
 * Coverage - https://community.sonarsource.com/t/sonargo-code-coverage-0/19473
+  * `go test "./..." -coverprofile="coverage.out"`
 
 ## XCompiling
 
