@@ -203,7 +203,7 @@ func processFileUpdates(changes GitDiffs, tags map[string][]FrontMatter, postsBy
 			if filename[len(filename)-3:] == ".md" {
 				// // If .md Process into HTML
 				tags, frontmatter, html = getTagsFromPost(filename, tags)
-				targetFile := ConfigData.BaseDir + "posts/" + frontmatter.RelativeLink
+				targetFile := ConfigData.BaseDir + baseDirectoryForPosts + frontmatter.RelativeLink
 				targetDir, _ := path.Split(targetFile)
 				if _, err := os.Stat(targetFile); os.IsNotExist(err) {
 					os.MkdirAll(targetDir, 0755)

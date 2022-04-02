@@ -43,6 +43,8 @@ var SVGOptions struct {
 	Steps     bool
 }
 
+var relativeDataLocation = "../regenerate/data/"
+
 // blogstatsCmd represents the Blog Stats command
 var blogstatsCmd = &cobra.Command{
 	Use:   "blogstats",
@@ -140,20 +142,20 @@ type TraktResponse struct {
 func generateTraktStats() {
 	filenameOfTraktSvg := ConfigData.BaseDir + "../regenerate/data/trakt-cache.json.svg"
 	filenameOfTraktCache := ConfigData.BaseDir + "../regenerate/data/trakt-cache.json"
-	stats := readTraktStats(filenameOfTraktCache)
+	stats := readTraktStatsFile(filenameOfTraktCache)
 	// Update cached info from source
 	stats = updateTraktStats(stats)
-	writeTraktStats(filenameOfTraktCache, stats)
+	writeTraktStatsFile(filenameOfTraktCache, stats)
 	// Get two lines
 	movies, shows, max, min := getTraktStatsForDays(Days, stats)
-	line1, total1 := lineAlone(shows, max, min, "", "black", "Shows", true, false)
-	line2, total2 := lineAlone(movies, max, min, "2", "black", "Movies", true, false)
+	line1, total1 := lineAlone(shows, max, min, map[string]string{"strokeDashArray": "", "stroke": "black"}, "Shows", map[string]bool{"showZero": true, "showBall": false})
+	line2, total2 := lineAlone(movies, max, min, map[string]string{"strokeDashArray": "2", "stroke": "black"}, "Movies", map[string]bool{"showZero": true, "showBall": false})
 	// Create and store the SVG
 	graph := SVGGraphFromPaths(total1+total2, fmt.Sprintf("%d,%d", int(total1), int(total2)), -1, line1+line2)
 	ioutil.WriteFile(filenameOfTraktSvg, graph, 0666)
 }
 
-func readTraktStats(filename string) TraktStats {
+func readTraktStatsFile(filename string) TraktStats {
 	// Get the cached info
 	cacheFile, err := os.Open(filename)
 	var buff TraktStats
@@ -171,7 +173,7 @@ func readTraktStats(filename string) TraktStats {
 	return buff
 }
 
-func writeTraktStats(filename string, stats TraktStats) error {
+func writeTraktStatsFile(filename string, stats TraktStats) error {
 	marshalled, err := json.Marshal(stats)
 	if err == nil {
 		ioutil.WriteFile(filename, marshalled, 0666)
@@ -179,51 +181,75 @@ func writeTraktStats(filename string, stats TraktStats) error {
 	return err
 }
 
+func buildTraktLinkClient(client http.Client, startAt string, page int, limit int) []byte {
+	url := fmt.Sprintf("https://api.trakt.tv/users/colinmo/history/?start_at=%s&page=%d&limit=%d",
+		startAt,
+		page,
+		limit,
+	)
+	request, _ := http.NewRequest(
+		"GET",
+		url,
+		bytes.NewBuffer([]byte{}),
+	)
+	request.Header.Set(jsonHeaders[0][0], jsonHeaders[0][1])
+	request.Header.Set(jsonHeaders[1][0], jsonHeaders[1][1])
+	request.Header.Set("trakt-api-version", "2")
+	request.Header.Set("trakt-api-key", ConfigData.AboutMe.Trakt.ID)
+
+	resp, err := client.Do(request)
+	if err != nil {
+		log.Fatalf("%v\n", err)
+	}
+	defer resp.Body.Close()
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		log.Fatalf("%v\n", err)
+	}
+	if len(body) == 0 {
+		log.Fatal("Failed to get contents from Trakt\n")
+	}
+	return body
+}
+
+func getMovieShowValues(x TraktResponse, stats *TraktStats) {
+	l, _ := time.LoadLocation(blogTimezone)
+	startOfEverything := time.Date(1970, 1, 1, 0, 0, 0, 0, l)
+	x.WatchedAtDate, _ = parseUnknownDateFormat(x.WatchedAt)
+	if stats.LastUpdatedDate.Before(x.WatchedAtDate) {
+		stats.LastUpdatedDate = x.WatchedAtDate
+		stats.LastUpdated = stats.LastUpdatedDate.Format(gmtDateFormat)
+	}
+	id := fmt.Sprintf("%d", (int(math.Ceil(x.WatchedAtDate.Sub(startOfEverything).Hours() / 24))))
+	_, isThere := stats.Values[id]
+	if !isThere {
+		stats.Values[id] = ShowAndMovie{
+			Movie: make(map[string]string),
+			Show:  make(map[string]string),
+		}
+	}
+	if len(x.Movie.Title) > 0 {
+		stats.Values[id].Movie[x.Movie.IDs.IMDB] = x.Movie.Title
+	} else {
+		stats.Values[id].Show[x.Show.IDs.IMDB] = x.Show.Title + ": " + x.Episode.Title
+	}
+}
+
+// Update the local cache of TraktStats
 func updateTraktStats(stats TraktStats) TraktStats {
 	client := http.Client{}
 	page := 1
 	limit := 20
-	baseFrom := stats.LastUpdatedDate.Add(time.Hour * -24 * 15).Format("2006-01-02T15:04:05.0000Z")
-	// @todo: replace this with the latest movie/ show found date.
-	stats.LastUpdatedDate = time.Now()
-	stats.LastUpdated = stats.LastUpdatedDate.Format("2006-01-02T15:04:05.0000Z")
+	baseFrom := stats.LastUpdatedDate.Add(time.Hour * -24 * 15).Format(gmtDateFormat)
+	l, _ := time.LoadLocation(blogTimezone)
+	startOfEverything := time.Date(1970, 1, 1, 0, 0, 0, 0, l)
+	stats.LastUpdatedDate = startOfEverything
+	stats.LastUpdated = stats.LastUpdatedDate.Format(gmtDateFormat)
 	for {
-		fmt.Printf("Lookup https://api.trakt.tv/users/colinmo/history/?start_at=%s&page=%d&limit=%d",
-			baseFrom,
-			page,
-			limit,
-		)
-		url := fmt.Sprintf("https://api.trakt.tv/users/colinmo/history/?start_at=%s&page=%d&limit=%d",
-			baseFrom,
-			page,
-			limit,
-		)
-		request, _ := http.NewRequest(
-			"GET",
-			url,
-			bytes.NewBuffer([]byte{}),
-		)
-		request.Header.Set("Accept-language", "en")
-		request.Header.Set("Content-type", "application/json")
-		request.Header.Set("trakt-api-version", "2")
-		request.Header.Set("trakt-api-key", ConfigData.AboutMe.Trakt.ID)
-
-		resp, err := client.Do(request)
-		if err != nil {
-			log.Fatalf("%v\n", err)
-		}
-		defer resp.Body.Close()
-		body, err := ioutil.ReadAll(resp.Body)
-		if err != nil {
-			log.Fatalf("%v\n", err)
-		}
-		if len(body) == 0 {
-			log.Fatal("Failed to get contents from Trakt\n")
-		}
-
+		body := buildTraktLinkClient(client, baseFrom, page, limit)
 		var parsed []TraktResponse
 
-		err = json.Unmarshal(body, &parsed)
+		err := json.Unmarshal(body, &parsed)
 		if err != nil {
 			log.Fatalf("%v\n", err)
 		}
@@ -231,23 +257,8 @@ func updateTraktStats(stats TraktStats) TraktStats {
 		if len(parsed) == 0 {
 			return stats
 		}
-		l, _ := time.LoadLocation("Australia/Brisbane")
-		startOfEverything := time.Date(1970, 1, 1, 0, 0, 0, 0, l)
 		for _, x := range parsed {
-			x.WatchedAtDate, _ = parseUnknownDateFormat(x.WatchedAt)
-			id := fmt.Sprintf("%d", (int(math.Ceil(x.WatchedAtDate.Sub(startOfEverything).Hours() / 24))))
-			_, isThere := stats.Values[id]
-			if !isThere {
-				stats.Values[id] = ShowAndMovie{
-					Movie: make(map[string]string),
-					Show:  make(map[string]string),
-				}
-			}
-			if len(x.Movie.Title) > 0 {
-				stats.Values[id].Movie[x.Movie.IDs.IMDB] = x.Movie.Title
-			} else {
-				stats.Values[id].Show[x.Show.IDs.IMDB] = x.Show.Title + ": " + x.Episode.Title
-			}
+			getMovieShowValues(x, &stats)
 		}
 		page = page + 1
 	}
@@ -258,7 +269,7 @@ func getTraktStatsForDays(days int, stats TraktStats) (map[int]float64, map[int]
 	shows := make(map[int]float64)
 	max := 0
 	min := 0
-	l, _ := time.LoadLocation("Australia/Brisbane")
+	l, _ := time.LoadLocation(blogTimezone)
 	startOfEverything := time.Date(1970, 1, 1, 0, 0, 0, 0, l)
 	thisIndex := int(math.Ceil(time.Since(startOfEverything).Hours() / 24))
 	endIndex := thisIndex - days
@@ -268,8 +279,8 @@ func getTraktStatsForDays(days int, stats TraktStats) (map[int]float64, map[int]
 		if found {
 			mCount := len(entry.Movie)
 			sCount := len(entry.Show)
-			movies[i] += float64(mCount)
-			shows[i] += float64(sCount)
+			movies[i] = float64(mCount)
+			shows[i] = float64(sCount)
 			if max < mCount {
 				max = mCount
 			}
@@ -324,7 +335,7 @@ func generateCSStats() {
 	// Get the last Days entries
 	days, max := csToDays(parsed)
 	// Make ze graph
-	line, total := lineAlone(days, max, 0, "", "rgb(0,0,0,0.5)", "CodeStats", true, false)
+	line, total := lineAlone(days, max, 0, map[string]string{"strokeDashArray": "", "stroke": colorBlackOpacity50}, "CodeStats", map[string]bool{"showZero": true, "showBall": false})
 	chart := SVGGraphFromPaths(total, "CodeStats", -1, line)
 	// Create the SVG
 	err := ioutil.WriteFile(filenameOfSvg, chart, 0777)
@@ -342,8 +353,8 @@ func getObjectFromAPI() CodeStatsResponse {
 		url,
 		bytes.NewBuffer([]byte{}),
 	)
-	request.Header.Set("Accept-language", "en")
-	request.Header.Set("Content-type", "application/json")
+	request.Header.Set(jsonHeaders[0][0], jsonHeaders[0][1])
+	request.Header.Set(jsonHeaders[1][0], jsonHeaders[1][1])
 
 	resp, err := client.Do(request)
 	if err != nil {
@@ -409,7 +420,6 @@ type FeedlyResponse struct {
 	Continuation string       `json:"continuation"`
 	Items        []FeedlyItem `json:"items"`
 }
-
 type FeedlyStats struct {
 	LastUpdated     string         `json:"last_updated"`
 	LastSeen        string         `json:"last_seen"`
@@ -418,22 +428,22 @@ type FeedlyStats struct {
 }
 
 func generateFeedlyStats() {
-	filenameOfFeedlySvg := ConfigData.BaseDir + "../regenerate/data/" + ConfigData.AboutMe.Feedly.Cache + ".svg"
-	filenameOfFeedlyCache := ConfigData.BaseDir + "../regenerate/data/" + ConfigData.AboutMe.Feedly.Cache
-	stats := readFeedlyStats(filenameOfFeedlyCache)
+	filenameOfFeedlySvg := ConfigData.BaseDir + relativeDataLocation + ConfigData.AboutMe.Feedly.Cache + ".svg"
+	filenameOfFeedlyCache := ConfigData.BaseDir + relativeDataLocation + ConfigData.AboutMe.Feedly.Cache
+	stats := readFeedlyStatsFile(filenameOfFeedlyCache)
 	// Update cached info from source
 	stats = updateFeedlyStats(stats)
-	writeFeedlyStats(filenameOfFeedlyCache, stats)
+	writeFeedlyStatsFile(filenameOfFeedlyCache, stats)
 	// Get the line
 	entries, max, min := getFeedlyStatsForDays(Days, stats)
-	line1, total1 := lineAlone(entries, max, min, "", "rgb(0,0,0,0.5)", "Entries", true, false)
+	line1, total1 := lineAlone(entries, max, min, map[string]string{"strokeDashArray": "", "stroke": colorBlackOpacity50}, "Entries", map[string]bool{"showZero": true, "showBall": false})
 	// Create and store the SVG
 	graph := SVGGraphFromPaths(total1, fmt.Sprintf("%d", int(total1)), -1, line1)
 	ioutil.WriteFile(filenameOfFeedlySvg, graph, 0666)
 
 }
 
-func readFeedlyStats(filename string) FeedlyStats {
+func readFeedlyStatsFile(filename string) FeedlyStats {
 	// Get the cached info
 	cacheFile, err := os.Open(filename)
 	var buff FeedlyStats
@@ -454,7 +464,7 @@ func readFeedlyStats(filename string) FeedlyStats {
 	return buff
 }
 
-func writeFeedlyStats(filename string, stats FeedlyStats) error {
+func writeFeedlyStatsFile(filename string, stats FeedlyStats) error {
 	marshalled, err := json.Marshal(stats)
 	if err == nil {
 		ioutil.WriteFile(filename, marshalled, 0666)
@@ -462,46 +472,72 @@ func writeFeedlyStats(filename string, stats FeedlyStats) error {
 	return err
 }
 
+func bodyFromFeedlyLinkClient(client *http.Client, continuation string) []byte {
+	url := fmt.Sprintf("%s&continuation=%s",
+		ConfigData.AboutMe.Feedly.URL,
+		continuation,
+	)
+	request, _ := http.NewRequest(
+		"GET",
+		url,
+		bytes.NewBuffer([]byte{}),
+	)
+	request.Header.Set(jsonHeaders[0][0], jsonHeaders[0][1])
+	request.Header.Set(jsonHeaders[1][0], jsonHeaders[1][1])
+	request.Header.Set("Authorization", "OAuth "+ConfigData.AboutMe.Feedly.Key)
+
+	resp, err := client.Do(request)
+	if err != nil {
+		log.Fatalf("%v\n", err)
+	}
+	defer resp.Body.Close()
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		log.Fatalf("%v\n", err)
+	}
+	if len(body) == 0 {
+		log.Fatal("Failed to get contents from Feedly\n")
+	}
+	return body
+}
+func processFeedlyStats(items []FeedlyItem, stats *FeedlyStats, newLastSeen string) (int64, bool) {
+	var lastPublished int64
+	l, _ := time.LoadLocation(blogTimezone)
+	startOfEverything := time.Date(1970, 1, 1, 0, 0, 0, 0, l)
+	for _, x := range items {
+		if x.Fingerprint == stats.LastSeen {
+			// We've already recorded this one! Break
+			stats.LastSeen = newLastSeen
+			return lastPublished, false
+		}
+		publishedDate := fmt.Sprintf(
+			"%.0f",
+			time.Unix(
+				0,
+				x.Published*int64(time.Millisecond),
+			).Sub(startOfEverything).Hours()/24)
+		_, already := stats.Days[publishedDate]
+		if already {
+			stats.Days[publishedDate]++
+		} else {
+			stats.Days[publishedDate] = 1
+		}
+		lastPublished = x.Published
+	}
+	return lastPublished, true
+}
 func updateFeedlyStats(stats FeedlyStats) FeedlyStats {
 	client := http.Client{}
-	l, _ := time.LoadLocation("Australia/Brisbane")
-	startOfEverything := time.Date(1970, 1, 1, 0, 0, 0, 0, l)
 	stats.LastUpdatedDate = time.Now()
-	stats.LastUpdated = stats.LastUpdatedDate.Format("2006-01-02T15:04:05.0000Z")
+	stats.LastUpdated = stats.LastUpdatedDate.Format(gmtDateFormat)
 	newLastSeen := ""
 	continuation := ""
 	page := 0
 	thirtyDaysAgo := stats.LastUpdatedDate.Add(time.Duration(-30*24) * time.Hour).UnixMilli()
 	for {
-		url := fmt.Sprintf("%s&continuation=%s",
-			ConfigData.AboutMe.Feedly.URL,
-			continuation,
-		)
-		request, _ := http.NewRequest(
-			"GET",
-			url,
-			bytes.NewBuffer([]byte{}),
-		)
-		request.Header.Set("Accept-language", "en")
-		request.Header.Set("Content-type", "application/json")
-		request.Header.Set("Authorization", "OAuth "+ConfigData.AboutMe.Feedly.Key)
-
-		resp, err := client.Do(request)
-		if err != nil {
-			log.Fatalf("%v\n", err)
-		}
-		defer resp.Body.Close()
-		body, err := ioutil.ReadAll(resp.Body)
-		if err != nil {
-			log.Fatalf("%v\n", err)
-		}
-		if len(body) == 0 {
-			log.Fatal("Failed to get contents from Feedly\n")
-		}
-
+		body := bodyFromFeedlyLinkClient(&client, continuation)
 		var parsed FeedlyResponse
-
-		err = json.Unmarshal(body, &parsed)
+		err := json.Unmarshal(body, &parsed)
 		if err != nil {
 			log.Fatalf("%v\n", err)
 		}
@@ -511,32 +547,9 @@ func updateFeedlyStats(stats FeedlyStats) FeedlyStats {
 		if len(stats.LastSeen) == 0 && len(newLastSeen) == 0 {
 			newLastSeen = parsed.Items[0].Fingerprint
 		}
-
-		var lastPublished int64
-		for _, x := range parsed.Items {
-			if x.Fingerprint == stats.LastSeen {
-				// We've already recorded this one! Break
-				stats.LastSeen = newLastSeen
-				return stats
-			}
-			publishedDate := fmt.Sprintf(
-				"%.0f",
-				time.Unix(
-					0,
-					x.Published*int64(time.Millisecond),
-				).Sub(startOfEverything).Hours()/24)
-			_, already := stats.Days[publishedDate]
-			if already {
-				stats.Days[publishedDate]++
-			} else {
-				stats.Days[publishedDate] = 1
-			}
-			lastPublished = x.Published
-		}
-		fmt.Printf("Continue? %s\n", parsed.Continuation)
-		fmt.Printf("Days %d vs %d\n", thirtyDaysAgo, lastPublished)
+		lastPublished, continueBool := processFeedlyStats(parsed.Items, &stats, newLastSeen)
 		continuation = parsed.Continuation
-		if len(continuation) == 0 || thirtyDaysAgo > lastPublished {
+		if len(continuation) == 0 || thirtyDaysAgo > lastPublished || !continueBool {
 			stats.LastSeen = newLastSeen
 			return stats
 		}
@@ -551,7 +564,7 @@ func getFeedlyStatsForDays(days int, stats FeedlyStats) (map[int]float64, float6
 	entries := make(map[int]float64)
 	max := 0
 	min := 0
-	l, _ := time.LoadLocation("Australia/Brisbane")
+	l, _ := time.LoadLocation(blogTimezone)
 	startOfEverything := time.Date(1970, 1, 1, 0, 0, 0, 0, l)
 	thisIndex := int(math.Ceil(time.Since(startOfEverything).Hours()/24)) - 1
 	endIndex := thisIndex - days
@@ -640,9 +653,9 @@ type WithingsStats struct {
 }
 
 func generateWithingsStats() {
-	filenameOfWithingsCache := ConfigData.BaseDir + "../regenerate/data/" + ConfigData.AboutMe.Withings.Cache
-	filenameOfWithingsWeightSvg := ConfigData.BaseDir + "../regenerate/data/" + ConfigData.AboutMe.Withings.Cache + "-weight.svg"
-	filenameOfWithingsStepsSvg := ConfigData.BaseDir + "../regenerate/data/" + ConfigData.AboutMe.Withings.Cache + "-steps.svg"
+	filenameOfWithingsCache := ConfigData.BaseDir + relativeDataLocation + ConfigData.AboutMe.Withings.Cache
+	filenameOfWithingsWeightSvg := ConfigData.BaseDir + relativeDataLocation + ConfigData.AboutMe.Withings.Cache + "-weight.svg"
+	filenameOfWithingsStepsSvg := ConfigData.BaseDir + relativeDataLocation + ConfigData.AboutMe.Withings.Cache + "-steps.svg"
 	stats := readWithingsStats(filenameOfWithingsCache)
 	// Update cached info from source
 	stats = updateWithingsStats(stats)
@@ -650,10 +663,10 @@ func generateWithingsStats() {
 	// Get the line
 	weight, steps, wMax, _, wDiff, sMax, _ := getWithingsStatsForDays(Days, stats)
 	graph1 := barSVG(weight, 103.0, 95.0, -1)
-	line1, total1 := lineAlone(weight, 103.0, 95.0, "", "rgb(0,0,0,0.5)", "Kgs", false, true)
+	line1, total1 := lineAlone(weight, 103.0, 95.0, map[string]string{"strokeDashArray": "", "stroke": colorBlackOpacity50}, "Kgs", map[string]bool{"showZero": false, "showBall": true})
 	graph1p5 := SVGGraphFromPaths(total1, fmt.Sprintf("%f", wMax), wDiff, line1)
 	graph1 = []byte(strings.Replace(string(graph1), "</svg>", fmt.Sprintf("%s</svg>", graph1p5), -1))
-	line2, total2 := lineAlone(steps, sMax, 0, "", "rgb(0,0,0,0.5)", "Steps", false, false)
+	line2, total2 := lineAlone(steps, sMax, 0, map[string]string{"strokeDashArray": "", "stroke": colorBlackOpacity50}, "Steps", map[string]bool{"showZero": false, "showBall": false})
 	graph2 := SVGGraphFromPaths(total2, fmt.Sprintf("%d", int(total2)), -1, line2)
 	// Store the SVG
 	ioutil.WriteFile(filenameOfWithingsWeightSvg, graph1, 0666)
@@ -685,12 +698,7 @@ func writeWithingsStats(filename string, stats WithingsStats) error {
 	return err
 }
 
-func updateWithingsStats(stats WithingsStats) WithingsStats {
-	client := http.Client{}
-	l, _ := time.LoadLocation("Australia/Brisbane")
-	startOfEverything := time.Date(1970, 1, 1, 0, 0, 0, 0, l)
-	// Refresh token if needed
-	accessToken := ConfigData.AboutMe.Withings.AccessToken
+func updateWithingsTokenIfRequired(accessToken string) string {
 	now := time.Now().Unix()
 	if len(accessToken) == 0 || now > int64(ConfigData.AboutMe.Withings.ExpiresAt) {
 		fmt.Printf("Update from Refresh (%s)\n", accessToken)
@@ -723,6 +731,40 @@ func updateWithingsStats(stats WithingsStats) WithingsStats {
 			log.Fatalf("No access or refresh token currently valid")
 		}
 	}
+	return accessToken
+}
+
+func updateWithingsStatvalues(stats *WithingsStats, res WithingsResponse1, startOfEverything time.Time) {
+	l, _ := time.LoadLocation(blogTimezone)
+	for _, group := range res.Body.MeasureGrps {
+		watchedAt := time.Unix(group.Date, 0)
+		watchedAt = time.Date(watchedAt.Year(), watchedAt.Month(), watchedAt.Day(), watchedAt.Hour(), watchedAt.Minute(), watchedAt.Second(), watchedAt.Nanosecond(), l)
+		entryID := fmt.Sprintf("%d", (int(math.Ceil(watchedAt.Sub(startOfEverything).Hours() / 24))))
+		_, ok := stats.Values[entryID]
+		if !ok {
+			stats.Values[entryID] = WithingsMeasure{
+				Kg:            0,
+				Steps:         0,
+				Distance:      0,
+				TotalCalories: 0,
+			}
+		}
+		for _, measure := range group.Measures {
+			stats.Values[entryID] = WithingsMeasure{
+				Kg:            float64(measure.Value) * math.Pow(10, float64(measure.Unit)),
+				Steps:         stats.Values[entryID].Steps,
+				Distance:      stats.Values[entryID].Distance,
+				TotalCalories: stats.Values[entryID].TotalCalories,
+			}
+		}
+	}
+}
+func updateWithingsStats(stats WithingsStats) WithingsStats {
+	client := http.Client{}
+	l, _ := time.LoadLocation(blogTimezone)
+	startOfEverything := time.Date(1970, 1, 1, 0, 0, 0, 0, l)
+	// Refresh token if needed
+	accessToken := updateWithingsTokenIfRequired(ConfigData.AboutMe.Withings.AccessToken)
 	lastUpdate := stats.LastUpdatedDate.Unix()
 	lastUpdateString := fmt.Sprintf("%d", lastUpdate)
 	stats.LastUpdatedDate = time.Now()
@@ -740,7 +782,7 @@ func updateWithingsStats(stats WithingsStats) WithingsStats {
 		ConfigData.AboutMe.Withings.MassURL,
 		bytes.NewBuffer([]byte(data.Encode())),
 	)
-	request.Header.Set("Accept-language", "en")
+	request.Header.Set(jsonHeaders[0][0], jsonHeaders[0][1])
 	request.Header.Set("Content-type", "application/x-www-form-urlencoded")
 	request.Header.Set("Authorization", "Bearer "+accessToken)
 	request.Header.Set("Accept", "application/json")
@@ -752,28 +794,7 @@ func updateWithingsStats(stats WithingsStats) WithingsStats {
 	var res WithingsResponse1
 	json.NewDecoder(resp.Body).Decode(&res)
 	if res.Status == 0 {
-		for _, group := range res.Body.MeasureGrps {
-			watchedAt := time.Unix(group.Date, 0)
-			watchedAt = time.Date(watchedAt.Year(), watchedAt.Month(), watchedAt.Day(), watchedAt.Hour(), watchedAt.Minute(), watchedAt.Second(), watchedAt.Nanosecond(), l)
-			entryID := fmt.Sprintf("%d", (int(math.Ceil(watchedAt.Sub(startOfEverything).Hours() / 24))))
-			_, ok := stats.Values[entryID]
-			if !ok {
-				stats.Values[entryID] = WithingsMeasure{
-					Kg:            0,
-					Steps:         0,
-					Distance:      0,
-					TotalCalories: 0,
-				}
-			}
-			for _, measure := range group.Measures {
-				stats.Values[entryID] = WithingsMeasure{
-					Kg:            float64(measure.Value) * math.Pow(10, float64(measure.Unit)),
-					Steps:         stats.Values[entryID].Steps,
-					Distance:      stats.Values[entryID].Distance,
-					TotalCalories: stats.Values[entryID].TotalCalories,
-				}
-			}
-		}
+		updateWithingsStatvalues(&stats, res, startOfEverything)
 	} else {
 		fmt.Printf("Response %v\n", res)
 		fmt.Printf("%d\n", res.Status)
@@ -789,7 +810,7 @@ func updateWithingsStats(stats WithingsStats) WithingsStats {
 			"offset":      {fmt.Sprintf("%d", offset)},
 		}
 		request, _ = http.NewRequest("POST", ConfigData.AboutMe.Withings.StepsURL, bytes.NewBuffer([]byte(data.Encode())))
-		request.Header.Set("Accept-language", "en")
+		request.Header.Set(jsonHeaders[0][0], jsonHeaders[0][1])
 		request.Header.Set("Content-type", "application/x-www-form-urlencoded")
 		request.Header.Set("Authorization", "Bearer "+accessToken)
 		resp, err := client.Do(request)
@@ -798,20 +819,19 @@ func updateWithingsStats(stats WithingsStats) WithingsStats {
 		}
 		var res WithingsResponse2
 		json.NewDecoder(resp.Body).Decode(&res)
-		if len(res.Body.Activities) > 0 {
-			for _, activity := range res.Body.Activities {
-				watchedAt, _ := time.Parse("2006-01-02", activity.Date)
-				watchedAt = time.Date(watchedAt.Year(), watchedAt.Month(), watchedAt.Day(), watchedAt.Hour(), watchedAt.Minute(), watchedAt.Second(), watchedAt.Nanosecond(), l)
-				entryID := fmt.Sprintf("%d", (int(math.Ceil(watchedAt.Sub(startOfEverything).Hours() / 24))))
-				_, ok := stats.Values[entryID]
-				if !ok {
-					stats.Values[entryID] = WithingsMeasure{
-						Kg:            0,
-						Steps:         0,
-						Distance:      0,
-						TotalCalories: 0,
-					}
+		for _, activity := range res.Body.Activities {
+			watchedAt, _ := time.Parse("2006-01-02", activity.Date)
+			watchedAt = time.Date(watchedAt.Year(), watchedAt.Month(), watchedAt.Day(), watchedAt.Hour(), watchedAt.Minute(), watchedAt.Second(), watchedAt.Nanosecond(), l)
+			entryID := fmt.Sprintf("%d", (int(math.Ceil(watchedAt.Sub(startOfEverything).Hours() / 24))))
+			_, ok := stats.Values[entryID]
+			if !ok {
+				stats.Values[entryID] = WithingsMeasure{
+					Kg:            0,
+					Steps:         0,
+					Distance:      0,
+					TotalCalories: 0,
 				}
+			} else {
 				stats.Values[entryID] = WithingsMeasure{
 					Kg:            stats.Values[entryID].Kg,
 					Steps:         activity.Steps,
@@ -821,11 +841,11 @@ func updateWithingsStats(stats WithingsStats) WithingsStats {
 			}
 		}
 
-		if res.Body.More {
-			offset = res.Body.Offset
-		} else {
+		if !res.Body.More {
 			break
 		}
+		offset = res.Body.Offset
+
 	}
 
 	return stats
@@ -838,7 +858,7 @@ func getWithingsStatsForDays(days int, stats WithingsStats) (map[int]float64, ma
 	weightMin := 0.0
 	stepsMax := 0.0
 	stepsMin := 0.0
-	l, _ := time.LoadLocation("Australia/Brisbane")
+	l, _ := time.LoadLocation(blogTimezone)
 	startOfEverything := time.Date(1970, 1, 1, 0, 0, 0, 0, l)
 	thisIndex := int(math.Ceil(time.Since(startOfEverything).Hours()/24)) - 1
 	endIndex := thisIndex - days
@@ -856,19 +876,10 @@ func getWithingsStatsForDays(days int, stats WithingsStats) (map[int]float64, ma
 				weightLast = weight[i]
 			}
 			steps[i] = float64(entry.Steps)
-
-			if weightMax < weight[i] {
-				weightMax = weight[i]
-			}
-			if weightMin > weight[i] {
-				weightMin = weight[i]
-			}
-			if stepsMax < steps[i] {
-				stepsMax = steps[i]
-			}
-			if stepsMin > steps[i] {
-				stepsMin = steps[i]
-			}
+			weightMax = math.Max(weightMax, weight[i])
+			weightMin = math.Min(weightMin, weight[i])
+			stepsMax = math.Max(stepsMax, steps[i])
+			stepsMin = math.Min(stepsMin, steps[i])
 		} else {
 			weight[i] = 0.0
 			steps[i] = 0.0
@@ -940,11 +951,13 @@ func lineAlone(
 	points map[int]float64,
 	max float64,
 	min float64,
-	strokeDashArray string,
-	stroke string,
+	strokeOptions map[string]string,
+	//strokeDashArray string,
+	//stroke string,
 	title string,
-	showZero bool,
-	showBall bool,
+	options map[string]bool,
+	//showZero bool,
+	//showBall bool,
 ) (string, float64) {
 
 	// Defaults
@@ -953,11 +966,15 @@ func lineAlone(
 	chartHeightStep = chartHeight / (max - min)
 	chartWidth := 100.0
 	chartWidthStep := chartWidth / float64(len(points))
+	strokeDashArray := strokeOptions["strokeDashArray"]
+	stroke := strokeOptions["stroke"]
+	showZero := options["showZero"]
+	showBall := options["showBall"]
 	if strokeDashArray == "" {
 		strokeDashArray = "0"
 	}
 	if stroke == "" {
-		stroke = "rgb(0,0,0,0.5)"
+		stroke = colorBlackOpacity50
 	}
 	x := 0.0
 	y := chartHeight - (points[0]-min)*chartHeightStep

@@ -87,7 +87,7 @@ func WriteRSS(feed RSS, filename string) error {
 		return feed.Channel.Items[p].PubDateAsDate.After(feed.Channel.Items[q].PubDateAsDate)
 	})
 	byteValue, _ := xml.MarshalIndent(feed, "", "    ")
-	byteValue = []byte(strings.Replace(string(byteValue), `rssTags=""`, `xmlns:atom="http://www.w3.org/2005/Atom" xmlns:featureImage="https://vonexplaino.com/featureImage" xmlns:rssTags="https://vonexplaino.com/rssTags"`, 1))
+	byteValue = []byte(strings.Replace(string(byteValue), `rssTags="https://vonexplaino.com/rssTags"`, `xmlns:atom="http://www.w3.org/2005/Atom" xmlns:featureImage="https://vonexplaino.com/featureImage" xmlns:rssTags="https://vonexplaino.com/rssTags"`, 1))
 	byteValue = []byte(strings.ReplaceAll(string(byteValue), "tag>", "rssTags:tag>"))
 	byteValue = []byte(strings.Replace(string(byteValue), "<item>", `<atom:link href="https://vonexplaino.com/blog/rss.xml" rel="self" type="application/rss+xml" /><item>`, 1))
 	byteValue = []byte(strings.ReplaceAll(string(byteValue), "featureImage>", "featureImage:featureImage>"))

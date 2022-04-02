@@ -516,9 +516,9 @@ func parseFrontMatter(inFrontMatter string, filename string) (FrontMatter, error
 	// Need to do this after Type is validated
 	if frontMatter.Link == "" {
 		if frontMatter.Type == "page" {
-			frontMatter.Link = ConfigData.BaseURL + "posts/" + strings.ToLower(frontMatter.Type) + "/" + frontMatter.Slug
+			frontMatter.Link = ConfigData.BaseURL + baseDirectoryForPosts + strings.ToLower(frontMatter.Type) + "/" + frontMatter.Slug
 		} else {
-			frontMatter.Link = ConfigData.BaseURL + "posts/" + strings.ToLower(frontMatter.Type) + "/" + created.Format("2006/01") + "/" + frontMatter.Slug
+			frontMatter.Link = ConfigData.BaseURL + baseDirectoryForPosts + strings.ToLower(frontMatter.Type) + "/" + created.Format("2006/01") + "/" + frontMatter.Slug
 		}
 	}
 	var splitted = strings.Split(frontMatter.Link, "/posts")
@@ -581,7 +581,7 @@ func parseUnknownDateFormat(dateString string) (time.Time, error) {
 	if len(dateString) == 0 {
 		return newTime, err
 	}
-	l, _ = time.LoadLocation("Australia/Brisbane")
+	l, _ = time.LoadLocation(blogTimezone)
 	// Timezones
 	if dateString[len(dateString)-1:] == "Z" {
 		l, _ = time.LoadLocation("UTC")
@@ -600,14 +600,14 @@ func parseUnknownDateFormat(dateString string) (time.Time, error) {
 			if hrplus == 0 && minplus == 0 {
 				l, _ = time.LoadLocation("UTC")
 			} else if hrplus == 10 && minplus == 0 {
-				l, _ = time.LoadLocation("Australia/Brisbane")
+				l, _ = time.LoadLocation(blogTimezone)
 			}
 		} else {
 			re = regexp.MustCompile(`([A-Z]{3}[+-]\d\d)`)
 			matches = re.FindStringSubmatch(dateString)
 			if matches != nil {
 				if matches[1][4:] == "10" {
-					l, _ = time.LoadLocation("Australia/Brisbane")
+					l, _ = time.LoadLocation(blogTimezone)
 				} else if matches[1][4:] == "00" {
 					l, _ = time.LoadLocation("UTC")
 				}
@@ -670,7 +670,7 @@ func parseUnknownDateFormat(dateString string) (time.Time, error) {
 
 	}
 	newTime = time.Date(yr, time.Month(mn), dy, hr, mi, se, 0, l)
-	loc, _ := time.LoadLocation("Australia/Brisbane")
+	loc, _ := time.LoadLocation(blogTimezone)
 	newTime = newTime.In(loc)
 
 	return newTime, err
@@ -688,7 +688,7 @@ func contains(arr []string, str string) bool {
 func toTwigVariables(frontMatter *FrontMatter, content string) map[string]stick.Value {
 
 	if frontMatter.Link == "" {
-		frontMatter.Link = ConfigData.BaseURL + "posts/" + strings.ToLower(frontMatter.Type) + "/" + frontMatter.CreatedDate.Format("2006/01/02") + "/" + frontMatter.Slug + ".html"
+		frontMatter.Link = ConfigData.BaseURL + baseDirectoryForPosts + strings.ToLower(frontMatter.Type) + "/" + frontMatter.CreatedDate.Format("2006/01/02") + "/" + frontMatter.Slug + ".html"
 	}
 	// fmt.Printf("Front Matter ID is %s\n", frontMatter.ID)
 	// if len(frontMatter.ID) == 0 {

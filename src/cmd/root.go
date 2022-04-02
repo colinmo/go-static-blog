@@ -24,7 +24,16 @@ import (
 	"github.com/spf13/viper"
 )
 
+// GLOBAL VARIABLES
 var cfgFile string
+var colorBlackOpacity50 = "rgb(0,0,0,0.5)"
+var gmtDateFormat = "2006-01-02T15:04:05.0000Z"
+var jsonHeaders = [][]string{
+	{"Accept-Language", "en"},
+	{"Content-type", "application/json"},
+}
+var blogTimezone = "Australia/Brisbane"
+var baseDirectoryForPosts = "posts/"
 
 type Metadata struct {
 	Title       string
