@@ -6,7 +6,7 @@ import (
 )
 
 func TestFullRebuild(t *testing.T) {
-	testroot := `E:\xampp\vonexplaino-bitbucket-static`
+	testroot := `F:\Dropbox\swap\golang\vonblog\features\tests\update\tags\`
 	type testexpect struct {
 		filename string
 		expected map[string][]FrontMatter

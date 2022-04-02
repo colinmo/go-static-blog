@@ -128,7 +128,6 @@ See more of [Trinity](http://theonyxpath.com/category/worlds/trinitycontinuum/).
 	if strings.Contains(result, `markdown="1"`) {
 		t.Fatalf("Did not parse all markdowns")
 	}
-	t.Fatalf(result)
 }
 
 func TestCreateResume(t *testing.T) {
@@ -223,5 +222,4 @@ I strive to use my analytical, organisational and technical skills and experienc
 	if strings.Contains(result, `markdown="1"`) {
 		t.Fatalf("Did not parse all markdowns")
 	}
-	t.Fatalf(result)
 }

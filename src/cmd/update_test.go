@@ -193,6 +193,7 @@ func TestEmbeddedMarkdownInHtml(t *testing.T) {
 
 		if text2 != html {
 			ioutil.WriteFile(testroot+thing.fail, []byte(html), 0777)
+			fmt.Printf("Look in %s\n", testroot+thing.fail)
 			t.Fatalf(
 				"Files didn't match",
 			)
