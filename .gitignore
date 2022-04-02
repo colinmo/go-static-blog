@@ -13,3 +13,4 @@ Dockerfile
 docker-compose.yml
 indieweb
 sonar-project.properties
+src/cmd/testvars.go
