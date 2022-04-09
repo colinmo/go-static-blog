@@ -29,13 +29,15 @@ func TestReadWriteRSS(t *testing.T) {
 	ConfigData.Metadata.Language = `en-au`
 	ConfigData.Metadata.Webmaster = `professor@vonexplaino.com (Colin Morris)`
 	ConfigData.Metadata.Ttl = 40
+	ConfigData.BaseDir = `f:\Dropbox\swap\golang\vonblog\features\tests\rss\`
+	testBaseDir := `f:\Dropbox\swap\golang\vonblog\features\tests\rss\`
 
-	mek, err := ReadRSS(`f:\Dropbox\swap\golang\vonblog\features\tests\rss\rss1.xml`)
+	mek, err := ReadRSS(testBaseDir + `rss1.xml`)
 	if err != nil {
 		t.Fatalf(`Failed to parse %s`, err)
 	}
 
-	err = WriteRSS(mek, `f:\Dropbox\swap\golang\vonblog\features\tests\rss\rss1_out.xml`)
+	err = WriteRSS(mek, `rss1_out.xml`)
 	if err != nil {
 		t.Fatalf(`Failed to save the file %s`, err)
 	}
@@ -43,8 +45,8 @@ func TestReadWriteRSS(t *testing.T) {
 		t.Fatalf(`Could not load tags`)
 	}
 
-	f1, _ := ioutil.ReadFile(`f:\Dropbox\swap\golang\vonblog\features\tests\rss\rss1.xml`)
-	f2, _ := ioutil.ReadFile(`f:\Dropbox\swap\golang\vonblog\features\tests\rss\rss1_out.xml`)
+	f1, _ := ioutil.ReadFile(testBaseDir + `rss1.xml`)
+	f2, _ := ioutil.ReadFile(testBaseDir + `rss1_out.xml`)
 
 	rep := regexp.MustCompile(`\n\s*`)
 

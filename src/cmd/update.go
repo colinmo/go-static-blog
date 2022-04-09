@@ -35,6 +35,73 @@ import (
 	"github.com/tyler-sommer/stick/twig"
 )
 
+var formatStringDMonthYear = "2 January 2006"
+
+func updateFullRegenerate() (RSS, map[string][]FrontMatter, map[string]Item, map[string]struct{}, GitDiffs, error) {
+	postsById := map[string]Item{}
+	if !Silent {
+		fmt.Print("Full\n")
+	}
+	allPosts := RSS{}
+	ClearDir(ConfigData.BaseDir)
+	os.MkdirAll(fmt.Sprintf("%s%s", ConfigData.BaseDir, "tag"), 0755)
+	GitPull()
+	changes, err := PopulateAllGitFiles(ConfigData.RepositoryDir)
+	if err != nil {
+		log.Fatalf("Failed to get files in directory %s\n", ConfigData.RepositoryDir)
+	}
+	tags, filesToDelete, postsById := getAllChangedTagsAndDeletedFiles(changes, postsById)
+	tags, postsById, err = processFileUpdates(changes, tags, postsById)
+	return allPosts, tags, postsById, filesToDelete, changes, err
+}
+
+func updateChangedRegenerate() (RSS, map[string][]FrontMatter, map[string]Item, map[string]struct{}, GitDiffs, error) {
+	postsById := map[string]Item{}
+	if !Silent {
+		fmt.Print("Changed\n")
+	}
+	// Get all posts from the all published posts RSS file
+	allPosts, _ := ReadRSS(ConfigData.BaseDir + "/rss.xml")
+	for _, i := range allPosts.Channel.Items {
+		postsById[i.GUID] = i
+	}
+	changes := GitRunDiff()
+	// Get the tags to update and files to delete
+	tags, filesToDelete, postsById := getAllChangedTagsAndDeletedFiles(changes, postsById)
+	// Update the files
+	GitPull()
+	// Get the changed tags, building the new pages as we go
+	tags, postsById, err := processFileUpdates(changes, tags, postsById)
+	return allPosts, tags, postsById, filesToDelete, changes, err
+}
+
+func deleteAndRegenerate(allPosts RSS, tags map[string][]FrontMatter, postsById map[string]Item, filesToDelete map[string]struct{}, changes GitDiffs) {
+	// Delete any linked deleted HTML or Media pages
+	for filename := range filesToDelete {
+		os.Remove(ConfigData.BaseDir + filename)
+	}
+	// Regenerate the index pages and RSS feeds
+	createPageAndRSSForTags(tags, filesToDelete)
+	// Regenerate the all published posts RSS file
+	allPosts.Channel.Items = []Item{}
+	allItems := []FrontMatter{}
+	for _, i := range postsById {
+		allPosts.Channel.Items = append(allPosts.Channel.Items, i)
+		allItems = append(allItems, ItemToPost(i))
+	}
+	WriteRSS(allPosts, "/rss.xml")
+	WriteListHTML(allItems, "index", "Journal")
+	for _, top := range allItems {
+		if top.Type != "indieweb" && top.Status != "draft" {
+			WriteLatestPost(top)
+			break
+		}
+	}
+	if Totals {
+		fmt.Printf("\nTotals: A: %d, M: %d, D: %d\n", len(changes.Added), len(changes.Modified)+len(changes.RenameEdit)+len(changes.Unmerged), len(changes.Deleted))
+	}
+}
+
 // updateCmd represents the update command
 var updateCmd = &cobra.Command{
 	Use:   "update",
@@ -47,70 +114,17 @@ var updateCmd = &cobra.Command{
 		var err error
 		var tags map[string][]FrontMatter
 		var filesToDelete map[string]struct{}
-		postsById := map[string]Item{}
+		var postsById map[string]Item
 
 		if FullRegenerate {
-			if !Silent {
-				fmt.Print("Full\n")
-			}
-			allPosts = RSS{}
-			ClearDir(ConfigData.BaseDir)
-			os.MkdirAll(fmt.Sprintf("%s%s", ConfigData.BaseDir, "tag"), 0755)
-			GitPull()
-			changes, err = PopulateAllGitFiles(ConfigData.RepositoryDir)
-			if err != nil {
-				fmt.Printf("Failed to get files in directory %s\n", ConfigData.RepositoryDir)
-				log.Fatalf("Sads")
-			}
-			tags, filesToDelete, postsById = getAllChangedTagsAndDeletedFiles(changes, postsById)
-			tags, postsById, err = processFileUpdates(changes, tags, postsById)
-			if err != nil {
-				log.Fatalf("Something happened updating files %v\n", err)
-			}
+			allPosts, tags, postsById, filesToDelete, changes, err = updateFullRegenerate()
 		} else {
-			if !Silent {
-				fmt.Print("Changed\n")
-			}
-			// Get all posts from the all published posts RSS file
-			allPosts, _ = ReadRSS(ConfigData.BaseDir + "/rss.xml")
-			for _, i := range allPosts.Channel.Items {
-				postsById[i.GUID] = i
-			}
-			changes = GitRunDiff()
-			// Get the tags to update and files to delete
-			tags, filesToDelete, postsById = getAllChangedTagsAndDeletedFiles(changes, postsById)
-			// Update the files
-			GitPull()
-			// Get the changed tags, building the new pages as we go
-			tags, postsById, err = processFileUpdates(changes, tags, postsById)
-			if err != nil {
-				log.Fatalf("Something happened updating files %v\n", err)
-			}
+			allPosts, tags, postsById, filesToDelete, changes, err = updateChangedRegenerate()
 		}
-		// Delete any linked deleted HTML or Media pages
-		for filename := range filesToDelete {
-			os.Remove(ConfigData.BaseDir + filename)
+		if err != nil {
+			log.Fatalf("Something happened updating files %v\n", err)
 		}
-		// Regenerate the index pages and RSS feeds
-		createPageAndRSSForTags(tags, filesToDelete)
-		// Regenerate the all published posts RSS file
-		allPosts.Channel.Items = []Item{}
-		allItems := []FrontMatter{}
-		for _, i := range postsById {
-			allPosts.Channel.Items = append(allPosts.Channel.Items, i)
-			allItems = append(allItems, ItemToPost(i))
-		}
-		WriteRSS(allPosts, "/rss.xml")
-		WriteListHTML(allItems, "index", "Journal")
-		for _, top := range allItems {
-			if top.Type != "indieweb" && top.Status != "draft" {
-				WriteLatestPost(top)
-				break
-			}
-		}
-		if Totals {
-			fmt.Printf("\nTotals: A: %d, M: %d, D: %d\n", len(changes.Added), len(changes.Modified)+len(changes.RenameEdit)+len(changes.Unmerged), len(changes.Deleted))
-		}
+		deleteAndRegenerate(allPosts, tags, postsById, filesToDelete, changes)
 	},
 }
 
@@ -182,16 +196,68 @@ func getTargetFilenameFromPost(postName string, files map[string]struct{}) (map[
 			log.Fatalf("Couldn't get filename %v\n", err)
 		}
 	} else {
-		// @todo: Get the media target name if valid media
 		files[postName] = struct{}{}
 	}
 	return files, link
 }
 
+func processMDFile(tags *map[string][]FrontMatter, postsById *map[string]Item, filename string) error {
+	// // If .md Process into HTML
+	var err error
+	t2, frontmatter, html := getTagsFromPost(filename, *tags)
+	*tags = t2
+	targetFile := ConfigData.BaseDir + baseDirectoryForPosts + frontmatter.RelativeLink
+	targetDir, _ := path.Split(targetFile)
+	if _, err = os.Stat(targetFile); os.IsNotExist(err) {
+		os.MkdirAll(targetDir, 0755)
+	}
+	err = os.WriteFile(targetFile, []byte(html), 0755)
+	if frontmatter.Status != "draft" && (frontmatter.Type == "article" || frontmatter.Type == "review" || (frontmatter.Type == "indieweb" && (len(frontmatter.BookmarkOf) > 0 || len(frontmatter.LikeOf) > 0))) {
+		(*postsById)[frontmatter.Link] = PostToItem(frontmatter)
+		if !Silent {
+			fmt.Print("P")
+		}
+	} else if !Silent {
+		fmt.Print("D")
+	}
+	return err
+}
+
+func processMediaFile(filename string) error {
+	targetFile := ConfigData.BaseDir + filename
+	err := FileCopy(ConfigData.RepositoryDir+filename, targetFile)
+	if !Silent {
+		fmt.Print("M")
+	}
+	return err
+}
+
+func processUnknownFile(filename string) error {
+	info, err := os.Stat(ConfigData.RepositoryDir + filename)
+	if os.IsNotExist(err) {
+		fmt.Printf("Cannot do something with nothing %s\n", ConfigData.RepositoryDir+filename)
+		log.Fatal("FAILED")
+	} else if info.IsDir() {
+		// nothing
+	} else {
+		split := strings.Split(filename, ".")
+		var extension string
+		if len(split) > 1 {
+			extension = split[1]
+		} else {
+			extension = ""
+		}
+		if !(extension == "m4v" || extension == "xcf" || filename[len(filename)-6:] == "README" || extension == "html" || extension == "txt" || extension == "json") {
+			fileType, err := GetFileType(ConfigData.RepositoryDir + filename)
+			fmt.Printf("Could not copy %s|%s|%v\n", filename, fileType, err)
+			log.Fatalf("FAILED")
+		}
+	}
+	return err
+}
+
 func processFileUpdates(changes GitDiffs, tags map[string][]FrontMatter, postsById map[string]Item) (map[string][]FrontMatter, map[string]Item, error) {
 	var err error
-	var html string
-	var frontmatter FrontMatter
 	for _, group := range [][]string{
 		changes.Added,
 		changes.CopyEdit,
@@ -201,53 +267,11 @@ func processFileUpdates(changes GitDiffs, tags map[string][]FrontMatter, postsBy
 		for _, filename := range group {
 			filename = strings.ReplaceAll(filename, `\`, `/`)
 			if filename[len(filename)-3:] == ".md" {
-				// // If .md Process into HTML
-				tags, frontmatter, html = getTagsFromPost(filename, tags)
-				targetFile := ConfigData.BaseDir + baseDirectoryForPosts + frontmatter.RelativeLink
-				targetDir, _ := path.Split(targetFile)
-				if _, err := os.Stat(targetFile); os.IsNotExist(err) {
-					os.MkdirAll(targetDir, 0755)
-				}
-				os.WriteFile(targetFile, []byte(html), 0755)
-				if frontmatter.Status != "draft" && (frontmatter.Type == "article" || frontmatter.Type == "review" || (frontmatter.Type == "indieweb" && (len(frontmatter.BookmarkOf) > 0 || len(frontmatter.LikeOf) > 0))) {
-					postsById[frontmatter.Link] = PostToItem(frontmatter)
-					if !Silent {
-						fmt.Print("P")
-					}
-				} else {
-					fmt.Print("D")
-				}
+				err = processMDFile(&tags, &postsById, filename)
 			} else if (filename[0:5] == "media" || filename[0:6] == "/media") && (IsMedia(ConfigData.RepositoryDir+filename) || filename[len(filename)-4:] == ".mov") {
-				// // If Media copy
-				targetFile := ConfigData.BaseDir + filename
-				FileCopy(ConfigData.RepositoryDir+filename, targetFile)
-				if !Silent {
-					fmt.Print("M")
-				}
+				processMediaFile(filename)
 			} else {
-				info, err := os.Stat(ConfigData.RepositoryDir + filename)
-				if os.IsNotExist(err) {
-					fmt.Printf("Cannot do something with nothing %s\n", ConfigData.RepositoryDir+filename)
-					log.Fatal("FAILED")
-				} else if info.IsDir() {
-					// nothing
-				} else {
-					split := strings.Split(filename, ".")
-					var extension string
-					if len(split) > 1 {
-						extension = split[1]
-					} else {
-						extension = ""
-					}
-					if extension == "m4v" || extension == "xcf" || filename[len(filename)-6:] == "README" || extension == "html" || extension == "txt" || extension == "json" {
-
-					} else {
-						// // Else record the error
-						fileType, err := GetFileType(ConfigData.RepositoryDir + filename)
-						fmt.Printf("Could not copy %s|%s|%v\n", filename, fileType, err)
-						log.Fatalf("FAILED")
-					}
-				}
+				err = processUnknownFile(filename)
 			}
 		}
 	}
@@ -315,82 +339,119 @@ func createPageAndRSSForTags(tags map[string][]FrontMatter, filesToDelete map[st
 	}
 }
 
-func WriteListHTML(feed []FrontMatter, filenamePrefix string, title string) error {
-
-	if len(feed) == 0 {
-		return nil
+func TwigifyPage(
+	feed *[]FrontMatter,
+	fileStrings []string,
+	fileInts []int,
+	pageStrings []string,
+	prevPageStart *time.Time,
+	prevPageEnd *time.Time,
+) error {
+	filenamePrefix := fileStrings[0]
+	title := fileStrings[1]
+	page := fileInts[0]
+	pageCount := fileInts[1]
+	firstPageStart := pageStrings[0]
+	firstPageEnd := pageStrings[1]
+	lastPageStart := pageStrings[2]
+	lastPageEnd := pageStrings[3]
+	chunkSize := ConfigData.PerPage
+	lastPage := false
+	if len(*feed) <= chunkSize {
+		chunkSize = len(*feed)
+		lastPage = true
 	}
+	posts := (*feed)[0:chunkSize]
+	twigTags := toTwigListVariables(posts, title, page)
 	tDir := ConfigData.TemplateDir
 	env := twig.New(stick.NewFilesystemLoader(tDir))
 	env.Filters["tag_link"] = filterTagLink
-	chunkSize := ConfigData.PerPage
+
+	twigTags["base_url"] = ConfigData.BaseURL
+	twigTags["link_prefix"] = ConfigData.BaseURL + filenamePrefix + "-"
+	twigTags["last_page"] = pageCount
+	twigTags["next_page"] = page + 1
+	twigTags["prev_page"] = page - 1
+	twigTags["first_page_start"] = firstPageStart
+	twigTags["first_page_end"] = firstPageEnd
+	twigTags["last_page_start"] = lastPageStart
+	twigTags["last_page_end"] = lastPageEnd
+	if page > 1 {
+		twigTags["prev_page_start"] = prevPageStart.Format(formatStringDMonthYear)
+		twigTags["prev_page_end"] = prevPageEnd.Format(formatStringDMonthYear)
+	}
+	*prevPageStart = posts[0].CreatedDate
+	*prevPageEnd = posts[chunkSize-1].CreatedDate
+	*feed = (*feed)[chunkSize:]
+	if !lastPage {
+		feedLen := len(*feed)
+		twigTags["next_page_start"] = (*feed)[0].CreatedDate.Format(formatStringDMonthYear)
+		if feedLen < chunkSize {
+			twigTags["next_page_end"] = (*feed)[feedLen-1].CreatedDate.Format(formatStringDMonthYear)
+			chunkSize = feedLen
+		} else {
+			twigTags["next_page_end"] = (*feed)[chunkSize-1].CreatedDate.Format(formatStringDMonthYear)
+		}
+	}
+
+	buf := bytes.NewBufferString("")
+	if err := env.Execute(
+		"list.html.twig",
+		buf,
+		twigTags); err != nil {
+		log.Fatal(err)
+	}
+	err := ioutil.WriteFile(fmt.Sprintf("%s%s-%d.html", ConfigData.BaseDir, filenamePrefix, page), buf.Bytes(), 0777)
+	return err
+}
+
+func WriteListHTML(feed []FrontMatter, filenamePrefix string, title string) error {
+	if len(feed) == 0 {
+		return nil
+	}
 	page := 1
 	pageCount := int(math.Ceil(float64(len(feed)) / float64(ConfigData.PerPage)))
-	// fmt.Printf("Page count is %d\n", pageCount)
-	// fmt.Printf("Feed length is %d\n", len(feed))
 	sort.SliceStable(feed, func(p, q int) bool {
 		return feed[p].CreatedDate.After(feed[q].CreatedDate)
 	})
 
 	//Dates
-	format_string := "2 January 2006"
-	first_page_start := feed[0].CreatedDate.Format(format_string)
-	first_page_end := ""
-	last_page_start := first_page_start
-	last_page_end := first_page_end
+	firstPageStart := feed[0].CreatedDate.Format(formatStringDMonthYear)
+	firstPageEnd := ""
+	lastPageStart := firstPageStart
+	lastPageEnd := firstPageEnd
 	if pageCount == 1 {
-		first_page_end = feed[len(feed)-1].CreatedDate.Format(format_string)
+		firstPageEnd = feed[len(feed)-1].CreatedDate.Format(formatStringDMonthYear)
 	} else if pageCount > 1 {
-		first_page_end = feed[ConfigData.PerPage-1].CreatedDate.Format(format_string)
-		last_page_start = feed[(pageCount-1)*ConfigData.PerPage].CreatedDate.Format(format_string)
-		last_page_end = feed[len(feed)-1].CreatedDate.Format(format_string)
+		firstPageEnd = feed[ConfigData.PerPage-1].CreatedDate.Format(formatStringDMonthYear)
+		lastPageStart = feed[(pageCount-1)*ConfigData.PerPage].CreatedDate.Format(formatStringDMonthYear)
+		lastPageEnd = feed[len(feed)-1].CreatedDate.Format(formatStringDMonthYear)
 	}
-	prev_page_start := time.Now()
-	prev_page_end := time.Now()
+	prevPageStart := time.Now()
+	prevPageEnd := time.Now()
 	for {
 		if len(feed) == 0 {
 			break
 		}
-		if len(feed) < chunkSize {
-			chunkSize = len(feed)
-		}
-		twigTags := toTwigListVariables(feed[0:chunkSize], title, page)
-
-		twigTags["base_url"] = ConfigData.BaseURL
-		twigTags["link_prefix"] = ConfigData.BaseURL + filenamePrefix + "-"
-		twigTags["last_page"] = pageCount
-		twigTags["next_page"] = page + 1
-		twigTags["prev_page"] = page - 1
-		twigTags["first_page_start"] = first_page_start
-		twigTags["first_page_end"] = first_page_end
-		twigTags["last_page_start"] = last_page_start
-		twigTags["last_page_end"] = last_page_end
-		if page > 1 {
-			twigTags["prev_page_start"] = prev_page_start.Format("2 January 2006")
-			twigTags["prev_page_end"] = prev_page_end.Format("2 January 2006")
-		}
-		prev_page_start = feed[0].CreatedDate
-		prev_page_end = feed[chunkSize-1].CreatedDate
-
-		feed = feed[chunkSize:]
-		if len(feed) > 0 {
-			twigTags["next_page_start"] = feed[0].CreatedDate.Format("3 January 2006")
-			if len(feed) < chunkSize {
-				twigTags["next_page_end"] = feed[len(feed)-1].CreatedDate.Format("3 January 2006")
-				chunkSize = len(feed)
-			} else {
-				twigTags["next_page_end"] = feed[chunkSize-1].CreatedDate.Format("3 January 2006")
-			}
-		}
-
-		buf := bytes.NewBufferString("")
-		if err := env.Execute(
-			"list.html.twig",
-			buf,
-			twigTags); err != nil {
-			log.Fatal(err)
-		}
-		err := ioutil.WriteFile(fmt.Sprintf("%s%s-%d.html", ConfigData.BaseDir, filenamePrefix, page), buf.Bytes(), 0777)
+		err := TwigifyPage(
+			&feed,
+			[]string{
+				filenamePrefix,
+				title,
+			},
+			[]int{
+				page,
+				pageCount,
+			},
+			[]string{
+				firstPageStart,
+				firstPageEnd,
+				lastPageStart,
+				lastPageEnd,
+			},
+			&prevPageStart,
+			&prevPageEnd,
+		)
 		if err != nil {
 			return err
 		}

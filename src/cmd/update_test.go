@@ -164,7 +164,6 @@ func TestEmbeddedMarkdownInHtml(t *testing.T) {
 		ConfigData.BaseURL = "https://vonexplaino.com/blog/"
 		ConfigData.BaseDir = testroot + "rundir/"
 		ConfigData.TemplateDir = "f:/dropbox/swap/golang/vonblog/templates/"
-		fmt.Printf("Config %v\n", ConfigData)
 		html, _, err := parseFile(testroot + thing.filename)
 
 		// if !reflect.DeepEqual(tags, thing.expected) {
@@ -205,7 +204,6 @@ func TestWriteLatestPost(t *testing.T) {
 	ConfigData.TemplateDir = `f:\Dropbox\swap\golang\vonblog\templates\`
 	ConfigData.BaseDir = `f:\Dropbox\swap\golang\vonblog\features\tests\update\latest\`
 	testTime, _ := time.Parse("2006-01-02 15:04:05", "2021-12-30 19:00:23")
-	fmt.Printf("%v\n", testTime)
 	entry := FrontMatter{
 		ID:          "noogienoogie",
 		Link:        "/here-goes.html",
@@ -217,6 +215,83 @@ func TestWriteLatestPost(t *testing.T) {
 	err := WriteLatestPost(entry)
 	if err != nil {
 		t.Fatalf("Fek %v\n", err)
+	}
+}
+
+func TestUpdateFullRegenerate(t *testing.T) {
+	ConfigData.BaseDir = `f:\Dropbox\swap\golang\vonblog\features\tests\update\fullregenbase\`
+	ConfigData.RepositoryDir = `f:\Dropbox\swap\golang\vonblog\features\tests\update\fullregenrep\`
+	// Empty Repo
+	gitCommand = `f:\Dropbox\swap\golang\vonblog\features\tests\update\scripts\empty.bat`
+	allPosts, tags, postsById, filesToDelete, changes, err := updateFullRegenerate()
+	if len(allPosts.Channel.Items) != 0 {
+		t.Fatalf("How did that happen?")
+	}
+	if len(tags) != 0 {
+		t.Fatalf("How did that happen?")
+	}
+	if len(postsById) != 0 {
+		t.Fatalf("How did that happen?")
+	}
+	if len(filesToDelete) != 0 {
+		t.Fatalf("How did that happen?")
+	}
+	if len(changes.Modified) != 0 {
+		t.Fatalf("How did that happen?")
+	}
+	if len(changes.CopyEdit) != 0 {
+		t.Fatalf("How did that happen?")
+	}
+	if len(changes.RenameEdit) != 0 {
+		t.Fatalf("How did that happen?")
+	}
+	if len(changes.Added) != 0 {
+		t.Fatalf("How did that happen?")
+	}
+	if len(changes.Deleted) != 0 {
+		t.Fatalf("How did that happen?")
+	}
+	if len(changes.Unmerged) != 0 {
+		t.Fatalf("How did that happen?")
+	}
+	if err != nil {
+		t.Fatalf("How did that happen?")
+	}
+	// Repo has stuff
+	gitCommand = `f:\Dropbox\swap\golang\vonblog\features\tests\update\scripts\fill.bat`
+	allPosts, tags, postsById, filesToDelete, changes, err = updateFullRegenerate()
+	if err != nil {
+		t.Fatalf("Regenerate failed %v\n", err)
+	}
+	if len(allPosts.Channel.Items) != 0 {
+		t.Fatalf("How did that happen?")
+	}
+	if len(tags) != 2 {
+		t.Fatalf("How did that happen?")
+	}
+	if len(postsById) != 1 {
+		t.Fatalf("How did that happen?")
+	}
+	if len(filesToDelete) != 0 {
+		t.Fatalf("How did that happen?")
+	}
+	if len(changes.Modified) != 0 {
+		t.Fatalf("How did that happen? %v", changes)
+	}
+	if len(changes.CopyEdit) != 0 {
+		t.Fatalf("How did that happen?")
+	}
+	if len(changes.RenameEdit) != 0 {
+		t.Fatalf("How did that happen?")
+	}
+	if len(changes.Added) != 2 {
+		t.Fatalf("How did that happen?")
+	}
+	if len(changes.Deleted) != 0 {
+		t.Fatalf("How did that happen?")
+	}
+	if len(changes.Unmerged) != 0 {
+		t.Fatalf("How did that happen?")
 	}
 }
 

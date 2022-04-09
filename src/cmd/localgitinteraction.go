@@ -17,17 +17,21 @@ func setEnvironments() {
 	envThing := viper.GetString("gitenv")
 	if envThing != "" {
 		mep := strings.SplitN(envThing, "=", 2)
-		os.Setenv(mep[0], mep[1])
+		if len(mep) > 1 {
+			os.Setenv(mep[0], mep[1])
+		}
+		gitEnvSet = true
 	}
-	gitEnvSet = true
 }
 
+var gitCommand = "git"
+
 func GitPull() {
-	runGitCommand("git", []string{"pull"})
+	runGitCommand(gitCommand, []string{"pull"})
 }
 
 func GitFetch() {
-	runGitCommand("git", []string{"fetch"})
+	runGitCommand(gitCommand, []string{"fetch"})
 }
 
 type GitDiffs struct {
@@ -39,8 +43,7 @@ type GitDiffs struct {
 	Unmerged   []string
 }
 
-func GitRunDiff() GitDiffs {
-	resultsStr := runGitCommand("git", []string{"diff", "master", "origin/master", "--name-status"})
+func ProcessGitDiffs(resultsStr string) GitDiffs {
 	returnDiffs := GitDiffs{
 		Modified:   make([]string, 0),
 		CopyEdit:   make([]string, 0),
@@ -73,8 +76,12 @@ func GitRunDiff() GitDiffs {
 	return returnDiffs
 }
 
+func GitRunDiff() GitDiffs {
+	return ProcessGitDiffs(runGitCommand(gitCommand, []string{"diff", "master", "origin/master", "--name-status"}))
+}
+
 func GitGetFileAges(file string) {
-	runGitCommand("git", []string{"diff", "master", "origin/master", "--name-status"})
+	runGitCommand(gitCommand, []string{"diff", "master", "origin/master", "--name-status"})
 }
 
 func runGitCommand(command string, parameters []string) string {

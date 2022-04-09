@@ -76,33 +76,18 @@ var thumbCmd = &cobra.Command{
 func recursiveMediaThumbnailer(directory string) int {
 	changedCount := 0
 
-	files, err := ioutil.ReadDir(directory)
-	if err == nil {
-		for _, file := range files {
-			name := file.Name()
-			if file.IsDir() {
-				changedCount += recursiveMediaThumbnailer(directory + name + "/")
-			} else if len(name) > len(ThumbnailOptions.Extension) && name[len(name)-len(ThumbnailOptions.Extension):] == ThumbnailOptions.Extension {
-				//fmt.Printf("Skipping existing thumb %s\n", name)
-			} else {
-				// Check that it's an image file - by extension and detected type
-				if isElementExists(filepath.Ext(name), []string{".jpg", ".jpeg", ".gif", ".png"}) {
-					contents, err := os.Open(directory + name)
-					if err != nil {
-						log.Fatalf("Could not process file %s\n%v\n", directory+name, err)
-					}
-					body := make([]byte, 512)
-					_, err = contents.Read(body)
-					contents.Close()
-					if err != nil {
-						log.Fatalf("Cound not read file %s\n", directory+name)
-					}
-					fileType := http.DetectContentType(body)
-					if isElementExists(fileType, []string{"image/jpeg", "image/gif", "image/png"}) {
-						makeThumbnail(directory + name)
-						changedCount++
-					}
-				}
+	files, _ := ioutil.ReadDir(directory)
+	for _, file := range files {
+		name := file.Name()
+		if file.IsDir() {
+			changedCount += recursiveMediaThumbnailer(directory + name + "/")
+		} else if len(name) > len(ThumbnailOptions.Extension) && name[len(name)-len(ThumbnailOptions.Extension):] == ThumbnailOptions.Extension {
+			//fmt.Printf("Skipping existing thumb %s\n", name)
+		} else if isElementExists(filepath.Ext(name), []string{".jpg", ".jpeg", ".gif", ".png"}) {
+			// Check that it's an image file - by extension and detected type
+			ok := makeThumbnail(directory + name)
+			if ok == nil {
+				changedCount++
 			}
 		}
 	}
@@ -110,20 +95,34 @@ func recursiveMediaThumbnailer(directory string) int {
 }
 
 func makeThumbnail(filename string) error {
-	thumbnailFilename := getThumbnailFilename(filename)
-	file, err := os.Open(thumbnailFilename)
+	contents, err := os.Open(filename)
 	if err != nil {
-		return err
+		log.Fatalf("Could not process file %s\n%v\n", filename, err)
 	}
-	defer file.Close()
-	// If we're regenerating or if the file does not exist
-	if ThumbnailOptions.Regenerate || errors.Is(err, os.ErrNotExist) {
-		img, err := readImage(filename)
+	body := make([]byte, 512)
+	_, err = contents.Read(body)
+	contents.Close()
+	if err != nil {
+		log.Fatalf("Cound not read file %s\n", filename)
+	}
+	fileType := http.DetectContentType(body)
+	if isElementExists(fileType, []string{"image/jpeg", "image/gif", "image/png"}) {
+
+		thumbnailFilename := getThumbnailFilename(filename)
+		file, err := os.Open(thumbnailFilename)
 		if err != nil {
-			log.Fatalf("Could not read the base image %s\n", filename)
+			return err
 		}
-		img = resize.Resize(uint(ThumbnailOptions.Width), uint(ThumbnailOptions.Height), img, resize.Lanczos3)
-		return writeImage(img, thumbnailFilename)
+		defer file.Close()
+		// If we're regenerating or if the file does not exist
+		if ThumbnailOptions.Regenerate || errors.Is(err, os.ErrNotExist) {
+			img, err := readImage(filename)
+			if err != nil {
+				log.Fatalf("Could not read the base image %s\n", filename)
+			}
+			img = resize.Resize(uint(ThumbnailOptions.Width), uint(ThumbnailOptions.Height), img, resize.Lanczos3)
+			return writeImage(img, thumbnailFilename)
+		}
 	}
 	return nil
 }

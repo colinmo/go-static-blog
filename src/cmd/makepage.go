@@ -42,6 +42,7 @@ import (
 
 var fromFile *string
 var toFile *string
+var wordpressThumbnailTemplate = "https://s0.wordpress.com/mshots/v1/%s?w=480&h=480"
 
 // makepageCmd represents the makepage command
 var makepageCmd = &cobra.Command{
@@ -49,7 +50,7 @@ var makepageCmd = &cobra.Command{
 	Short: "Convert markdown page into html page",
 	Long: `Converts a markdown page into an html page:
 
-Uses golang markdown and a local html template file to generate blog posts.`,
+           Uses golang markdown and a local html template file to generate blog posts.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		var txt2 []byte
 		var err error
@@ -268,7 +269,6 @@ func parseString(txt string, filename string) (string, FrontMatter, error) {
 	if len(frontMatter.Synopsis) == 0 {
 		frontMatter.Synopsis = getFirstWords(html2, 310)
 	}
-	fmt.Printf("Synopsis: %s\n", frontMatter.Synopsis)
 
 	// Run HTML into Template
 	articleType := fmt.Sprintf("%v", frontMatter.Type)
@@ -427,17 +427,14 @@ func textToSlug(intext string) string {
 	return slug
 }
 
-func parseFrontMatter(inFrontMatter string, filename string) (FrontMatter, error) {
-	var frontMatter FrontMatter
-	var collectedErrors []string
-	err := yaml.Unmarshal([]byte(inFrontMatter), &frontMatter)
-	if err != nil {
-		fmt.Printf("Failed to parse frontmatter %s\n", inFrontMatter)
-		log.Fatal(err)
-		return frontMatter, err
+func setEmptyStringDefault(value string, ifempty string) string {
+	if len(value) == 0 {
+		return ifempty
 	}
+	return value
+}
 
-	// Defaults
+func frontMatterDefaults(frontMatter *FrontMatter, filename string) {
 	created, err2 := parseUnknownDateFormat(frontMatter.Created)
 	if err2 != nil {
 		created = time.Now()
@@ -457,43 +454,64 @@ func parseFrontMatter(inFrontMatter string, filename string) (FrontMatter, error
 		}
 	}
 
-	if frontMatter.Slug == "" {
-		frontMatter.Slug = textToSlug(frontMatter.Title)
-		if len(frontMatter.Slug) < 5 || frontMatter.Slug[len(frontMatter.Slug)-5:] != ".html" {
-			frontMatter.Slug = frontMatter.Slug + ".html"
-		}
+	frontMatter.Slug = setEmptyStringDefault(frontMatter.Slug, textToSlug(frontMatter.Title))
+	if len(frontMatter.Slug) < 5 || frontMatter.Slug[len(frontMatter.Slug)-5:] != ".html" {
+		frontMatter.Slug = frontMatter.Slug + ".html"
 	}
+	frontMatter.Status = setEmptyStringDefault(frontMatter.Status, "live")
+	frontMatter.IndieWeb.InReplyTo = setEmptyStringDefault(frontMatter.InReplyTo, "")
+	frontMatter.IndieWeb.BookmarkOf = setEmptyStringDefault(frontMatter.BookmarkOf, "")
+	frontMatter.IndieWeb.FavoriteOf = setEmptyStringDefault(frontMatter.FavoriteOf, "")
+	frontMatter.IndieWeb.RepostOf = setEmptyStringDefault(frontMatter.RepostOf, "")
+	frontMatter.IndieWeb.LikeOf = setEmptyStringDefault(frontMatter.LikeOf, "")
 
-	if frontMatter.Status == "" {
-		frontMatter.Status = "live"
-	}
-
-	if frontMatter.InReplyTo != "" {
-		frontMatter.IndieWeb.InReplyTo = frontMatter.InReplyTo
-	}
-	if frontMatter.BookmarkOf != "" {
-		frontMatter.IndieWeb.BookmarkOf = frontMatter.BookmarkOf
-	}
-	if frontMatter.FavoriteOf != "" {
-		frontMatter.IndieWeb.FavoriteOf = frontMatter.FavoriteOf
-	}
-	if frontMatter.RepostOf != "" {
-		frontMatter.IndieWeb.RepostOf = frontMatter.RepostOf
-	}
-	if frontMatter.LikeOf != "" {
-		frontMatter.IndieWeb.LikeOf = frontMatter.LikeOf
-	}
 	if len(frontMatter.Tags) == 0 {
 		frontMatter.Tags = []string{}
 	}
 	if len(frontMatter.ID) == 0 && len(filename) > len(ConfigData.RepositoryDir) {
-		fmt.Printf("Filename is %s\n", filename)
 		frontMatter.ID = filename[len(ConfigData.RepositoryDir):]
-	} else if len(frontMatter.ID) == 0 {
-		fmt.Printf("Can't find an ID %s|%s\n", filename, ConfigData.RepositoryDir)
 	}
-	fmt.Printf("ID is %s\n", frontMatter.ID)
+	if len(frontMatter.FeatureImage) == 0 {
+		switch 0 {
+		case len(frontMatter.InReplyTo):
+			frontMatter.FeatureImage = fmt.Sprintf(wordpressThumbnailTemplate, url.QueryEscape(frontMatter.InReplyTo))
+		case len(frontMatter.BookmarkOf):
+			frontMatter.FeatureImage = fmt.Sprintf(wordpressThumbnailTemplate, url.QueryEscape(frontMatter.BookmarkOf))
+		case len(frontMatter.FavoriteOf):
+			frontMatter.FeatureImage = fmt.Sprintf(wordpressThumbnailTemplate, url.QueryEscape(frontMatter.FavoriteOf))
+		case len(frontMatter.RepostOf):
+			frontMatter.FeatureImage = fmt.Sprintf(wordpressThumbnailTemplate, url.QueryEscape(frontMatter.RepostOf))
+		case len(frontMatter.LikeOf):
+			frontMatter.FeatureImage = fmt.Sprintf(wordpressThumbnailTemplate, url.QueryEscape(frontMatter.LikeOf))
+		default:
+			frontMatter.FeatureImage = fmt.Sprintf(wordpressThumbnailTemplate, url.QueryEscape(frontMatter.Link))
+		}
+	}
+}
 
+func frontMatterValidateExperience(frontMatter *FrontMatter) {
+	for i, x := range frontMatter.Resume.Experience {
+		if len(x.Description) > 0 {
+			var buf2 bytes.Buffer
+			md.Convert([]byte(x.Description), &buf2)
+			frontMatter.Resume.Experience[i].Description = buf2.String()
+		}
+		if len(x.Summary) > 0 {
+			var buf2 bytes.Buffer
+			md.Convert([]byte(x.Summary), &buf2)
+			frontMatter.Resume.Experience[i].Summary = strings.Replace(strings.Replace(buf2.String(), "<p>", "", 1), "</p>", "", 1)
+		}
+		frontMatter.Resume.Experience[i].StartDate, _ = parseUnknownDateFormat(x.Start)
+		frontMatter.Resume.Experience[i].PublishedDate, _ = parseUnknownDateFormat(x.Published)
+	}
+	for i, d := range frontMatter.Resume.Education {
+		frontMatter.Resume.Education[i].StartDate, _ = parseUnknownDateFormat(d.Start)
+		frontMatter.Resume.Education[i].EndDate, _ = parseUnknownDateFormat(d.End)
+	}
+}
+
+func frontMatterValidate(frontMatter *FrontMatter, filename string) []string {
+	var collectedErrors []string
 	// Valids
 	validTypes := []string{"article", "reply", "indieweb", "tweet", "resume", "event", "page", "review"}
 	if filename != "" && frontMatter.Type == "" {
@@ -518,7 +536,7 @@ func parseFrontMatter(inFrontMatter string, filename string) (FrontMatter, error
 		if frontMatter.Type == "page" {
 			frontMatter.Link = ConfigData.BaseURL + baseDirectoryForPosts + strings.ToLower(frontMatter.Type) + "/" + frontMatter.Slug
 		} else {
-			frontMatter.Link = ConfigData.BaseURL + baseDirectoryForPosts + strings.ToLower(frontMatter.Type) + "/" + created.Format("2006/01") + "/" + frontMatter.Slug
+			frontMatter.Link = ConfigData.BaseURL + baseDirectoryForPosts + strings.ToLower(frontMatter.Type) + "/" + frontMatter.CreatedDate.Format("2006/01") + "/" + frontMatter.Slug
 		}
 	}
 	var splitted = strings.Split(frontMatter.Link, "/posts")
@@ -526,42 +544,22 @@ func parseFrontMatter(inFrontMatter string, filename string) (FrontMatter, error
 		log.Fatalf("Could not get a posts link for %s\n", frontMatter.Link)
 	}
 	frontMatter.RelativeLink = strings.Split(frontMatter.Link, "/posts")[1]
-	if len(frontMatter.FeatureImage) == 0 {
-		if len(frontMatter.InReplyTo) > 0 {
-			frontMatter.FeatureImage = fmt.Sprintf("https://s0.wordpress.com/mshots/v1/%s?w=480&h=480", url.QueryEscape(frontMatter.InReplyTo))
-		} else if len(frontMatter.BookmarkOf) > 0 {
-			frontMatter.FeatureImage = fmt.Sprintf("https://s0.wordpress.com/mshots/v1/%s?w=480&h=480", url.QueryEscape(frontMatter.BookmarkOf))
-		} else if len(frontMatter.FavoriteOf) > 0 {
-			frontMatter.FeatureImage = fmt.Sprintf("https://s0.wordpress.com/mshots/v1/%s?w=480&h=480", url.QueryEscape(frontMatter.FavoriteOf))
-		} else if len(frontMatter.RepostOf) > 0 {
-			frontMatter.FeatureImage = fmt.Sprintf("https://s0.wordpress.com/mshots/v1/%s?w=480&h=480", url.QueryEscape(frontMatter.RepostOf))
-		} else if len(frontMatter.LikeOf) > 0 {
-			frontMatter.FeatureImage = fmt.Sprintf("https://s0.wordpress.com/mshots/v1/%s?w=480&h=480", url.QueryEscape(frontMatter.LikeOf))
-		} else {
-			frontMatter.FeatureImage = fmt.Sprintf("https://s0.wordpress.com/mshots/v1/%s?w=480&h=480", url.QueryEscape(frontMatter.Link))
-		}
-	}
 	if len(frontMatter.Resume.Contact.Name) > 0 {
-
-		for i, x := range frontMatter.Resume.Experience {
-			if len(x.Description) > 0 {
-				var buf2 bytes.Buffer
-				md.Convert([]byte(x.Description), &buf2)
-				frontMatter.Resume.Experience[i].Description = buf2.String()
-			}
-			if len(x.Summary) > 0 {
-				var buf2 bytes.Buffer
-				md.Convert([]byte(x.Summary), &buf2)
-				frontMatter.Resume.Experience[i].Summary = strings.Replace(strings.Replace(buf2.String(), "<p>", "", 1), "</p>", "", 1)
-			}
-			frontMatter.Resume.Experience[i].StartDate, _ = parseUnknownDateFormat(x.Start)
-			frontMatter.Resume.Experience[i].PublishedDate, _ = parseUnknownDateFormat(x.Published)
-		}
-		for i, d := range frontMatter.Resume.Education {
-			frontMatter.Resume.Education[i].StartDate, _ = parseUnknownDateFormat(d.Start)
-			frontMatter.Resume.Education[i].EndDate, _ = parseUnknownDateFormat(d.End)
-		}
+		frontMatterValidateExperience(frontMatter)
 	}
+	return collectedErrors
+}
+
+func parseFrontMatter(inFrontMatter string, filename string) (FrontMatter, error) {
+	var frontMatter FrontMatter
+	err := yaml.Unmarshal([]byte(inFrontMatter), &frontMatter)
+	if err != nil {
+		fmt.Printf("Failed to parse frontmatter %s\n", inFrontMatter)
+		log.Fatal(err)
+		return frontMatter, err
+	}
+	frontMatterDefaults(&frontMatter, filename)
+	collectedErrors := frontMatterValidate(&frontMatter, filename)
 
 	if len(collectedErrors) > 0 {
 		err = errors.New(strings.Join(collectedErrors, ", "))
@@ -569,78 +567,64 @@ func parseFrontMatter(inFrontMatter string, filename string) (FrontMatter, error
 	return frontMatter, err
 }
 
-func parseUnknownDateFormat(dateString string) (time.Time, error) {
-	var newTime time.Time
-	var err error
-	var matches []string
-	var re *regexp.Regexp
-	var hr, mi, se, dy, yr int
-	var l *time.Location
-	var mn int
-
-	if len(dateString) == 0 {
-		return newTime, err
-	}
-	l, _ = time.LoadLocation(blogTimezone)
+func parseUnknownTimezone(dateString string) *time.Location {
 	// Timezones
+	var l *time.Location
 	if dateString[len(dateString)-1:] == "Z" {
 		l, _ = time.LoadLocation("UTC")
+		return l
+	}
+	re := regexp.MustCompile(`([+-]\d{4}|[+-]\d{2}:\d{2})`)
+	matches := re.FindStringSubmatch(dateString)
+	hrplus, minplus := 0, 0
+	if matches != nil {
+		if len(matches[1]) == 5 {
+			hrplus, _ = strconv.Atoi(matches[1][0:3])
+			minplus, _ = strconv.Atoi(matches[1][3:5])
+		} else {
+			hrplus, _ = strconv.Atoi(matches[1][0:3])
+			minplus, _ = strconv.Atoi(matches[1][4:6])
+		}
 	} else {
-		re = regexp.MustCompile(`([+-]\d{4}|[+-]\d{2}:\d{2})`)
+		re = regexp.MustCompile(`([A-Z]{3}[+-]\d\d)`)
 		matches = re.FindStringSubmatch(dateString)
 		if matches != nil {
-			hrplus, minplus := 0, 0
-			if len(matches[1]) == 5 {
-				hrplus, _ = strconv.Atoi(matches[1][0:3])
-				minplus, _ = strconv.Atoi(matches[1][3:5])
-			} else {
-				hrplus, _ = strconv.Atoi(matches[1][0:3])
-				minplus, _ = strconv.Atoi(matches[1][4:6])
-			}
-			if hrplus == 0 && minplus == 0 {
-				l, _ = time.LoadLocation("UTC")
-			} else if hrplus == 10 && minplus == 0 {
-				l, _ = time.LoadLocation(blogTimezone)
-			}
-		} else {
-			re = regexp.MustCompile(`([A-Z]{3}[+-]\d\d)`)
-			matches = re.FindStringSubmatch(dateString)
-			if matches != nil {
-				if matches[1][4:] == "10" {
-					l, _ = time.LoadLocation(blogTimezone)
-				} else if matches[1][4:] == "00" {
-					l, _ = time.LoadLocation("UTC")
-				}
-			}
+			hrplus, _ = strconv.Atoi(matches[1][4:])
 		}
 	}
+	l = time.FixedZone("postzone", hrplus*3600+minplus*60)
+	return l
+}
+
+func parseUnknownTime(dateString string, re *regexp.Regexp) (int, int, int) {
+	hr := 0
+	mi := 0
+	se := 0
 	// Time
-	re = regexp.MustCompile(`(\d{2}):(\d{2}):(\d{2})`)
-	matches = re.FindStringSubmatch(dateString)
+	matches := re.FindStringSubmatch(dateString)
 	if matches == nil {
-		re = regexp.MustCompile(`\s(\d{1,2}):(\d{2})\s+([apAP][mM])`)
 		matches = re.FindStringSubmatch(dateString)
-		if matches == nil {
-			hr = 0
-			mi = 0
-			se = 0
-		} else {
+		if matches != nil {
 			hr, _ = strconv.Atoi(matches[1])
 			mi, _ = strconv.Atoi(matches[2])
 			se = 0
 			if strings.ToLower(matches[3]) == "pm" {
 				hr += 12
 			}
-			dateString = re.ReplaceAllString(dateString, " ")
 		}
 	} else {
 		hr, _ = strconv.Atoi(matches[1])
 		mi, _ = strconv.Atoi(matches[2])
 		se, _ = strconv.Atoi(matches[3])
-		dateString = re.ReplaceAllString(dateString, " ")
 	}
+	return hr, mi, se
+}
+
+func parseUnknownDate(dateString string) (int, int, int, error) {
+	yr, mn, dy := 0, 0, 0
+	var newTime time.Time
 	// Date
-	re = regexp.MustCompile(`(\d{1,2})\s*(\w{3})\s*(\d{4})`)
+	re := regexp.MustCompile(`(\d{1,2})\s*(\w{3})\s*(\d{4})`)
 	date := re.FindStringSubmatch(dateString)
 	if date == nil {
 		re = regexp.MustCompile(`(\d{4})-(\d{2})-(\d{2})`)
@@ -649,11 +633,11 @@ func parseUnknownDateFormat(dateString string) (time.Time, error) {
 			re = regexp.MustCompile(`(\w{3})\w*\s+(\d{1,2})[,\s]+(\d{4})`)
 			date = re.FindStringSubmatch(dateString)
 			if date == nil {
-				return newTime, errors.New("could not parse date")
+				return yr, mn, dy, errors.New("could not parse date")
 			} else {
 				dy, _ = strconv.Atoi(date[2])
 				yr, _ = strconv.Atoi(date[3])
-				newTime, err = time.Parse("Jan", date[1])
+				newTime, _ = time.Parse("Jan", date[1])
 				mn = int(newTime.Month())
 			}
 		} else {
@@ -665,11 +649,30 @@ func parseUnknownDateFormat(dateString string) (time.Time, error) {
 	} else {
 		dy, _ = strconv.Atoi(date[1])
 		yr, _ = strconv.Atoi(date[3])
-		newTime, err = time.Parse("Jan", date[2])
+		newTime, _ = time.Parse("Jan", date[2])
 		mn = int(newTime.Month())
-
 	}
+	return yr, mn, dy, nil
+}
+
+func parseUnknownDateFormat(dateString string) (time.Time, error) {
+	var newTime time.Time
+	var err error
+	var hr, mi, se, dy, yr int
+	var l *time.Location
+	var mn int
+
+	if len(dateString) == 0 {
+		return newTime, err
+	}
+	l = parseUnknownTimezone(dateString)
+	re := regexp.MustCompile(`(\d{1,2}):(\d{1,2})[: ]((\d{1,2})|([ap]m))`)
+	hr, mi, se = parseUnknownTime(dateString, re)
+	dateString = re.ReplaceAllString(dateString, " ")
+	yr, mn, dy, err = parseUnknownDate(dateString)
+	// Create date in specified timezone
 	newTime = time.Date(yr, time.Month(mn), dy, hr, mi, se, 0, l)
+	// Convert to blog timezone
 	loc, _ := time.LoadLocation(blogTimezone)
 	newTime = newTime.In(loc)
 

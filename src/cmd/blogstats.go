@@ -45,24 +45,28 @@ var SVGOptions struct {
 
 var relativeDataLocation = "../regenerate/data/"
 
+func blogstatsDefaults() {
+	// Defaults
+	if Days == 0 {
+		Days = 30
+	}
+	if SVGOptions.All {
+		SVGOptions.Codestats = true
+		SVGOptions.Trakt = true
+		SVGOptions.Blog = true
+		SVGOptions.Feedly = true
+		SVGOptions.Withings = true
+		SVGOptions.Steps = true
+	}
+}
+
 // blogstatsCmd represents the Blog Stats command
 var blogstatsCmd = &cobra.Command{
 	Use:   "blogstats",
 	Short: "Regenerates blog stats svg",
 	Long:  `Reads the XML file for the site and generates the blog stats for the last X days`,
 	Run: func(cmd *cobra.Command, args []string) {
-		// Defaults
-		if Days == 0 {
-			Days = 30
-		}
-		if SVGOptions.All {
-			SVGOptions.Codestats = true
-			SVGOptions.Trakt = true
-			SVGOptions.Blog = true
-			SVGOptions.Feedly = true
-			SVGOptions.Withings = true
-			SVGOptions.Steps = true
-		}
+		blogstatsDefaults()
 		// Process
 		if SVGOptions.Blog {
 			generateBlogStats()
@@ -90,7 +94,9 @@ func generateBlogStats() {
 		// Empty
 		known = RSS{}
 	}
+	fmt.Printf("RSS: %v\n", known.Channel.Items)
 	days, max := getDaysArray(known)
+	fmt.Printf("Days %v:%f\n", days, max)
 	chart := barSVG(days, max, 0, -1)
 	// Create the SVG
 	err = ioutil.WriteFile(filenameOfBlogSvg, chart, 0777)

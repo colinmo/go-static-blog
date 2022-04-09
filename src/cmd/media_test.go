@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"fmt"
 	"net/http"
 	"os"
 	"testing"
@@ -49,7 +48,6 @@ func TestDetectImage(t *testing.T) {
 	}
 	fileType := http.DetectContentType(body)
 	if fileType != "image/png" {
-		fmt.Printf("%v\n", body)
 		t.Fatalf("Detect failed for %s\n", fileType)
 	}
 }
