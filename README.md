@@ -2,6 +2,13 @@
 
 This is a command line tool to integrate a git repository with a blog template system. On change in a git repository it calls this script, this script pulls down any changes since the last pull and generates HTML pages (blog posts etc.). It uses frontmatter to give metadata to the blog pages, as well as directory structure to set article types.
 
+# TASKS
+
+* [ ] Script to convert Golang test output to Sonarqube
+* [ ] Pull out HTML access component so it can be passed through as a parameter for mocking/ testing
+* [ ] Refactoring the codebase (buzzwords)
+* [ ] More unit tests for resiliance
+
 ## Build
 
 ```sh
@@ -50,6 +57,8 @@ Cucumber style Go testing
   * Docker: `docker run --rm -v ${PWD}:/usr/src sonarsource/sonar-scanner-cli`
 * Coverage - https://community.sonarsource.com/t/sonargo-code-coverage-0/19473
   * `go test "./..." -coverprofile="coverage.out"`
+  * `go test "./..." -coverprofile="coverage.out" -json > test-report.json`
+  * `go test "./..." -coverprofile="coverage.out" -v 2>&1 | go-junit-report > junit.xml ; gosonar --basedir f:\Dropbox\swap\golang\vonblog\src\cmd\ --coverage coverage.out --junit junit.xml`
 
 ## XCompiling
 
