@@ -1,6 +1,5 @@
 vonblog
 vonblog.exe
-*.exe
 .scannerwork
 .vscode
 docker
