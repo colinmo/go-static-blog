@@ -56,7 +56,7 @@ func defaultsForMe() error {
 		ThumbnailOptions.Extension = ConfigData.Thumbnails.Extension
 	}
 	if !isElementExists(ThumbnailOptions.Type, []string{"jpeg", "gif", "png"}) {
-		return errors.New(fmt.Sprintf("Can only use gif, jpeg, or png as thumbnail type [%s]\n", ThumbnailOptions.Type))
+		return fmt.Errorf("can only use gif, jpeg, or png as thumbnail type [%s]", ThumbnailOptions.Type)
 	}
 	return nil
 }
@@ -69,7 +69,7 @@ var thumbCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		err := defaultsForMe()
 		if err != nil {
-			log.Fatalf("Can only use gif, jpeg, or png as thumbnail type [%s]\n", ThumbnailOptions.Type)
+			log.Fatalf("%s\n", err.Error())
 		}
 		// Lets go
 		_ = letsGoThumbnail()
@@ -138,7 +138,7 @@ func makeThumbnail(filename string) error {
 			return writeImage(img, thumbnailFilename)
 		}
 	} else {
-		return errors.New(fmt.Sprintf("Can't make a thumbnail for %s\n", filename))
+		return fmt.Errorf("can't make a thumbnail for %s", filename)
 	}
 	return nil
 }

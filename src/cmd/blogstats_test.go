@@ -666,10 +666,13 @@ func TestUpdateWithingsTokenIfRequired(t *testing.T) {
 	future := time.Now().Add(time.Hour * 48)
 	accessToken := "dudemkpants"
 	ConfigData.AboutMe.Withings.ExpiresAt = future.Unix()
-	token2 := updateWithingsTokenIfRequired(accessToken)
+	token2, err := updateWithingsTokenIfRequired(accessToken)
 
 	if accessToken != token2 {
 		t.Fatalf("Tokens didn't match so it tried to update")
+	}
+	if err != nil {
+		t.Fatalf("Big failure %v\n", err)
 	}
 
 	// Required

@@ -17,12 +17,10 @@ package cmd
 
 import (
 	"net/http"
-	"net/url"
 )
 
 type HTTPClient interface {
 	Do(req *http.Request) (*http.Response, error)
-	PostForm(url string, data url.Values) (resp *http.Response, err error)
 }
 
 var (

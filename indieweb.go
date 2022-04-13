@@ -16,6 +16,14 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
+type HTTPClient interface {
+	Do(req *http.Request) (*http.Response, error)
+}
+
+var (
+	Client HTTPClient
+)
+
 func errorResponse(code int, msg string) {
 	fmt.Printf("Status:%d %s\r\n", code, http.StatusText(code))
 	fmt.Printf("Content-Type: text/plain\r\n")
@@ -153,7 +161,6 @@ func createPage(frontmatter FrontMatter, post string) string {
 }
 
 func sendToBitbucket(filename string, articleType string, contents string, username string, password string) error {
-	client := &http.Client{}
 	data := url.Values{
 		fmt.Sprintf(
 			"/posts/%s/%s/%s.md",
@@ -172,7 +179,7 @@ func sendToBitbucket(filename string, articleType string, contents string, usern
 		"Content-Type":  {"application/x-www-form-urlencoded"},
 	}
 
-	resp, err := client.Do(req)
+	resp, err := Client.Do(req)
 	if err != nil {
 		return err
 	}

@@ -395,7 +395,7 @@ func getObjectFromAPI() (CodeStatsResponse, error) {
 		return parsed, err
 	}
 	if len(body) == 0 {
-		return parsed, errors.New("Failed to get contents from CodeStats")
+		return parsed, errors.New("failed to get contents from CodeStats")
 	}
 
 	err = json.Unmarshal(body, &parsed)
@@ -506,7 +506,7 @@ func bodyFromFeedlyLinkClient(continuation string) ([]byte, error) {
 		ConfigData.AboutMe.Feedly.URL,
 		continuation,
 	)
-	request, err := http.NewRequest(
+	request, _ := http.NewRequest(
 		"GET",
 		url,
 		bytes.NewBuffer([]byte{}),
@@ -727,10 +727,10 @@ func writeWithingsStats(filename string, stats WithingsStats) error {
 	return err
 }
 
-func updateWithingsTokenIfRequired(accessToken string) string {
+func updateWithingsTokenIfRequired(accessToken string) (string, error) {
 	now := time.Now().Unix()
+	var err error
 	if len(accessToken) == 0 || now > int64(ConfigData.AboutMe.Withings.ExpiresAt) {
-		fmt.Printf("Update from Refresh (%s)\n", accessToken)
 		refreshToken := ConfigData.AboutMe.Withings.RefreshToken
 		if len(refreshToken) > 0 {
 			data := url.Values{
@@ -740,27 +740,29 @@ func updateWithingsTokenIfRequired(accessToken string) string {
 				"grant_type":    {"refresh_token"},
 				"refresh_token": {ConfigData.AboutMe.Withings.RefreshToken},
 			}
-			fmt.Printf("Data: %v\n", data)
-			resp, err := Client.PostForm(ConfigData.AboutMe.Withings.OauthURL, data)
+			req, _ := http.NewRequest(
+				"POST",
+				ConfigData.AboutMe.Withings.OauthURL,
+				strings.NewReader(data.Encode()))
+			resp, err := Client.Do(req)
 			if err != nil {
-				log.Fatalf("Could not refresh the token")
+				return "", errors.New("could not refresh the token")
 			}
 			var res WithingsOauthResponse
 			json.NewDecoder(resp.Body).Decode(&res)
 			accessToken := res.Body.AccessToken
 			if len(accessToken) == 0 {
-				log.Fatalf("Could not parse the token refresh response from withings")
+				return "", errors.New("could not parse the token refresh response from withings")
 			}
-			fmt.Printf("%d and %d\n", now, res.Body.ExpiresIn)
 			viper.Set("aboutme.withings.accesstoken", accessToken)
 			viper.Set("aboutme.withings.refreshtoken", res.Body.RefreshToken)
 			viper.Set("aboutme.withings.expiresat", time.Now().Unix()+res.Body.ExpiresIn)
 			viper.WriteConfig()
 		} else {
-			log.Fatalf("No access or refresh token currently valid")
+			return "", errors.New("no access or refresh token available")
 		}
 	}
-	return accessToken
+	return accessToken, err
 }
 
 func updateWithingsStatvalues(stats *WithingsStats, res WithingsResponse1, startOfEverything time.Time) {
@@ -792,7 +794,10 @@ func updateWithingsStats(stats WithingsStats) WithingsStats {
 	l, _ := time.LoadLocation(blogTimezone)
 	startOfEverything := time.Date(1970, 1, 1, 0, 0, 0, 0, l)
 	// Refresh token if needed
-	accessToken := updateWithingsTokenIfRequired(ConfigData.AboutMe.Withings.AccessToken)
+	accessToken, err := updateWithingsTokenIfRequired(ConfigData.AboutMe.Withings.AccessToken)
+	if err != nil {
+		log.Fatalf("Failed to refresh token")
+	}
 	lastUpdate := stats.LastUpdatedDate.Unix()
 	lastUpdateString := fmt.Sprintf("%d", lastUpdate)
 	stats.LastUpdatedDate = time.Now()
