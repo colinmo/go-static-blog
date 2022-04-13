@@ -44,33 +44,46 @@ type ThumbnailOptionsS struct {
 
 var ThumbnailOptions ThumbnailOptionsS
 
+func defaultsForMe() error {
+	// Defaults
+	if ThumbnailOptions.Width == 0 {
+		ThumbnailOptions.Width = int(ConfigData.Thumbnails.Width)
+	}
+	if ThumbnailOptions.Height == 0 {
+		ThumbnailOptions.Height = int(ConfigData.Thumbnails.Height)
+	}
+	if ThumbnailOptions.Extension == "" {
+		ThumbnailOptions.Extension = ConfigData.Thumbnails.Extension
+	}
+	if !isElementExists(ThumbnailOptions.Type, []string{"jpeg", "gif", "png"}) {
+		return errors.New(fmt.Sprintf("Can only use gif, jpeg, or png as thumbnail type [%s]\n", ThumbnailOptions.Type))
+	}
+	return nil
+}
+
 // thumbCmd represents the Media command
 var thumbCmd = &cobra.Command{
 	Use:   "thumbnail",
 	Short: "Creates thumbnails",
 	Long:  `Creates thumbnails`,
 	Run: func(cmd *cobra.Command, args []string) {
-		// Defaults
-		if ThumbnailOptions.Width == 0 {
-			ThumbnailOptions.Width = int(ConfigData.Thumbnails.Width)
-		}
-		if ThumbnailOptions.Height == 0 {
-			ThumbnailOptions.Height = int(ConfigData.Thumbnails.Height)
-		}
-		if ThumbnailOptions.Extension == "" {
-			ThumbnailOptions.Extension = ConfigData.Thumbnails.Extension
-		}
-		if !isElementExists(ThumbnailOptions.Type, []string{"jpeg", "gif", "png"}) {
+		err := defaultsForMe()
+		if err != nil {
 			log.Fatalf("Can only use gif, jpeg, or png as thumbnail type [%s]\n", ThumbnailOptions.Type)
 		}
 		// Lets go
-		if ThumbnailOptions.Filename == "" {
-			total := recursiveMediaThumbnailer(ConfigData.BaseDir + "media/")
-			fmt.Printf("Changed %d files in %s\n", total, ConfigData.BaseDir+"media/")
-		} else {
-			makeThumbnail(ThumbnailOptions.Filename)
-		}
+		_ = letsGoThumbnail()
 	},
+}
+
+func letsGoThumbnail() error {
+	if ThumbnailOptions.Filename == "" {
+		total := recursiveMediaThumbnailer(ConfigData.BaseDir + "media/")
+		fmt.Printf("Changed %d files in %s\n", total, ConfigData.BaseDir+"media/")
+	} else {
+		makeThumbnail(ThumbnailOptions.Filename)
+	}
+	return nil
 }
 
 func recursiveMediaThumbnailer(directory string) int {
@@ -81,13 +94,15 @@ func recursiveMediaThumbnailer(directory string) int {
 		name := file.Name()
 		if file.IsDir() {
 			changedCount += recursiveMediaThumbnailer(directory + name + "/")
-		} else if len(name) > len(ThumbnailOptions.Extension) && name[len(name)-len(ThumbnailOptions.Extension):] == ThumbnailOptions.Extension {
-			//fmt.Printf("Skipping existing thumb %s\n", name)
-		} else if isElementExists(filepath.Ext(name), []string{".jpg", ".jpeg", ".gif", ".png"}) {
-			// Check that it's an image file - by extension and detected type
-			ok := makeThumbnail(directory + name)
-			if ok == nil {
-				changedCount++
+		} else if !(len(name) > len(ThumbnailOptions.Extension) &&
+			name[len(name)-len(ThumbnailOptions.Extension):] == ThumbnailOptions.Extension) {
+			// fmt.Printf("Skipping existing thumb %s\n", name)
+			if isElementExists(filepath.Ext(name), []string{".jpg", ".jpeg", ".gif", ".png"}) {
+				// Check that it's an image file - by extension and detected type
+				ok := makeThumbnail(directory + name)
+				if ok == nil {
+					changedCount++
+				}
 			}
 		}
 	}
@@ -107,11 +122,10 @@ func makeThumbnail(filename string) error {
 	}
 	fileType := http.DetectContentType(body)
 	if isElementExists(fileType, []string{"image/jpeg", "image/gif", "image/png"}) {
-
 		thumbnailFilename := getThumbnailFilename(filename)
 		file, err := os.Open(thumbnailFilename)
 		if err != nil {
-			return err
+			file, err = os.Create(thumbnailFilename)
 		}
 		defer file.Close()
 		// If we're regenerating or if the file does not exist
@@ -120,9 +134,11 @@ func makeThumbnail(filename string) error {
 			if err != nil {
 				log.Fatalf("Could not read the base image %s\n", filename)
 			}
-			img = resize.Resize(uint(ThumbnailOptions.Width), uint(ThumbnailOptions.Height), img, resize.Lanczos3)
+			img = resize.Thumbnail(uint(ThumbnailOptions.Width), uint(ThumbnailOptions.Height), img, resize.Lanczos3)
 			return writeImage(img, thumbnailFilename)
 		}
+	} else {
+		return errors.New(fmt.Sprintf("Can't make a thumbnail for %s\n", filename))
 	}
 	return nil
 }

@@ -18,6 +18,7 @@ package cmd
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -60,6 +61,35 @@ func blogstatsDefaults() {
 	}
 }
 
+func blogstatsStart() error {
+	// Process
+	var blogErr, traktErr, statsErr, feedErr, withErr error
+	if SVGOptions.Blog {
+		blogErr = generateBlogStats()
+	}
+	if SVGOptions.Trakt {
+		generateTraktStats()
+	}
+	if SVGOptions.Codestats {
+		generateCSStats()
+	}
+	if SVGOptions.Feedly {
+		generateFeedlyStats()
+	}
+	if SVGOptions.Withings {
+		generateWithingsStats()
+	}
+	if !(blogErr == nil && traktErr == nil && statsErr == nil && feedErr == nil && withErr == nil) {
+		fmt.Printf("Failures occurred in generation\n")
+		return errors.New("failed in generation attempt")
+	}
+	if !(SVGOptions.Blog || SVGOptions.Trakt || SVGOptions.Codestats || SVGOptions.Feedly || SVGOptions.Withings) {
+		fmt.Printf("No options selected\n")
+		return errors.New("nothing to do")
+	}
+	return nil
+}
+
 // blogstatsCmd represents the Blog Stats command
 var blogstatsCmd = &cobra.Command{
 	Use:   "blogstats",
@@ -67,26 +97,11 @@ var blogstatsCmd = &cobra.Command{
 	Long:  `Reads the XML file for the site and generates the blog stats for the last X days`,
 	Run: func(cmd *cobra.Command, args []string) {
 		blogstatsDefaults()
-		// Process
-		if SVGOptions.Blog {
-			generateBlogStats()
-		}
-		if SVGOptions.Trakt {
-			generateTraktStats()
-		}
-		if SVGOptions.Codestats {
-			generateCSStats()
-		}
-		if SVGOptions.Feedly {
-			generateFeedlyStats()
-		}
-		if SVGOptions.Withings {
-			generateWithingsStats()
-		}
+		blogstatsStart()
 	},
 }
 
-func generateBlogStats() {
+func generateBlogStats() error {
 	filenameOfBlogSvg := ConfigData.BaseDir + "../regenerate/data/blog.svg"
 	// Read the XML file
 	known, err := ReadRSS(ConfigData.BaseDir + "rss.xml")
@@ -94,15 +109,10 @@ func generateBlogStats() {
 		// Empty
 		known = RSS{}
 	}
-	fmt.Printf("RSS: %v\n", known.Channel.Items)
 	days, max := getDaysArray(known)
-	fmt.Printf("Days %v:%f\n", days, max)
 	chart := barSVG(days, max, 0, -1)
 	// Create the SVG
-	err = ioutil.WriteFile(filenameOfBlogSvg, chart, 0777)
-	if err != nil {
-		log.Fatalf("Failed to write %s:%v\n", filenameOfBlogSvg, err)
-	}
+	return ioutil.WriteFile(filenameOfBlogSvg, chart, 0777)
 }
 
 type ShowAndMovie struct {
@@ -164,7 +174,7 @@ func generateTraktStats() {
 func readTraktStatsFile(filename string) TraktStats {
 	// Get the cached info
 	cacheFile, err := os.Open(filename)
-	var buff TraktStats
+	buff := TraktStats{}
 	if err == nil {
 		defer cacheFile.Close()
 		byteValue, _ := ioutil.ReadAll(cacheFile)
@@ -172,9 +182,17 @@ func readTraktStatsFile(filename string) TraktStats {
 		if err != nil {
 			log.Fatalf("Failed to parse the Trakt cache %v\n", err)
 		}
-	}
-	if len(buff.LastUpdated) > 0 {
-		buff.LastUpdatedDate, _ = parseUnknownDateFormat(buff.LastUpdated)
+		if len(buff.LastUpdated) > 0 {
+			buff.LastUpdatedDate, _ = parseUnknownDateFormat(buff.LastUpdated)
+		}
+		if buff.Values == nil {
+			buff.Values = make(map[string]ShowAndMovie)
+		}
+	} else {
+		l, _ := time.LoadLocation(blogTimezone)
+		buff.LastUpdatedDate = time.Date(1970, time.January, 1, 0, 0, 0, 0, l)
+		buff.LastUpdated = buff.LastUpdatedDate.Format(gmtDateFormat)
+		buff.Values = make(map[string]ShowAndMovie)
 	}
 	return buff
 }
@@ -187,7 +205,7 @@ func writeTraktStatsFile(filename string, stats TraktStats) error {
 	return err
 }
 
-func buildTraktLinkClient(client http.Client, startAt string, page int, limit int) []byte {
+func buildTraktLinkClient(startAt string, page int, limit int) []byte {
 	url := fmt.Sprintf("https://api.trakt.tv/users/colinmo/history/?start_at=%s&page=%d&limit=%d",
 		startAt,
 		page,
@@ -203,7 +221,7 @@ func buildTraktLinkClient(client http.Client, startAt string, page int, limit in
 	request.Header.Set("trakt-api-version", "2")
 	request.Header.Set("trakt-api-key", ConfigData.AboutMe.Trakt.ID)
 
-	resp, err := client.Do(request)
+	resp, err := Client.Do(request)
 	if err != nil {
 		log.Fatalf("%v\n", err)
 	}
@@ -237,13 +255,12 @@ func getMovieShowValues(x TraktResponse, stats *TraktStats) {
 	if len(x.Movie.Title) > 0 {
 		stats.Values[id].Movie[x.Movie.IDs.IMDB] = x.Movie.Title
 	} else {
-		stats.Values[id].Show[x.Show.IDs.IMDB] = x.Show.Title + ": " + x.Episode.Title
+		stats.Values[id].Show[x.Episode.IDs.IMDB] = x.Show.Title + ": " + x.Episode.Title
 	}
 }
 
 // Update the local cache of TraktStats
 func updateTraktStats(stats TraktStats) TraktStats {
-	client := http.Client{}
 	page := 1
 	limit := 20
 	baseFrom := stats.LastUpdatedDate.Add(time.Hour * -24 * 15).Format(gmtDateFormat)
@@ -252,7 +269,7 @@ func updateTraktStats(stats TraktStats) TraktStats {
 	stats.LastUpdatedDate = startOfEverything
 	stats.LastUpdated = stats.LastUpdatedDate.Format(gmtDateFormat)
 	for {
-		body := buildTraktLinkClient(client, baseFrom, page, limit)
+		body := buildTraktLinkClient(baseFrom, page, limit)
 		var parsed []TraktResponse
 
 		err := json.Unmarshal(body, &parsed)
@@ -335,24 +352,30 @@ type CodeStatsResponse struct {
 	User     string         `json:"user"`
 }
 
-func generateCSStats() {
+func generateCSStats() error {
 	filenameOfSvg := ConfigData.BaseDir + "../regenerate/data/cs.svg"
-	parsed := getObjectFromAPI()
+	parsed, err := getObjectFromAPI()
+	if err != nil {
+		return err
+	}
+	fmt.Printf("%v\n", parsed)
 	// Get the last Days entries
 	days, max := csToDays(parsed)
+	fmt.Printf("%v %f\n", days, max)
 	// Make ze graph
 	line, total := lineAlone(days, max, 0, map[string]string{"strokeDashArray": "", "stroke": colorBlackOpacity50}, "CodeStats", map[string]bool{"showZero": true, "showBall": false})
 	chart := SVGGraphFromPaths(total, "CodeStats", -1, line)
 	// Create the SVG
-	err := ioutil.WriteFile(filenameOfSvg, chart, 0777)
+	err = ioutil.WriteFile(filenameOfSvg, chart, 0777)
 	if err != nil {
-		log.Fatalf("Failed to write %s:%v\n", filenameOfSvg, err)
+		fmt.Printf("Failed to write %s:%v\n", filenameOfSvg, err)
+		return err
 	}
+	return nil
 }
 
-func getObjectFromAPI() CodeStatsResponse {
+func getObjectFromAPI() (CodeStatsResponse, error) {
 	var parsed CodeStatsResponse
-	client := http.Client{}
 	url := "https://codestats.net/api/users/vonExplaino"
 	request, _ := http.NewRequest(
 		"GET",
@@ -362,24 +385,24 @@ func getObjectFromAPI() CodeStatsResponse {
 	request.Header.Set(jsonHeaders[0][0], jsonHeaders[0][1])
 	request.Header.Set(jsonHeaders[1][0], jsonHeaders[1][1])
 
-	resp, err := client.Do(request)
+	resp, err := Client.Do(request)
 	if err != nil {
-		log.Fatalf("%v\n", err)
+		return parsed, err
 	}
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		log.Fatalf("%v\n", err)
+		return parsed, err
 	}
 	if len(body) == 0 {
-		log.Fatal("Failed to get contents from CodeStats\n")
+		return parsed, errors.New("Failed to get contents from CodeStats")
 	}
 
 	err = json.Unmarshal(body, &parsed)
 	if err != nil {
-		log.Fatalf("%v\n", err)
+		return parsed, err
 	}
-	return parsed
+	return parsed, nil
 }
 
 func csToDays(parsed CodeStatsResponse) (map[int]float64, float64) {
@@ -478,33 +501,34 @@ func writeFeedlyStatsFile(filename string, stats FeedlyStats) error {
 	return err
 }
 
-func bodyFromFeedlyLinkClient(client *http.Client, continuation string) []byte {
+func bodyFromFeedlyLinkClient(continuation string) ([]byte, error) {
 	url := fmt.Sprintf("%s&continuation=%s",
 		ConfigData.AboutMe.Feedly.URL,
 		continuation,
 	)
-	request, _ := http.NewRequest(
+	request, err := http.NewRequest(
 		"GET",
 		url,
 		bytes.NewBuffer([]byte{}),
 	)
+
 	request.Header.Set(jsonHeaders[0][0], jsonHeaders[0][1])
 	request.Header.Set(jsonHeaders[1][0], jsonHeaders[1][1])
 	request.Header.Set("Authorization", "OAuth "+ConfigData.AboutMe.Feedly.Key)
 
-	resp, err := client.Do(request)
+	resp, err := Client.Do(request)
 	if err != nil {
-		log.Fatalf("%v\n", err)
+		return []byte{}, err
 	}
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		log.Fatalf("%v\n", err)
+		return []byte{}, err
 	}
 	if len(body) == 0 {
 		log.Fatal("Failed to get contents from Feedly\n")
 	}
-	return body
+	return body, nil
 }
 func processFeedlyStats(items []FeedlyItem, stats *FeedlyStats, newLastSeen string) (int64, bool) {
 	var lastPublished int64
@@ -533,7 +557,6 @@ func processFeedlyStats(items []FeedlyItem, stats *FeedlyStats, newLastSeen stri
 	return lastPublished, true
 }
 func updateFeedlyStats(stats FeedlyStats) FeedlyStats {
-	client := http.Client{}
 	stats.LastUpdatedDate = time.Now()
 	stats.LastUpdated = stats.LastUpdatedDate.Format(gmtDateFormat)
 	newLastSeen := ""
@@ -541,7 +564,7 @@ func updateFeedlyStats(stats FeedlyStats) FeedlyStats {
 	page := 0
 	thirtyDaysAgo := stats.LastUpdatedDate.Add(time.Duration(-30*24) * time.Hour).UnixMilli()
 	for {
-		body := bodyFromFeedlyLinkClient(&client, continuation)
+		body, _ := bodyFromFeedlyLinkClient(continuation)
 		var parsed FeedlyResponse
 		err := json.Unmarshal(body, &parsed)
 		if err != nil {
@@ -718,7 +741,7 @@ func updateWithingsTokenIfRequired(accessToken string) string {
 				"refresh_token": {ConfigData.AboutMe.Withings.RefreshToken},
 			}
 			fmt.Printf("Data: %v\n", data)
-			resp, err := http.PostForm(ConfigData.AboutMe.Withings.OauthURL, data)
+			resp, err := Client.PostForm(ConfigData.AboutMe.Withings.OauthURL, data)
 			if err != nil {
 				log.Fatalf("Could not refresh the token")
 			}
@@ -766,7 +789,6 @@ func updateWithingsStatvalues(stats *WithingsStats, res WithingsResponse1, start
 	}
 }
 func updateWithingsStats(stats WithingsStats) WithingsStats {
-	client := http.Client{}
 	l, _ := time.LoadLocation(blogTimezone)
 	startOfEverything := time.Date(1970, 1, 1, 0, 0, 0, 0, l)
 	// Refresh token if needed
@@ -793,7 +815,7 @@ func updateWithingsStats(stats WithingsStats) WithingsStats {
 	request.Header.Set("Authorization", "Bearer "+accessToken)
 	request.Header.Set("Accept", "application/json")
 
-	resp, err := client.Do(request)
+	resp, err := Client.Do(request)
 	if err != nil {
 		log.Fatalf("Failed to get weight")
 	}
@@ -819,7 +841,7 @@ func updateWithingsStats(stats WithingsStats) WithingsStats {
 		request.Header.Set(jsonHeaders[0][0], jsonHeaders[0][1])
 		request.Header.Set("Content-type", "application/x-www-form-urlencoded")
 		request.Header.Set("Authorization", "Bearer "+accessToken)
-		resp, err := client.Do(request)
+		resp, err := Client.Do(request)
 		if err != nil {
 			log.Fatalf("Failed to get steps")
 		}

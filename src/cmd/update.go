@@ -39,9 +39,7 @@ var formatStringDMonthYear = "2 January 2006"
 
 func updateFullRegenerate() (RSS, map[string][]FrontMatter, map[string]Item, map[string]struct{}, GitDiffs, error) {
 	postsById := map[string]Item{}
-	if !Silent {
-		fmt.Print("Full\n")
-	}
+	PrintIfNotSilent("Full\n")
 	allPosts := RSS{}
 	ClearDir(ConfigData.BaseDir)
 	os.MkdirAll(fmt.Sprintf("%s%s", ConfigData.BaseDir, "tag"), 0755)
@@ -57,9 +55,8 @@ func updateFullRegenerate() (RSS, map[string][]FrontMatter, map[string]Item, map
 
 func updateChangedRegenerate() (RSS, map[string][]FrontMatter, map[string]Item, map[string]struct{}, GitDiffs, error) {
 	postsById := map[string]Item{}
-	if !Silent {
-		fmt.Print("Changed\n")
-	}
+	PrintIfNotSilent("Changed\n")
+
 	// Get all posts from the all published posts RSS file
 	allPosts, _ := ReadRSS(ConfigData.BaseDir + "/rss.xml")
 	for _, i := range allPosts.Channel.Items {
@@ -214,11 +211,9 @@ func processMDFile(tags *map[string][]FrontMatter, postsById *map[string]Item, f
 	err = os.WriteFile(targetFile, []byte(html), 0755)
 	if frontmatter.Status != "draft" && (frontmatter.Type == "article" || frontmatter.Type == "review" || (frontmatter.Type == "indieweb" && (len(frontmatter.BookmarkOf) > 0 || len(frontmatter.LikeOf) > 0))) {
 		(*postsById)[frontmatter.Link] = PostToItem(frontmatter)
-		if !Silent {
-			fmt.Print("P")
-		}
-	} else if !Silent {
-		fmt.Print("D")
+		PrintIfNotSilent("P")
+	} else {
+		PrintIfNotSilent("D")
 	}
 	return err
 }
@@ -226,9 +221,7 @@ func processMDFile(tags *map[string][]FrontMatter, postsById *map[string]Item, f
 func processMediaFile(filename string) error {
 	targetFile := ConfigData.BaseDir + filename
 	err := FileCopy(ConfigData.RepositoryDir+filename, targetFile)
-	if !Silent {
-		fmt.Print("M")
-	}
+	PrintIfNotSilent("M")
 	return err
 }
 

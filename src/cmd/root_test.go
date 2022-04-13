@@ -2,6 +2,8 @@ package cmd
 
 import (
 	"fmt"
+	"io/ioutil"
+	"os"
 	"testing"
 )
 
@@ -55,5 +57,36 @@ func TestFullRebuild(t *testing.T) {
 				t.Fatalf("Welp, shouldn't have found %s", x)
 			}
 		}
+	}
+}
+
+func TestPrintIfNotSilent(t *testing.T) {
+	rescueStdout := os.Stdout
+	r, w, _ := os.Pipe()
+	os.Stdout = w
+
+	Silent = false
+	PrintIfNotSilent("hi")
+
+	w.Close()
+	out, _ := ioutil.ReadAll(r)
+	os.Stdout = rescueStdout
+
+	if string(out) != "hi" {
+		t.Errorf("Didn't print %s\n", string(out))
+	}
+
+	rescueStdout = os.Stdout
+	r, w, _ = os.Pipe()
+	os.Stdout = w
+	Silent = true
+	PrintIfNotSilent("again")
+
+	w.Close()
+	out, _ = ioutil.ReadAll(r)
+	os.Stdout = rescueStdout
+
+	if string(out) == "again" {
+		t.Errorf("Was not silent")
 	}
 }

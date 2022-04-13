@@ -1,12 +1,18 @@
 package cmd
 
 import (
+	"bytes"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"math"
+	"net/http"
 	"os"
+	"strings"
 	"testing"
 	"time"
+
+	"github.com/colinmo/vonblog/utils/mocks"
 )
 
 func TestBlogstatsDefaults(t *testing.T) {
@@ -29,19 +35,37 @@ func TestBlogstatsDefaults(t *testing.T) {
 	}
 }
 
+func TestBlogstatsStart(t *testing.T) {
+	SVGOptions.Blog = false
+	SVGOptions.Trakt = false
+	SVGOptions.Codestats = false
+	SVGOptions.Feedly = false
+	SVGOptions.Withings = false
+
+	err := blogstatsStart()
+	if err == nil {
+		t.Fatalf("Didn't raise an issue for noop")
+	}
+}
+
 func TestGenerateBlogStats(t *testing.T) {
 	ConfigData.BaseDir = `F:\Dropbox\swap\golang\vonblog\features\tests\blogstats\blog\`
 	ConfigData.BlogStats.Days = 30
-	mek, err := ReadRSS(ConfigData.BaseDir + `rss1.xml`)
+	mek, err := ReadRSS(ConfigData.BaseDir + `badfile.json`)
+	if err == nil {
+		t.Fatalf("Didn't detect a bad file")
+	}
+
+	mek, err = ReadRSS(ConfigData.BaseDir + `rss1.xml`)
 	if err != nil {
 		t.Fatalf("Could not populate the test rss feed")
 	}
-	now := time.Now().Add(time.Hour * 24 * -2)
+	daysAgo := time.Now().Add(time.Hour * 24 * -2)
 	mek.Channel.Items = append(mek.Channel.Items, Item{
 		Title:           "dude",
 		Description:     "wee",
-		PublicationDate: now.Format(time.RFC1123Z),
-		PubDateAsDate:   now,
+		PublicationDate: daysAgo.Format(time.RFC1123Z),
+		PubDateAsDate:   daysAgo,
 		Tags:            []string{"a", "b"},
 	})
 	err = WriteRSS(mek, `rss.xml`)
@@ -56,14 +80,15 @@ func TestGenerateBlogStats(t *testing.T) {
 	defer svgFile.Close()
 	byteValue, _ := ioutil.ReadAll(svgFile)
 	// @todo test
-	if string(byteValue) != `<svg version="1.1" baseProfile="full" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ev="http://www.w3.org/2001/xml-events" width="100" height="16" data-total="1" data-diff="0.00" data-title="Blog Posts"><path fill="rgba(0,0,0,0.5)" stroke="rgba(0,0,0,0.5)" stroke-width="1" d="M0.000000,16.000000 L0.000000,16.000000 L3.333333,16.000000 L3.333333,16.000000 ZM3.333333,16.000000 L3.333333,16.000000 L6.666667,16.000000 L6.666667,16.000000 ZM6.666667,16.000000 L6.666667,16.000000 L10.000000,16.000000 L10.000000,16.000000 ZM10.000000,16.000000 L10.000000,16.000000 L13.333333,16.000000 L13.333333,16.000000 ZM13.333333,16.000000 L13.333333,16.000000 L16.666667,16.000000 L16.666667,16.000000 ZM16.666667,16.000000 L16.666667,16.000000 L20.000000,16.000000 L20.000000,16.000000 ZM20.000000,16.000000 L20.000000,16.000000 L23.333333,16.000000 L23.333333,16.000000 ZM23.333333,16.000000 L23.333333,16.000000 L26.666667,16.000000 L26.666667,16.000000 ZM26.666667,16.000000 L26.666667,16.000000 L30.000000,16.000000 L30.000000,16.000000 ZM30.000000,16.000000 L30.000000,16.000000 L33.333333,16.000000 L33.333333,16.000000 ZM33.333333,16.000000 L33.333333,16.000000 L36.666667,16.000000 L36.666667,16.000000 ZM36.666667,16.000000 L36.666667,16.000000 L40.000000,16.000000 L40.000000,16.000000 ZM40.000000,16.000000 L40.000000,16.000000 L43.333333,16.000000 L43.333333,16.000000 ZM43.333333,16.000000 L43.333333,16.000000 L46.666667,16.000000 L46.666667,16.000000 ZM46.666667,16.000000 L46.666667,16.000000 L50.000000,16.000000 L50.000000,16.000000 ZM50.000000,16.000000 L50.000000,16.000000 L53.333333,16.000000 L53.333333,16.000000 ZM53.333333,16.000000 L53.333333,16.000000 L56.666667,16.000000 L56.666667,16.000000 ZM56.666667,16.000000 L56.666667,16.000000 L60.000000,16.000000 L60.000000,16.000000 ZM60.000000,16.000000 L60.000000,16.000000 L63.333333,16.000000 L63.333333,16.000000 ZM63.333333,16.000000 L63.333333,16.000000 L66.666667,16.000000 L66.666667,16.000000 ZM66.666667,16.000000 L66.666667,16.000000 L70.000000,16.000000 L70.000000,16.000000 ZM70.000000,16.000000 L70.000000,16.000000 L73.333333,16.000000 L73.333333,16.000000 ZM73.333333,16.000000 L73.333333,16.000000 L76.666667,16.000000 L76.666667,16.000000 ZM76.666667,16.000000 L76.666667,16.000000 L80.000000,16.000000 L80.000000,16.000000 ZM80.000000,16.000000 L80.000000,16.000000 L83.333333,16.000000 L83.333333,16.000000 ZM83.333333,16.000000 L83.333333,16.000000 L86.666667,16.000000 L86.666667,16.000000 ZM86.666667,16.000000 L86.666667,0.000000 L90.000000,0.000000 L90.000000,16.000000 ZM90.000000,16.000000 L90.000000,16.000000 L93.333333,16.000000 L93.333333,16.000000 ZM93.333333,16.000000 L93.333333,16.000000 L96.666667,16.000000 L96.666667,16.000000 ZM96.666667,16.000000 L96.666667,16.000000 L100.000000,16.000000 L100.000000,16.000000 Z"></path></svg>` {
+	check := `<svg version="1.1" baseProfile="full" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ev="http://www.w3.org/2001/xml-events" width="100" height="16" data-total="1" data-diff="0.00" data-title="Blog Posts"><path fill="rgba(0,0,0,0.5)" stroke="rgba(0,0,0,0.5)" stroke-width="1" d="M0.000000,16.000000 L0.000000,16.000000 L3.333333,16.000000 L3.333333,16.000000 ZM3.333333,16.000000 L3.333333,16.000000 L6.666667,16.000000 L6.666667,16.000000 ZM6.666667,16.000000 L6.666667,16.000000 L10.000000,16.000000 L10.000000,16.000000 ZM10.000000,16.000000 L10.000000,16.000000 L13.333333,16.000000 L13.333333,16.000000 ZM13.333333,16.000000 L13.333333,16.000000 L16.666667,16.000000 L16.666667,16.000000 ZM16.666667,16.000000 L16.666667,16.000000 L20.000000,16.000000 L20.000000,16.000000 ZM20.000000,16.000000 L20.000000,16.000000 L23.333333,16.000000 L23.333333,16.000000 ZM23.333333,16.000000 L23.333333,16.000000 L26.666667,16.000000 L26.666667,16.000000 ZM26.666667,16.000000 L26.666667,16.000000 L30.000000,16.000000 L30.000000,16.000000 ZM30.000000,16.000000 L30.000000,16.000000 L33.333333,16.000000 L33.333333,16.000000 ZM33.333333,16.000000 L33.333333,16.000000 L36.666667,16.000000 L36.666667,16.000000 ZM36.666667,16.000000 L36.666667,16.000000 L40.000000,16.000000 L40.000000,16.000000 ZM40.000000,16.000000 L40.000000,16.000000 L43.333333,16.000000 L43.333333,16.000000 ZM43.333333,16.000000 L43.333333,16.000000 L46.666667,16.000000 L46.666667,16.000000 ZM46.666667,16.000000 L46.666667,16.000000 L50.000000,16.000000 L50.000000,16.000000 ZM50.000000,16.000000 L50.000000,16.000000 L53.333333,16.000000 L53.333333,16.000000 ZM53.333333,16.000000 L53.333333,16.000000 L56.666667,16.000000 L56.666667,16.000000 ZM56.666667,16.000000 L56.666667,16.000000 L60.000000,16.000000 L60.000000,16.000000 ZM60.000000,16.000000 L60.000000,16.000000 L63.333333,16.000000 L63.333333,16.000000 ZM63.333333,16.000000 L63.333333,16.000000 L66.666667,16.000000 L66.666667,16.000000 ZM66.666667,16.000000 L66.666667,16.000000 L70.000000,16.000000 L70.000000,16.000000 ZM70.000000,16.000000 L70.000000,16.000000 L73.333333,16.000000 L73.333333,16.000000 ZM73.333333,16.000000 L73.333333,16.000000 L76.666667,16.000000 L76.666667,16.000000 ZM76.666667,16.000000 L76.666667,16.000000 L80.000000,16.000000 L80.000000,16.000000 ZM80.000000,16.000000 L80.000000,16.000000 L83.333333,16.000000 L83.333333,16.000000 ZM83.333333,16.000000 L83.333333,16.000000 L86.666667,16.000000 L86.666667,16.000000 ZM86.666667,16.000000 L86.666667,0.000000 L90.000000,0.000000 L90.000000,16.000000 ZM90.000000,16.000000 L90.000000,16.000000 L93.333333,16.000000 L93.333333,16.000000 ZM93.333333,16.000000 L93.333333,16.000000 L96.666667,16.000000 L96.666667,16.000000 ZM96.666667,16.000000 L96.666667,16.000000 L100.000000,16.000000 L100.000000,16.000000 Z"></path></svg>`
+	if string(byteValue) != check {
 		t.Fatalf("SVG For blog stats not generated right")
 	}
 }
 
 func TestGenerateBlogStatsBadFile(t *testing.T) {
 	ConfigData.BaseDir = `F:\Dropbox\swap\golang\vonblog\features\tests\blogstats\nope\`
-	bytesRead, err := ioutil.ReadFile(ConfigData.BaseDir + "iisbroken.xml")
+	bytesRead, _ := ioutil.ReadFile(ConfigData.BaseDir + "iisbroken.xml")
 	ioutil.WriteFile(ConfigData.BaseDir+"rss.xml", bytesRead, 0644)
 	ConfigData.BlogStats.Days = 30
 	generateBlogStats()
@@ -76,6 +101,11 @@ func TestGenerateBlogStatsBadFile(t *testing.T) {
 	// @todo test
 	if string(byteValue) != `<svg version="1.1" baseProfile="full" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ev="http://www.w3.org/2001/xml-events" width="100" height="16" data-total="0" data-diff="0.00" data-title="Blog Posts"><path fill="rgba(0,0,0,0.5)" stroke="rgba(0,0,0,0.5)" stroke-width="1" d="M0.000000,16.000000 L0.000000,16.000000 L3.333333,16.000000 L3.333333,16.000000 ZM3.333333,16.000000 L3.333333,16.000000 L6.666667,16.000000 L6.666667,16.000000 ZM6.666667,16.000000 L6.666667,16.000000 L10.000000,16.000000 L10.000000,16.000000 ZM10.000000,16.000000 L10.000000,16.000000 L13.333333,16.000000 L13.333333,16.000000 ZM13.333333,16.000000 L13.333333,16.000000 L16.666667,16.000000 L16.666667,16.000000 ZM16.666667,16.000000 L16.666667,16.000000 L20.000000,16.000000 L20.000000,16.000000 ZM20.000000,16.000000 L20.000000,16.000000 L23.333333,16.000000 L23.333333,16.000000 ZM23.333333,16.000000 L23.333333,16.000000 L26.666667,16.000000 L26.666667,16.000000 ZM26.666667,16.000000 L26.666667,16.000000 L30.000000,16.000000 L30.000000,16.000000 ZM30.000000,16.000000 L30.000000,16.000000 L33.333333,16.000000 L33.333333,16.000000 ZM33.333333,16.000000 L33.333333,16.000000 L36.666667,16.000000 L36.666667,16.000000 ZM36.666667,16.000000 L36.666667,16.000000 L40.000000,16.000000 L40.000000,16.000000 ZM40.000000,16.000000 L40.000000,16.000000 L43.333333,16.000000 L43.333333,16.000000 ZM43.333333,16.000000 L43.333333,16.000000 L46.666667,16.000000 L46.666667,16.000000 ZM46.666667,16.000000 L46.666667,16.000000 L50.000000,16.000000 L50.000000,16.000000 ZM50.000000,16.000000 L50.000000,16.000000 L53.333333,16.000000 L53.333333,16.000000 ZM53.333333,16.000000 L53.333333,16.000000 L56.666667,16.000000 L56.666667,16.000000 ZM56.666667,16.000000 L56.666667,16.000000 L60.000000,16.000000 L60.000000,16.000000 ZM60.000000,16.000000 L60.000000,16.000000 L63.333333,16.000000 L63.333333,16.000000 ZM63.333333,16.000000 L63.333333,16.000000 L66.666667,16.000000 L66.666667,16.000000 ZM66.666667,16.000000 L66.666667,16.000000 L70.000000,16.000000 L70.000000,16.000000 ZM70.000000,16.000000 L70.000000,16.000000 L73.333333,16.000000 L73.333333,16.000000 ZM73.333333,16.000000 L73.333333,16.000000 L76.666667,16.000000 L76.666667,16.000000 ZM76.666667,16.000000 L76.666667,16.000000 L80.000000,16.000000 L80.000000,16.000000 ZM80.000000,16.000000 L80.000000,16.000000 L83.333333,16.000000 L83.333333,16.000000 ZM83.333333,16.000000 L83.333333,16.000000 L86.666667,16.000000 L86.666667,16.000000 ZM86.666667,16.000000 L86.666667,16.000000 L90.000000,16.000000 L90.000000,16.000000 ZM90.000000,16.000000 L90.000000,16.000000 L93.333333,16.000000 L93.333333,16.000000 ZM93.333333,16.000000 L93.333333,16.000000 L96.666667,16.000000 L96.666667,16.000000 ZM96.666667,16.000000 L96.666667,16.000000 L100.000000,16.000000 L100.000000,16.000000 Z"></path></svg>` {
 		t.Fatalf("SVG For blog stats not generated right")
+	}
+	ConfigData.BaseDir = `z:\go-away\`
+	err = generateBlogStats()
+	if err == nil {
+		t.Fatalf(`Failed to note a bad save of svg`)
 	}
 
 }
@@ -134,32 +164,101 @@ func TestReadTrakt(t *testing.T) {
 	}
 }
 
-func TestGetDataFromTrakt(t *testing.T) {
+func makeFakeTraktClient(t *testing.T) {
+	Client = &mocks.MockClient{}
+	todate := time.Now()
+	dateFormat := "2006-01-02T15:04:05.000Z"
+	ConfigData.BaseDir = ``
+	ioutil.WriteFile(ConfigData.BaseDir+"../regenerate/data/trakt-cache.json", []byte(`{"last_updated": `+todate.Format(dateFormat)+`","values": {}}`), 0444)
 	makeTestConfig()
+
+	// Have the mock client return expected JSON
+	json, err := ioutil.ReadFile(`F:\Dropbox\swap\golang\vonblog\features\tests\blogstats\trakt-generate\trakt-example-01.json`)
+	if err != nil {
+		t.Fatal("Couldn't get test file")
+	}
+	spareString := string(json)
+	spareString = strings.Replace(spareString, "DATE1", todate.Add(time.Hour*-24).Format(dateFormat), -1)
+	spareString = strings.Replace(spareString, "DATE2", todate.Add(time.Hour*-25).Format(dateFormat), -1)
+	spareString = strings.Replace(spareString, "DATE3", todate.Add(time.Hour*-24*3).Format(dateFormat), -1)
+	spareString = strings.Replace(spareString, "DATE4", todate.Add(time.Hour*-24*5).Format(dateFormat), -1)
+	json = []byte(spareString)
+	jsons := [][]byte{json, []byte(`[]`)}
+	mocks.GetDoFunc = func(x *http.Request) (*http.Response, error) {
+		// fmt.Printf("Request: %v\n", x)
+		json = jsons[0]
+		jsons = jsons[1:]
+		r := ioutil.NopCloser(bytes.NewReader([]byte(json)))
+		return &http.Response{
+			StatusCode: 200,
+			Body:       r,
+		}, nil
+	}
+}
+
+func TestGetDataFromTrakt(t *testing.T) {
+	// Build a cache file with specific shows
+	// within X days of today
+	makeFakeTraktClient(t)
+	todate := DateOfExecution
+	startOfEverything, _ := getStartOfEverything()
+	thisIndex := int(math.Ceil(time.Since(startOfEverything).Hours() / 24))
+
+	// Prepare cache in memory
 	mep := TraktStats{
-		LastUpdated: "2021-10-06T14:00:00Z",
+		LastUpdated: todate.Add(time.Hour * -24 * 5).Format(gmtDateFormat),
 	}
 	mep.LastUpdatedDate, _ = parseUnknownDateFormat(mep.LastUpdated)
 	lastLook := mep.LastUpdatedDate
 	mep.Values = make(map[string]ShowAndMovie)
+
+	// Update
 	mep = updateTraktStats(mep)
 	if mep.LastUpdatedDate == lastLook {
 		t.Errorf("Failed to update date of process\n")
 	}
-	inner, ok := mep.Values["18909"]
+	fmt.Printf("%v\n", mep.Values)
+	inner, ok := mep.Values[fmt.Sprintf("%d", thisIndex-1)]
 	if !ok {
-		t.Errorf("Failed to find 18909\n")
+		t.Errorf("Failed to find %d\n", (thisIndex - 1))
 	}
-	if inner.Show["tt4052886"] != "Lucifer: BlueBallz" {
-		t.Errorf("Title was wrong %s\n", inner.Show["tt4052886"])
+	if inner.Show["tt0618971"] != "Cowboy Bebop: Honky Tonk Women" {
+		t.Errorf("Title was wrong %s\n", inner.Show["tt0618971"])
 	}
 }
 
-//func TestGenerateTraktStats(t *testing.T) {
-//	ConfigData.BaseDir = `f:\Dropbox\swap\golang\vonblog\features\tests\blogstats\trakt-generate\dude\`
-//	generateTraktStats()
-//}
-//
+func TestGenerateTraktStats(t *testing.T) {
+	ConfigData.BaseDir = `f:\Dropbox\swap\golang\vonblog\features\tests\blogstats\trakt-generate\dude\`
+	makeFakeTraktClient(t)
+	os.Remove(ConfigData.BaseDir + "../regenerate/data/trakt-cache.json")
+	SVGOptions.Blog = false
+	SVGOptions.Trakt = true
+	SVGOptions.Codestats = false
+	SVGOptions.Feedly = false
+	SVGOptions.Withings = false
+	SVGOptions.Steps = false
+	blogstatsStart()
+	//generateTraktStats()
+	bob := readTraktStatsFile(ConfigData.BaseDir + "../regenerate/data/trakt-cache.json")
+	if bob.LastUpdatedDate.Add(time.Minute * -3).After(time.Now()) {
+		t.Errorf("Last updated date wrong")
+	}
+	if len(bob.Values) != 3 {
+		t.Errorf("Trakt update has wrong number of days (%d)", len(bob.Values))
+	}
+}
+
+func TestBadReadTraktStats(t *testing.T) {
+	buff := readTraktStatsFile("x")
+	startOfEverything, _ := getStartOfEverything()
+	if buff.LastUpdatedDate.Before(startOfEverything) || buff.LastUpdatedDate.After(startOfEverything) {
+		t.Errorf("Failed to set date in history")
+	}
+	if len(buff.Values) != 0 {
+		t.Errorf("How are there values in here?")
+	}
+}
+
 func TestLineChart(t *testing.T) {
 	expectedChart0To30 := `<svg version="1.1" baseProfile="full" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ev="http://www.w3.org/2001/xml-events" width="100" height="16" data-total="435" data-title="Title Test"><path fill="none" stroke="green" stroke-width="1" stroke-dasharray="0" d="M0.000000,16.000000L3.333333,15.542857 L6.666667,15.085714 L10.000000,14.628571 L13.333333,14.171429 L16.666667,13.714286 L20.000000,13.257143 L23.333333,12.800000 L26.666667,12.342857 L30.000000,11.885714 L33.333333,11.428571 L36.666667,10.971429 L40.000000,10.514286 L43.333333,10.057143 L46.666667,9.600000 L50.000000,9.142857 L53.333333,8.685714 L56.666667,8.228571 L60.000000,7.771429 L63.333333,7.314286 L66.666667,6.857143 L70.000000,6.400000 L73.333333,5.942857 L76.666667,5.485714 L80.000000,5.028571 L83.333333,4.571429 L86.666667,4.114286 L90.000000,3.657143 L93.333333,3.200000 L96.666667,2.742857 "></path></svg>`
 	days := make(map[int]float64, 30)
@@ -350,12 +449,66 @@ func TestTraktChart(t *testing.T) {
 }
 
 func TestDownloadCS(t *testing.T) {
-	parsed := getObjectFromAPI()
+	Client = &mocks.MockClient{}
+	todate := time.Now()
+	dateFormat := "2006-01-02"
+	mocks.GetDoFunc = func(x *http.Request) (*http.Response, error) {
+		json := `{
+			"dates": {
+				"` + (todate.Add(time.Hour * -24 * 2).Format(dateFormat)) + `": 219,
+				"` + (todate.Add(time.Hour * -24 * 4).Format(dateFormat)) + `": 2543
+				}}`
+		r := ioutil.NopCloser(bytes.NewReader([]byte(json)))
+		return &http.Response{
+			StatusCode: 200,
+			Body:       r,
+		}, nil
+
+	}
+	parsed, err := getObjectFromAPI()
+	if err != nil {
+		t.Fatalf("Failed to run")
+	}
 	if len(parsed.Dates) == 0 {
 		t.Fatalf("Got nothing")
 	}
-	if parsed.Dates["2020-03-11"] != 219 {
+	if parsed.Dates[todate.Add(time.Hour*-24*4).Format(dateFormat)] != 2543 {
 		t.Fatalf("Got bad")
+	}
+}
+
+func TestGenerateCSStats(t *testing.T) {
+	ConfigData.BaseDir = `f:\Dropbox\swap\golang\vonblog\features\tests\blogstats\csstats\`
+	Days = 30
+	Client = &mocks.MockClient{}
+	todate := time.Now()
+	dateFormat := "2006-01-02"
+	mocks.GetDoFunc = func(x *http.Request) (*http.Response, error) {
+		json := `{
+			"dates": {
+				"` + (todate.Add(time.Hour * -24 * 2).Format(dateFormat)) + `": 219,
+				"` + (todate.Add(time.Hour * -24 * 4).Format(dateFormat)) + `": 2543
+				},
+				"new_xp": 2270,
+				"total_xp": 3300332,
+				"user": "vonExplaino"}`
+		r := ioutil.NopCloser(bytes.NewReader([]byte(json)))
+		return &http.Response{
+			StatusCode: 200,
+			Body:       r,
+		}, nil
+	}
+	SVGOptions.Blog = false
+	SVGOptions.Trakt = false
+	SVGOptions.Codestats = true
+	SVGOptions.Feedly = false
+	SVGOptions.Withings = false
+	SVGOptions.Steps = false
+	blogstatsStart()
+	//generateCSStats()
+	generated, _ := ioutil.ReadFile(ConfigData.BaseDir + `../regenerate/data/cs.svg`)
+	if string(generated) != `<svg version="1.1" baseProfile="full" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ev="http://www.w3.org/2001/xml-events" width="100" height="16" data-total="2762" data-title="CodeStats"><path fill="none" stroke="rgb(0,0,0,0.5)" stroke-width="1" stroke-dasharray="0" d="M0.000000,16.000000L3.333333,16.000000 L6.666667,16.000000 L10.000000,16.000000 L13.333333,16.000000 L16.666667,16.000000 L20.000000,16.000000 L23.333333,16.000000 L26.666667,16.000000 L30.000000,16.000000 L33.333333,16.000000 L36.666667,16.000000 L40.000000,16.000000 L43.333333,16.000000 L46.666667,16.000000 L50.000000,16.000000 L53.333333,16.000000 L56.666667,16.000000 L60.000000,16.000000 L63.333333,16.000000 L66.666667,16.000000 L70.000000,16.000000 L73.333333,16.000000 L76.666667,16.000000 L80.000000,16.000000 L83.333333,0.000000 L86.666667,16.000000 L90.000000,14.622100 L93.333333,16.000000 L96.666667,16.000000 "></path></svg>` {
+		t.Fatalf("Nope %v\n", string(generated))
 	}
 }
 func TestCSChart(t *testing.T) {
@@ -392,6 +545,23 @@ func TestCSChart(t *testing.T) {
 	//t.Fatalf("%s\n", chart)
 }
 
+func TestGetObjectFromAPI(t *testing.T) {
+
+	ConfigData.BaseDir = `f:\Dropbox\swap\golang\vonblog\features\tests\blogstats\csstats\`
+	Days = 30
+	Client = &mocks.MockClient{}
+	mocks.GetDoFunc = func(x *http.Request) (*http.Response, error) {
+		err := errors.New("Test")
+		json := ``
+		r := ioutil.NopCloser(bytes.NewReader([]byte(json)))
+		return &http.Response{
+			StatusCode: 500,
+			Body:       r,
+		}, err
+	}
+	getObjectFromAPI()
+}
+
 func TestReadFeedlyStatsFile(t *testing.T) {
 	stats := readFeedlyStatsFile(`f:\Dropbox\swap\golang\vonblog\features\tests\blogstats\feedly.cache.json`)
 	if len(stats.Days) == 0 {
@@ -399,6 +569,15 @@ func TestReadFeedlyStatsFile(t *testing.T) {
 	}
 	if stats.LastUpdated != "2021-12-11T14:01:01Z" {
 		t.Fatalf("Last updated date wrong")
+	}
+	//
+
+	stats = readFeedlyStatsFile(`z:\dude\`)
+	if stats.LastSeen != "" {
+		t.Fatalf("Failed to default LastSeen")
+	}
+	if stats.Days == nil {
+		t.Fatalf("Failed to initialise days")
 	}
 }
 
@@ -432,6 +611,46 @@ func TestGetFeedlyStatsForDays(t *testing.T) {
 	}
 }
 
+func TestGenerateFeedlyStats(t *testing.T) {
+	Days = 30
+	ConfigData.BaseDir = `f:\Dropbox\swap\golang\vonblog\features\tests\blogstats\feedly\`
+	relativeDataLocation = ""
+	ConfigData.AboutMe.Feedly.Cache = "feedlypie"
+	ConfigData.AboutMe.Feedly.URL = "http://x.com/"
+
+	todate := time.Now()
+	Client = &mocks.MockClient{}
+
+	// Have the mock client return expected JSON
+	json, err := ioutil.ReadFile(`F:\Dropbox\swap\golang\vonblog\features\tests\blogstats\feedly\example-01.json`)
+	if err != nil {
+		t.Fatal("Couldn't get test file")
+	}
+	spareString := string(json)
+	spareString = strings.Replace(spareString, "DATE1", fmt.Sprintf("%d", todate.Add(time.Hour*-24).Unix()*1000), -1)
+	spareString = strings.Replace(spareString, "DATE2", fmt.Sprintf("%d", todate.Add(time.Hour*-24*3).Unix()*1000), -1)
+	json = []byte(spareString)
+	jsons := [][]byte{json, []byte(`{"id": "user/5c1accc5-59d6-4eb4-92f8-5fb8767115a3/category/global.all",
+		"updated": 1649543230887,"continuation": "1800a8ff1f8:69d869:c8b06589","items": []}`)}
+	mocks.GetDoFunc = func(x *http.Request) (*http.Response, error) {
+		json = jsons[0]
+		jsons = jsons[1:]
+		r := ioutil.NopCloser(bytes.NewReader([]byte(json)))
+		return &http.Response{
+			StatusCode: 200,
+			Body:       r,
+		}, nil
+	}
+	SVGOptions.Blog = false
+	SVGOptions.Trakt = false
+	SVGOptions.Codestats = false
+	SVGOptions.Feedly = true
+	SVGOptions.Withings = false
+	SVGOptions.Steps = false
+	blogstatsStart()
+	//generateFeedlyStats()
+}
+
 func TestReadWithingsStats(t *testing.T) {
 	stats := readWithingsStats(`f:\Dropbox\swap\golang\vonblog\features\tests\blogstats\withings-cache.json`)
 	if len(stats.Values) == 0 {
@@ -440,6 +659,20 @@ func TestReadWithingsStats(t *testing.T) {
 	if stats.LastUpdated != "2021-12-07T14:01:03+00:00" {
 		t.Fatalf("Last updated date wrong")
 	}
+}
+
+func TestUpdateWithingsTokenIfRequired(t *testing.T) {
+	// Not required
+	future := time.Now().Add(time.Hour * 48)
+	accessToken := "dudemkpants"
+	ConfigData.AboutMe.Withings.ExpiresAt = future.Unix()
+	token2 := updateWithingsTokenIfRequired(accessToken)
+
+	if accessToken != token2 {
+		t.Fatalf("Tokens didn't match so it tried to update")
+	}
+
+	// Required
 }
 
 //func TestGetWithingsStatsForDays(t *testing.T) {

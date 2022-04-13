@@ -295,6 +295,39 @@ func TestUpdateFullRegenerate(t *testing.T) {
 	}
 }
 
+func TestUpdateChangedRegenerate(t *testing.T) {
+	ConfigData.BaseDir = `f:\Dropbox\swap\golang\vonblog\features\tests\update\changed\`
+	gitCommand = `f:\Dropbox\swap\golang\vonblog\features\tests\update\scripts\changed-nochanges.bat`
+
+	allPosts, tags, postsById, filesToDelete, changes, err := updateChangedRegenerate()
+	if len(allPosts.Channel.Items) > 0 {
+		t.Fatalf("All posts had something in it")
+	}
+	if len(tags) > 0 {
+		t.Fatalf("Tags had something in it")
+	}
+	if len(postsById) > 0 {
+		t.Fatalf("Posts by id had something in it")
+	}
+	if len(filesToDelete) > 0 {
+		t.Fatalf("Files to delete had something in it")
+	}
+	if len(changes.Added) > 0 {
+		t.Fatalf("Changes added had things")
+	}
+	if err != nil {
+		t.Fatalf("Something dun goofed %v\n", err)
+	}
+
+	// Changed
+
+	// Deleted
+
+	// Added
+
+	// Posts from RSS too
+}
+
 func justParseFrontMatter(front string) FrontMatter {
 	x, _ := parseFrontMatter(front, "")
 	return x

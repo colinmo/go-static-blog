@@ -16,8 +16,11 @@ limitations under the License.
 package cmd
 
 import (
+	"fmt"
+	"net/http"
 	"os"
 	"strconv"
+	"time"
 
 	"github.com/spf13/cobra"
 
@@ -124,6 +127,9 @@ func init() {
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+
+	// HTTP Client initting for test mocking
+	Client = &http.Client{}
 }
 
 // initConfig reads in config file and ENV variables if set.
@@ -180,5 +186,20 @@ func initConfig() {
 		ConfigData.Thumbnails.Height = uint(viper.GetInt("thumbnails.height"))
 		ConfigData.Thumbnails.Extension = viper.GetString("thumbnails.extension")
 		ConfigData.Thumbnails.Type = viper.GetString("thumbnails.type")
+	}
+}
+
+var DateOfExecution = time.Now()
+
+func getStartOfEverything() (time.Time, *time.Location) {
+	l, _ := time.LoadLocation(blogTimezone)
+	startOfEverything := time.Date(1970, 1, 1, 0, 0, 0, 0, l)
+	return startOfEverything, l
+}
+
+/** Global functions? **/
+func PrintIfNotSilent(toPrint string) {
+	if !Silent {
+		fmt.Print(toPrint)
 	}
 }

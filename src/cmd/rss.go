@@ -60,14 +60,19 @@ func ReadRSS(filename string) (RSS, error) {
 	byteValue = []byte(strings.ReplaceAll(string(byteValue), "rssTags:", ""))
 	byteValue = []byte(strings.ReplaceAll(string(byteValue), "xmlns:", ""))
 
-	xml.Unmarshal(byteValue, &feed)
-	for i := range feed.Channel.Items {
-		feed.Channel.Items[i].PubDateAsDate, _ = time.Parse(
-			//"Mon, 02 Jan 2006 15:04:05 -0700",
-			time.RFC1123Z,
-			//"2006-01-02 15:04:05 -0700 MST",
-			feed.Channel.Items[i].PublicationDate)
+	err = xml.Unmarshal(byteValue, &feed)
+	if err == nil {
+
+		for i := range feed.Channel.Items {
+			feed.Channel.Items[i].PubDateAsDate, _ = time.Parse(
+				//"Mon, 02 Jan 2006 15:04:05 -0700",
+				time.RFC1123Z,
+				//"2006-01-02 15:04:05 -0700 MST",
+				feed.Channel.Items[i].PublicationDate)
+
+		}
 	}
+
 	return feed, err
 }
 
