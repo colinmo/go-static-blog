@@ -711,7 +711,7 @@ func readWithingsStats(filename string) WithingsStats {
 		byteValue, _ := ioutil.ReadAll(cacheFile)
 		err := json.Unmarshal(byteValue, &buff)
 		if err != nil {
-			log.Fatalf("Failed to parse the Feedly cache %v\n", err)
+			log.Fatalf("Failed to parse the Withings cache %v\n", err)
 		}
 	}
 	if len(buff.LastUpdated) > 0 {
@@ -796,7 +796,7 @@ func updateWithingsStats(stats WithingsStats) WithingsStats {
 	// Refresh token if needed
 	accessToken, err := updateWithingsTokenIfRequired(ConfigData.AboutMe.Withings.AccessToken)
 	if err != nil {
-		log.Fatalf("Failed to refresh token")
+		log.Fatalf("Failed to refresh withings token")
 	}
 	lastUpdate := stats.LastUpdatedDate.Unix()
 	lastUpdateString := fmt.Sprintf("%d", lastUpdate)
