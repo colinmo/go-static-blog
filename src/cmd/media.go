@@ -79,7 +79,7 @@ var thumbCmd = &cobra.Command{
 func letsGoThumbnail() error {
 	if ThumbnailOptions.Filename == "" {
 		total := recursiveMediaThumbnailer(ConfigData.BaseDir + "media/")
-		fmt.Printf("Changed %d files in %s\n", total, ConfigData.BaseDir+"media/")
+		PrintIfNotSilent(fmt.Sprintf("Changed %d files in %s\n", total, ConfigData.BaseDir+"media/"))
 	} else {
 		makeThumbnail(ThumbnailOptions.Filename)
 	}
@@ -96,7 +96,6 @@ func recursiveMediaThumbnailer(directory string) int {
 			changedCount += recursiveMediaThumbnailer(directory + name + "/")
 		} else if !(len(name) > len(ThumbnailOptions.Extension) &&
 			name[len(name)-len(ThumbnailOptions.Extension):] == ThumbnailOptions.Extension) {
-			// fmt.Printf("Skipping existing thumb %s\n", name)
 			if isElementExists(filepath.Ext(name), []string{".jpg", ".jpeg", ".gif", ".png"}) {
 				// Check that it's an image file - by extension and detected type
 				ok := makeThumbnail(directory + name)

@@ -358,10 +358,8 @@ func generateCSStats() error {
 	if err != nil {
 		return err
 	}
-	fmt.Printf("%v\n", parsed)
 	// Get the last Days entries
 	days, max := csToDays(parsed)
-	fmt.Printf("%v %f\n", days, max)
 	// Make ze graph
 	line, total := lineAlone(days, max, 0, map[string]string{"strokeDashArray": "", "stroke": colorBlackOpacity50}, "CodeStats", map[string]bool{"showZero": true, "showBall": false})
 	chart := SVGGraphFromPaths(total, "CodeStats", -1, line)
@@ -829,8 +827,6 @@ func updateWithingsStats(stats WithingsStats) WithingsStats {
 	if res.Status == 0 {
 		updateWithingsStatvalues(&stats, res, startOfEverything)
 	} else {
-		fmt.Printf("Response %v\n", res)
-		fmt.Printf("%d\n", res.Status)
 		log.Fatalf("Failed to parse withings response1")
 	}
 	// Steps

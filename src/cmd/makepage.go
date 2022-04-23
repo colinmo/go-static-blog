@@ -679,10 +679,7 @@ func toTwigVariables(frontMatter *FrontMatter, content string) map[string]stick.
 	if frontMatter.Link == "" {
 		frontMatter.Link = ConfigData.BaseURL + baseDirectoryForPosts + strings.ToLower(frontMatter.Type) + "/" + frontMatter.CreatedDate.Format("2006/01/02") + "/" + frontMatter.Slug + ".html"
 	}
-	// fmt.Printf("Front Matter ID is %s\n", frontMatter.ID)
-	// if len(frontMatter.ID) == 0 {
-	// 	fmt.Printf("Possible failure\n%v\n", frontMatter)
-	// }
+
 	return map[string]stick.Value{
 		"id":           frontMatter.ID,
 		"title":        frontMatter.Title,
