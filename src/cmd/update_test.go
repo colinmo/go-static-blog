@@ -295,6 +295,23 @@ func TestUpdateFullRegenerate(t *testing.T) {
 	}
 }
 
+func TestDeleteAndRegenerate(t *testing.T) {
+	ConfigData.BaseDir = `f:\Dropbox\swap\golang\vonblog\features\tests\update\deleted\`
+
+	f, _ := os.Create(ConfigData.BaseDir + "testFile.txt")
+	f.Close()
+	filesToDelete := make(map[string]struct{})
+	filesToDelete["testFile.txt"] = struct{}{}
+
+	deleteAndRegenerate(
+		RSS{},
+		make(map[string][]FrontMatter),
+		make(map[string]Item),
+		filesToDelete,
+		GitDiffs{},
+	)
+}
+
 func TestUpdateChangedRegenerate(t *testing.T) {
 	ConfigData.BaseDir = `f:\Dropbox\swap\golang\vonblog\features\tests\update\changed\`
 	gitCommand = `f:\Dropbox\swap\golang\vonblog\features\tests\update\scripts\changed-nochanges.bat`

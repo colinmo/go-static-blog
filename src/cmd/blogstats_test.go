@@ -72,7 +72,14 @@ func TestGenerateBlogStats(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Could not write the test rss feed %v\n", err)
 	}
-	generateBlogStats()
+
+	SVGOptions.Blog = true
+	SVGOptions.Trakt = false
+	SVGOptions.Codestats = false
+	SVGOptions.Feedly = false
+	SVGOptions.Withings = false
+	SVGOptions.Steps = false
+	blogstatsStart()
 	svgFile, err := os.Open(ConfigData.BaseDir + `../regenerate/data/blog.svg`)
 	if err != nil {
 		t.Fatalf("Didn't find the SVG output")
@@ -218,9 +225,9 @@ func TestGetDataFromTrakt(t *testing.T) {
 		t.Errorf("Failed to update date of process\n")
 	}
 	fmt.Printf("%v\n", mep.Values)
-	inner, ok := mep.Values[fmt.Sprintf("%d", thisIndex-1)]
+	inner, ok := mep.Values[fmt.Sprintf("%d", thisIndex)]
 	if !ok {
-		t.Errorf("Failed to find %d\n", (thisIndex - 1))
+		t.Errorf("Failed to find %d\n", (thisIndex))
 	}
 	if inner.Show["tt0618971"] != "Cowboy Bebop: Honky Tonk Women" {
 		t.Errorf("Title was wrong %s\n", inner.Show["tt0618971"])
@@ -678,9 +685,22 @@ func TestUpdateWithingsTokenIfRequired(t *testing.T) {
 	// Required
 }
 
-//func TestGetWithingsStatsForDays(t *testing.T) {
-//
-//}
+func TestGetWithingsStatsForDays(t *testing.T) {
+	mocks.GetDoFunc = func(x *http.Request) (*http.Response, error) {
+		r := ioutil.NopCloser(bytes.NewReader([]byte("")))
+		return &http.Response{
+			StatusCode: 200,
+			Body:       r,
+		}, nil
+	}
+	SVGOptions.Blog = false
+	SVGOptions.Trakt = false
+	SVGOptions.Codestats = false
+	SVGOptions.Feedly = false
+	SVGOptions.Withings = true
+	SVGOptions.Steps = false
+	blogstatsStart()
+}
 
 //func TestUpdateWithingsStats(t *testing.T) {
 //	makeTestConfig()
