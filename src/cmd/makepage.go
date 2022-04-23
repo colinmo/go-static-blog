@@ -294,14 +294,6 @@ func parseString(txt string, filename string) (string, FrontMatter, error) {
 	return html2, frontMatter, err
 }
 
-type Indieweb struct {
-	InReplyTo  string `yaml:"in-reply-to"`
-	BookmarkOf string `yaml:"bookmark-of"`
-	FavoriteOf string `yaml:"favorite-of"`
-	RepostOf   string `yaml:"repost-of"`
-	LikeOf     string `yaml:"like-of"`
-}
-
 type Event struct {
 	Start     string `yaml:"StartDate"`
 	End       string `yaml:"EndDate"`
@@ -403,7 +395,6 @@ type FrontMatter struct {
 	FeatureImage     string            `yaml:"FeatureImage"`
 	AttachedMedia    []string          `yaml:"AttachedMedia"`
 	SyndicationLinks SyndicationLinksS `yaml:"Syndication"`
-	IndieWeb         Indieweb          `yaml:"IndieWeb"`
 	Slug             string            `yaml:"Slug"`
 	Event            Event             `yaml:"Event"`
 	Resume           Resume            `yaml:"Resume"`
@@ -459,11 +450,6 @@ func frontMatterDefaults(frontMatter *FrontMatter, filename string) {
 		frontMatter.Slug = frontMatter.Slug + ".html"
 	}
 	frontMatter.Status = setEmptyStringDefault(frontMatter.Status, "live")
-	frontMatter.IndieWeb.InReplyTo = setEmptyStringDefault(frontMatter.InReplyTo, "")
-	frontMatter.IndieWeb.BookmarkOf = setEmptyStringDefault(frontMatter.BookmarkOf, "")
-	frontMatter.IndieWeb.FavoriteOf = setEmptyStringDefault(frontMatter.FavoriteOf, "")
-	frontMatter.IndieWeb.RepostOf = setEmptyStringDefault(frontMatter.RepostOf, "")
-	frontMatter.IndieWeb.LikeOf = setEmptyStringDefault(frontMatter.LikeOf, "")
 
 	if len(frontMatter.Tags) == 0 {
 		frontMatter.Tags = []string{}
@@ -733,7 +719,6 @@ func toTwigListVariables(frontMatters []FrontMatter, title string, page int) map
 			"featureimage":     mep.FeatureImage,
 			"attachedmedia":    mep.AttachedMedia,
 			"syndicationlinks": mep.SyndicationLinks,
-			"indieweb":         mep.IndieWeb,
 			"slug":             mep.Slug,
 			"event":            mep.Event,
 			"resume":           mep.Resume,
