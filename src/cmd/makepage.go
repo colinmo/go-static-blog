@@ -376,11 +376,11 @@ type SyndicationLinksS struct {
 }
 
 type ItemS struct {
-	URL    string `yaml:"url"`
-	Image  string `yaml:"image"`
-	Name   string `yaml:"name"`
-	Type   string `yaml:"type"`
-	Rating int    `yaml:"rating"`
+	URL    string  `yaml:"url"`
+	Image  string  `yaml:"image"`
+	Name   string  `yaml:"name"`
+	Type   string  `yaml:"type"`
+	Rating float32 `yaml:"rating"`
 }
 
 type FrontMatter struct {
