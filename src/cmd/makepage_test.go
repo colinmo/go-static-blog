@@ -223,3 +223,46 @@ I strive to use my analytical, organisational and technical skills and experienc
 		t.Fatalf("Did not parse all markdowns")
 	}
 }
+
+func TestCreateReview(t *testing.T) {
+
+	testroot := `E:\xampp\vonexplaino-bitbucket-static\`
+	ConfigData.RepositoryDir = testroot
+	ConfigData.BaseURL = "https://vonexplaino.com/blog/"
+	ConfigData.TemplateDir = "f:/dropbox/swap/golang/vonblog/templates/"
+	result, frontMatter, error := parseString(`Title: "Review: In Sound Mind"
+Tags: [game,epic]
+Created: "2022-04-24T18:58:43+1000"
+Updated: "2022-04-24T18:58:43+1000"
+Type: review
+Synopsis: "In Sound Mind is an imaginative first-person psychological horror with frenetic puzzles, unique boss fights, and original music by The Living Tombstone. Journey within the inner workings of the one place you can’t seem to escape—your own mind."
+FeatureImage: /blog/media/2022/04/in-sound-mind.webp
+Item:
+    url: "https://store.epicgames.com/en-US/p/in-sound-mind"
+    image: /blog/media/2022/04/in-sound-mind.webp
+    name: In Sound Mind
+    type: item
+    rating: 5
+===
+In Sound Mind was one of the weekly free games earlier this year. Most of these games I pick up, play for a bit, get a smile, get bored, and get on with things. In Sound Mind's gameplay, steady reveal, tape-based psychology gimick and the "GOTY 10/10" acheivement had me hooked. Very little in the way of shooty times, really; and the stealth statistic seemed entirely pointless - but the game, atmosphere, and sheer mind-squirreliness was enthralling.
+
+The game starts off in a building that's run down in a flooded city, but you find ways out into the minds of your patients. Boy are you in for a wild time in each of those, with a unique mechanic in almost each of them. The manifestations of mental anguish are spellbounding and the spook factor is high.
+
+Very much recommended.
+
+You can pet the cat.
+	`,
+		ConfigData.RepositoryDir+"posts/review/2022/04/in-sound-mind.md")
+	if error != nil {
+		t.Fatalf("Failed to parse: %v\n", error)
+	}
+	if len(result) == 0 {
+		t.Fatalf("Failed to create a result")
+	}
+	if frontMatter.Title == "" {
+		t.Fatalf("Failed to marshal MD")
+	}
+	if frontMatter.Item.Name == "" {
+		t.Fatalf("Failed to get name")
+	}
+}

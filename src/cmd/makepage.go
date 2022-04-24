@@ -379,6 +379,7 @@ type ItemS struct {
 	URL    string `yaml:"url"`
 	Image  string `yaml:"image"`
 	Name   string `yaml:"name"`
+	Type   string `yaml:"type"`
 	Rating int    `yaml:"rating"`
 }
 
@@ -404,7 +405,7 @@ type FrontMatter struct {
 	FavoriteOf       string            `yaml:"favorite-of"`
 	RepostOf         string            `yaml:"repost-of"`
 	LikeOf           string            `yaml:"like-of"`
-	Item             ItemS             `yaml:"item"`
+	Item             ItemS             `yaml:"Item"`
 	RelativeLink     string
 	CreatedDate      time.Time
 	UpdatedDate      time.Time
@@ -696,6 +697,7 @@ func toTwigVariables(frontMatter *FrontMatter, content string) map[string]stick.
 		"favoriteof":   frontMatter.FavoriteOf,
 		"repostof":     frontMatter.RepostOf,
 		"resume":       frontMatter.Resume,
+		"item":         frontMatter.Item,
 	}
 }
 

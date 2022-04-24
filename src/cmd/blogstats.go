@@ -752,6 +752,9 @@ func updateWithingsTokenIfRequired(accessToken string) (string, error) {
 			if len(accessToken) == 0 {
 				return "", errors.New("could not parse the token refresh response from withings")
 			}
+			ConfigData.AboutMe.Withings.AccessToken = accessToken
+			ConfigData.AboutMe.Withings.RefreshToken = res.Body.RefreshToken
+			ConfigData.AboutMe.Withings.ExpiresAt = time.Now().Unix() + res.Body.ExpiresIn
 			viper.Set("aboutme.withings.accesstoken", accessToken)
 			viper.Set("aboutme.withings.refreshtoken", res.Body.RefreshToken)
 			viper.Set("aboutme.withings.expiresat", time.Now().Unix()+res.Body.ExpiresIn)
@@ -797,7 +800,7 @@ func updateWithingsStats(stats WithingsStats) WithingsStats {
 		log.Fatalf("Failed to refresh withings token")
 	}
 	lastUpdate := stats.LastUpdatedDate.Unix()
-	lastUpdateString := fmt.Sprintf("%d", lastUpdate)
+	lastUpdateString := fmt.Sprintf("%d", lastUpdate-60*60*24*30)
 	stats.LastUpdatedDate = time.Now()
 	stats.LastUpdated = stats.LastUpdatedDate.Format("2006-01-02 15:04:05 -0700 MST")
 
@@ -827,7 +830,7 @@ func updateWithingsStats(stats WithingsStats) WithingsStats {
 	if res.Status == 0 {
 		updateWithingsStatvalues(&stats, res, startOfEverything)
 	} else {
-		log.Fatalf("Failed to parse withings response1")
+		PrintIfNotSilent(fmt.Sprintf("Failed to parse withings response1 %d", res.Status))
 	}
 	// Steps
 	offset := 0
@@ -844,7 +847,7 @@ func updateWithingsStats(stats WithingsStats) WithingsStats {
 		request.Header.Set("Authorization", "Bearer "+accessToken)
 		resp, err := Client.Do(request)
 		if err != nil {
-			log.Fatalf("Failed to get steps")
+			PrintIfNotSilent("Failed to get steps")
 		}
 		var res WithingsResponse2
 		json.NewDecoder(resp.Body).Decode(&res)
@@ -869,12 +872,10 @@ func updateWithingsStats(stats WithingsStats) WithingsStats {
 				}
 			}
 		}
-
 		if !res.Body.More {
 			break
 		}
 		offset = res.Body.Offset
-
 	}
 
 	return stats

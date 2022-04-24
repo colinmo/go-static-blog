@@ -5,7 +5,6 @@
         <header>
             <h1 class="p-name" style=""><a href="{{ link|raw }}" class="u-url">{% if type !="reply"%}{{ title }}{% endif %}</a></h1>
             <section class="post-meta">
-                <a class="p-author h-card" href="https://vonexplaino.com/">Professor von Explaino</a>, 
                 <time class="dt-published" datetime="{{ created_date|date('c') }}">{{ created_date|date('j M Y, h:i a T') }}</time>
                 {% if created_date != updated_date %}(&Delta; <time class="dt-updated" datetime="{{ updated_date|date('c') }}">{{ updated_date|date('j M Y, h:i a T') }}</time>){% endif %}
                 <p class="tags">{% for tag in tags %}<a href="/blog/{{tag|tag_link}}-1.html" class="p-category">{{ tag }}</a> {% endfor %}</p>
@@ -20,16 +19,16 @@
             </section>
         </header>
         <div>
-            <div class="rating star-{{ item.rating|replace({'.':'-'}) }}">
+            <div class="rating star-{{ item.Rating|replace({'.':'-'}) }}">
                 <span class="star"></span>
                 <span class="star"></span>
                 <span class="star"></span>
                 <span class="star"></span>
                 <span class="star"></span>
-                (<span class="p-rating">{{ item.rating }}</span> / 5)
+                (<span class="p-rating">{{ item.Rating }}</span> / 5)
             </div>
             <div class="item">
-                {% set include_file = "h/h-" ~ item.type|default('item') ~ ".html.twig" %}
+                {% set include_file = "h/h-" ~ item.Type|default('item') ~ ".html.twig" %}
                 {% include include_file with item|default([]) %}
             </div>
             <section class="e-content review-type">

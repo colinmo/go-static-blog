@@ -1,11 +1,11 @@
-<a class="h-item" href="{{ url }}">
-{% if image %}
+<a class="h-item" href="{{ item.URL }}">
+{% if item.Image %}
     <figure style="float:right; text-align:center;margin-top:0">
-        <img src="{{ image }}" alt="" style="max-width:150px"/>
+        <img src="{{ item.Image }}" alt="{{ item.Name|replace({'"':'&quot;'}) }}" style="max-width:150px"/>
         <figcaption>
 {% endif %}
-  {{ name }}
-{% if image %}
+  {{ item.Name }}
+{% if item.Image %}
         </figcaption>
     </figure>
 {% endif %}
