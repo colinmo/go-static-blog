@@ -11,14 +11,16 @@ import (
 )
 
 type Item struct {
-	XMLName         xml.Name  `xml:"item"`
-	Title           string    `xml:"title"`
-	Description     string    `xml:"description"`
-	PublicationDate string    `xml:"pubDate"`
-	FeatureImage    string    `xml:"featureImage"`
-	PubDateAsDate   time.Time `xml:"-"`
-	GUID            string    `xml:"guid"`
-	Tags            []string  `xml:"tag"`
+	XMLName         xml.Name `xml:"item"`
+	Title           string   `xml:"title"`
+	Description     string   `xml:"description"`
+	PublicationDate string   `xml:"pubDate"`
+	FeatureImage    struct {
+		Key string `xml:"url,attr"`
+	} `xml:"http://search.yahoo.com/mrss/ content"`
+	PubDateAsDate time.Time `xml:"-"`
+	GUID          string    `xml:"guid"`
+	Tags          []string  `xml:"http://purl.org/dc/elements/1.1/ subject"`
 }
 
 type Channel struct {
@@ -92,21 +94,26 @@ func WriteRSS(feed RSS, filename string) error {
 		return feed.Channel.Items[p].PubDateAsDate.After(feed.Channel.Items[q].PubDateAsDate)
 	})
 	byteValue, _ := xml.MarshalIndent(feed, "", "    ")
-	byteValue = []byte(strings.Replace(string(byteValue), `rssTags=""`, `xmlns:atom="http://www.w3.org/2005/Atom" xmlns:featureImage="https://vonexplaino.com/featureImage" xmlns:rssTags="https://vonexplaino.com/rssTags"`, 1))
-	byteValue = []byte(strings.ReplaceAll(string(byteValue), "tag>", "rssTags:tag>"))
-	byteValue = []byte(strings.Replace(string(byteValue), "<item>", `<atom:link href="https://vonexplaino.com/blog/rss.xml" rel="self" type="application/rss+xml" /><item>`, 1))
-	byteValue = []byte(strings.ReplaceAll(string(byteValue), "featureImage>", "featureImage:featureImage>"))
+	byteValue = []byte(strings.Replace(string(byteValue), `rssTags=""`, `xmlns:atom="http://www.w3.org/2005/Atom"`, 1))
+	//	byteValue = []byte(strings.ReplaceAll(string(byteValue), "tag>", "rssTags:tag>"))
+	byteValue = []byte(strings.Replace(string(byteValue), "<item>", `<atom:link href="https://vonexplaino.com/blog/rss.xml" rel="self" type="application/rss+xml" />`+"\n"+`        <item>`, 1))
+	//	byteValue = []byte(strings.ReplaceAll(string(byteValue), "featureImage>", "featureImage:featureImage>"))
 
 	err := ioutil.WriteFile(ConfigData.BaseDir+filename, append([]byte("<?xml version=\"1.0\"?>\n"), byteValue...), 0777)
 	return err
 }
 
 func PostToItem(frontmatter FrontMatter) Item {
+	if len(frontmatter.FeatureImage) > 0 && frontmatter.FeatureImage[0:1] == "/" {
+		frontmatter.FeatureImage = ConfigData.BaseURL[0:len(ConfigData.BaseURL)-6] + frontmatter.FeatureImage
+	}
 	return Item{
-		XMLName:         xml.Name{Space: "", Local: "Item"},
-		Title:           frontmatter.Title,
-		Description:     frontmatter.Synopsis,
-		FeatureImage:    frontmatter.FeatureImage,
+		XMLName:     xml.Name{Space: "", Local: "Item"},
+		Title:       frontmatter.Title,
+		Description: frontmatter.Synopsis,
+		FeatureImage: struct {
+			Key string `xml:"url,attr"`
+		}{Key: frontmatter.FeatureImage},
 		PublicationDate: frontmatter.CreatedDate.Format(time.RFC1123Z),
 		PubDateAsDate:   frontmatter.CreatedDate,
 		GUID:            frontmatter.Link,
@@ -120,7 +127,7 @@ func ItemToPost(item Item) FrontMatter {
 		Synopsis:     item.Description,
 		Created:      item.PublicationDate,
 		CreatedDate:  item.PubDateAsDate,
-		FeatureImage: item.FeatureImage,
+		FeatureImage: item.FeatureImage.Key,
 		Link:         item.GUID,
 		ID:           item.GUID,
 		Tags:         item.Tags,
