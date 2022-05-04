@@ -266,3 +266,17 @@ You can pet the cat.
 		t.Fatalf("Failed to get name")
 	}
 }
+
+func TestTextToSlug(t *testing.T) {
+	for expect, test := range map[string]string{
+		"bobiscool":        "bobiscool",
+		"bob-is-real-cool": "bob is real cool",
+		"bob-is-cool-mate": "bob is cool mate!",
+		"bobis-coolmate":   "bobis!@#!@#coolmate",
+		"am-i-cool-now":    "'am i cool now?'",
+	} {
+		if expect != textToSlug(test) {
+			t.Fatalf("Failed to convert %s=>%s [%s]", test, expect, textToSlug(test))
+		}
+	}
+}
