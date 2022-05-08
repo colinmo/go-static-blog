@@ -1,5 +1,5 @@
 <!DOCTYPE html>
- <html class="no-js" lang="en">
+<html class="no-js" lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width" />
@@ -27,7 +27,7 @@
 <meta name="msapplication-TileColor" content="#ffffff" />
 <meta name="msapplication-TileImage" content="/theme/images/favicon/ms-icon-144x144.png" />
 <meta name="theme-color" content="#ffffff" />
-<meta name="description" content="{{ (synopsis|default('Personal site for Colin Morris/ Professor von Explaino. Contains PHP code, Steampunk')) }}" />
+<meta name="description" content="{{ synopsis|default("Personal site for Colin Morris/ Professor von Explaino. Contains PHP code, Steampunk") }}" />
 <meta property="og:image" content="{{ metadata.feature_image|default("https://s0.wordpress.com/mshots/v1/" ~ link|url_encode ~ "?w=480&h=480") }}" />
 {% block extraheaders %}{% endblock %}
 </head>
@@ -35,9 +35,9 @@
     <!-- Actual template -->
     <main id="professor-paper" class="panel">
         <div id="top-left" class="decorative-tops"></div>
-         <div id="top-right" class="decorative-tops"></div>
-         <div id="bottom-left" class="decorative-tops"></div>
-         <div id="bottom-right" class="decorative-tops"></div>
+        <div id="top-right" class="decorative-tops"></div>
+        <div id="bottom-left" class="decorative-tops"></div>
+        <div id="bottom-right" class="decorative-tops"></div>
         {% block content %}{% endblock %}
     </main>
     <section id="header">
