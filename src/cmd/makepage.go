@@ -42,7 +42,7 @@ import (
 
 var fromFile *string
 var toFile *string
-var wordpressThumbnailTemplate = "https://s0.wordpress.com/mshots/v1/%s?w=480&h=480"
+var wordpressThumbnailTemplate = "https://s0.wp.com/mshots/v1/%s?vpw=480&vph=380"
 
 // makepageCmd represents the makepage command
 var makepageCmd = &cobra.Command{
@@ -462,22 +462,6 @@ func frontMatterDefaults(frontMatter *FrontMatter, filename string) {
 	if len(frontMatter.ID) == 0 && len(filename) > len(ConfigData.RepositoryDir) {
 		frontMatter.ID = filename[len(ConfigData.RepositoryDir):]
 	}
-	if len(frontMatter.FeatureImage) == 0 {
-		switch 0 {
-		case len(frontMatter.InReplyTo):
-			frontMatter.FeatureImage = fmt.Sprintf(wordpressThumbnailTemplate, url.QueryEscape(frontMatter.InReplyTo))
-		case len(frontMatter.BookmarkOf):
-			frontMatter.FeatureImage = fmt.Sprintf(wordpressThumbnailTemplate, url.QueryEscape(frontMatter.BookmarkOf))
-		case len(frontMatter.FavoriteOf):
-			frontMatter.FeatureImage = fmt.Sprintf(wordpressThumbnailTemplate, url.QueryEscape(frontMatter.FavoriteOf))
-		case len(frontMatter.RepostOf):
-			frontMatter.FeatureImage = fmt.Sprintf(wordpressThumbnailTemplate, url.QueryEscape(frontMatter.RepostOf))
-		case len(frontMatter.LikeOf):
-			frontMatter.FeatureImage = fmt.Sprintf(wordpressThumbnailTemplate, url.QueryEscape(frontMatter.LikeOf))
-		default:
-			frontMatter.FeatureImage = fmt.Sprintf(wordpressThumbnailTemplate, url.QueryEscape(frontMatter.Link))
-		}
-	}
 }
 
 func frontMatterValidateExperience(frontMatter *FrontMatter) {
@@ -528,6 +512,22 @@ func frontMatterValidate(frontMatter *FrontMatter, filename string) []string {
 			frontMatter.Link = ConfigData.BaseURL + baseDirectoryForPosts + strings.ToLower(frontMatter.Type) + "/" + frontMatter.Slug
 		} else {
 			frontMatter.Link = ConfigData.BaseURL + baseDirectoryForPosts + strings.ToLower(frontMatter.Type) + "/" + frontMatter.CreatedDate.Format("2006/01") + "/" + frontMatter.Slug
+		}
+	}
+	// Need to do this after Link is created
+	if len(frontMatter.FeatureImage) == 0 {
+		if len(frontMatter.InReplyTo) > 0 {
+			frontMatter.FeatureImage = fmt.Sprintf(wordpressThumbnailTemplate, url.QueryEscape(frontMatter.InReplyTo))
+		} else if len(frontMatter.BookmarkOf) > 0 {
+			frontMatter.FeatureImage = fmt.Sprintf(wordpressThumbnailTemplate, url.QueryEscape(frontMatter.BookmarkOf))
+		} else if len(frontMatter.FavoriteOf) > 0 {
+			frontMatter.FeatureImage = fmt.Sprintf(wordpressThumbnailTemplate, url.QueryEscape(frontMatter.FavoriteOf))
+		} else if len(frontMatter.RepostOf) > 0 {
+			frontMatter.FeatureImage = fmt.Sprintf(wordpressThumbnailTemplate, url.QueryEscape(frontMatter.RepostOf))
+		} else if len(frontMatter.LikeOf) > 0 {
+			frontMatter.FeatureImage = fmt.Sprintf(wordpressThumbnailTemplate, url.QueryEscape(frontMatter.LikeOf))
+		} else {
+			frontMatter.FeatureImage = fmt.Sprintf(wordpressThumbnailTemplate, url.QueryEscape(frontMatter.Link))
 		}
 	}
 	var splitted = strings.Split(frontMatter.Link, "/posts")

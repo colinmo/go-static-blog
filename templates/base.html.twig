@@ -28,7 +28,7 @@
 <meta name="msapplication-TileImage" content="/theme/images/favicon/ms-icon-144x144.png" />
 <meta name="theme-color" content="#ffffff" />
 <meta name="description" content="{{ synopsis|default("Personal site for Colin Morris/ Professor von Explaino. Contains PHP code, Steampunk") }}" />
-<meta property="og:image" content="{{ metadata.feature_image|default("https://s0.wordpress.com/mshots/v1/" ~ link|url_encode ~ "?w=480&h=480") }}" />
+<meta property="og:image" content="{{ featureimage|default("https://s0.wp.com/mshots/v1/" ~ link|url_encode ~ "?vpw=480&vph=380") }}" />
 {% block extraheaders %}{% endblock %}
 </head>
 <body class="container">

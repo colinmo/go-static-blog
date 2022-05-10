@@ -7,9 +7,9 @@
 <meta property="og:url" content="{{ link|raw }}" />
 <meta property="og:type" content="article" />
 <meta property="og:description" content="{{ (synopsis|default('Personal site for Colin Morris/ Professor von Explaino. Contains PHP code, Steampunk')) }}" />
-<meta property="og:image" content="{{ metadata.feature_image|default("https://s0.wordpress.com/mshots/v1/" ~ link|url_encode ~ "?w=480&h=480") }}" />
-<meta property="og:image:url" content="{{ metadata.feature_image|default("https://s0.wordpress.com/mshots/v1/" ~ link|url_encode ~ "?w=480&h=480") }}" />
-<meta property="og:image:secure_url" content="{{ metadata.feature_image|default("https://s0.wordpress.com/mshots/v1/" ~ link|url_encode ~ "?w=480&h=480") }}" />
+<meta property="og:image" content="{{ featureimage|default("https://s0.wp.com/mshots/v1/" ~ link|url_encode ~ "?vpw=480&vph=380") }}" />
+<meta property="og:image:url" content="{{ featureimage|default("https://s0.wp.com/mshots/v1/" ~ link|url_encode ~ "?vpw=480&vph=380") }}" />
+<meta property="og:image:secure_url" content="{{ featureimage|default("https://s0.wp.com/mshots/v1/" ~ link|url_encode ~ "?vpw=480&vph=380") }}" />
 <meta property="article:published_time" content="{{ cdate }}" />
 <meta property="article:modified_time" content="{{ udate }}" />
 <meta property="og:updated_time" content="{{ udate }}" />
@@ -18,7 +18,7 @@
 <meta itemprop="name" content="{{ title }}" />
 <meta itemprop="headline" content="{{ title }}" />
 <meta itemprop="description" content="{{ (synopsis|default('Personal site for Colin Morris/ Professor von Explaino. Contains PHP code, Steampunk')) }}" />
-<meta itemprop="image" content="{{ metadata.feature_image|default("https://s0.wordpress.com/mshots/v1/" ~ link|url_encode ~ "?w=480&h=480") }}" />
+<meta itemprop="image" content="{{ featureimage|default("https://s0.wp.com/mshots/v1/" ~ link|url_encode ~ "?vpw=480&vph=380") }}" />
 <meta itemprop="datePublished" content="{{ cdate }}" />
 <meta itemprop="dateModified" content="{{ udate }}" />
 <meta itemprop="author" content="Colin Morris/ Professor von Explaino" />
