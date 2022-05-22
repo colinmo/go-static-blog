@@ -34,9 +34,9 @@ Y" %}
         {% endfor %}
         <nav class="pagination">
             {% if page > 1 %}
-                <a href="{{ link_prefix|raw }}1.html" title="{{ first_page_start }} to {{ first_page_end }}">1</a> {% if page > 3 %} ... {% endif %}
+                <a href="{{ link_prefix|raw }}1.html" title="{{ first_page_start }} to {{ first_page_end }}"{% if page == 2 %} class="previous"{% endif %}>1</a> {% if page > 3 %} ... {% endif %}
                 {% if prev_page > 1 %}
-                <a href="{{ link_prefix|raw }}{{ prev_page }}.html" title="{{ prev_page_start }} to {{ prev_page_end }}">{{ prev_page }}</a>
+                <a href="{{ link_prefix|raw }}{{ prev_page }}.html" title="{{ prev_page_start }} to {{ prev_page_end }}" class="previous">{{ prev_page }}</a>
                 {% endif %}
             {% else %}
                 <span>1</span>
@@ -45,9 +45,9 @@ Y" %}
             {% if last_page > 1 %}
             {% if page < last_page %}
                 {% if next_page < last_page %}
-                <a href="{{ link_prefix|raw }}{{ next_page }}.html" title="{{ next_page_start }} to {{ next_page_end }}">{{ next_page }}</a> {% if last_page - next_page > 1 %} ... {% endif %}
+                <a href="{{ link_prefix|raw }}{{ next_page }}.html" title="{{ next_page_start }} to {{ next_page_end }}" class="next">{{ next_page }}</a> {% if last_page - next_page > 1 %} ... {% endif %}
                 {% endif %}
-                <a href="{{ link_prefix|raw }}{{ last_page }}.html" title="{{ last_page_start }} to {{ last_page_end }}">{{ last_page }}</a>
+                <a href="{{ link_prefix|raw }}{{ last_page }}.html" title="{{ last_page_start }} to {{ last_page_end }}"{% if last_page == next_page %} class="next"{% endif %}>{{ last_page }}</a>
             {% else %}                
                 <span>{{ last_page }}</span>
             {% endif %}
