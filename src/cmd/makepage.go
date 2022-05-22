@@ -87,14 +87,6 @@ var makepageCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(makepageCmd)
 
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// makepageCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
 	fromFile = makepageCmd.Flags().StringP("from", "f", "", "File to convert from")
 	toFile = makepageCmd.Flags().StringP("to", "t", "", "File to convert to")
 
