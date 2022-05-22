@@ -123,12 +123,14 @@ func makeThumbnail(filename string) error {
 	if isElementExists(fileType, []string{"image/jpeg", "image/gif", "image/png"}) {
 		thumbnailFilename := getThumbnailFilename(filename)
 		file, err := os.Open(thumbnailFilename)
+		madeFile := false
 		if err != nil {
 			file, err = os.Create(thumbnailFilename)
+			madeFile = true
 		}
 		defer file.Close()
 		// If we're regenerating or if the file does not exist
-		if ThumbnailOptions.Regenerate || errors.Is(err, os.ErrNotExist) {
+		if ThumbnailOptions.Regenerate || madeFile {
 			img, err := readImage(filename)
 			if err != nil {
 				log.Fatalf("Could not read the base image %s\n", filename)
