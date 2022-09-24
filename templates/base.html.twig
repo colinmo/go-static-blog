@@ -1,34 +1,38 @@
 <!DOCTYPE html>
 <html class="no-js" lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width" />
-  <meta name="author" content="Colin Morris">
-  <title>{% if title != "" %}{{ title}} | {% endif %}Professor von Explaino</title>
-  <link rel="pingback" href="https://webmention.io/vonexplaino.com/xmlrpc" />
-  <link rel="webmention" href="https://webmention.io/vonexplaino.com/webmention" />
-  <link href="https://vonexplaino.com/blog/style/blog.css" rel="stylesheet" />
-  <link href="https://vonexplaino.com/blog/style/whostyle.css" rel="whostyle" />
-  <link rel="alternate" type="application/rss+xml" title="Professor von Explaino's Journal RSS Feed" href="https://vonexplaino.com/blog/rss.xml" />
-<link rel="apple-touch-icon" sizes="57x57" href="/theme/images/favicon/apple-icon-57x57.png">
-<link rel="apple-touch-icon" sizes="60x60" href="/theme/images/favicon/apple-icon-60x60.png">
-<link rel="apple-touch-icon" sizes="72x72" href="/theme/images/favicon/apple-icon-72x72.png">
-<link rel="apple-touch-icon" sizes="76x76" href="/theme/images/favicon/apple-icon-76x76.png">
-<link rel="apple-touch-icon" sizes="114x114" href="/theme/images/favicon/apple-icon-114x114.png">
-<link rel="apple-touch-icon" sizes="120x120" href="/theme/images/favicon/apple-icon-120x120.png">
-<link rel="apple-touch-icon" sizes="144x144" href="/theme/images/favicon/apple-icon-144x144.png">
-<link rel="apple-touch-icon" sizes="152x152" href="/theme/images/favicon/apple-icon-152x152.png">
-<link rel="apple-touch-icon" sizes="180x180" href="/theme/images/favicon/apple-icon-180x180.png">
-<link rel="icon" type="image/png" sizes="192x192" href="/theme/images/favicon/android-icon-192x192.png">
-<link rel="icon" type="image/png" sizes="32x32" href="/theme/images/favicon/favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="96x96" href="/theme/images/favicon/favicon-96x96.png">
-<link rel="icon" type="image/png" sizes="16x16" href="/theme/images/favicon/favicon-16x16.png">
-<link rel="manifest" href="/manifest.json">
-<meta name="msapplication-TileColor" content="#ffffff" />
-<meta name="msapplication-TileImage" content="/theme/images/favicon/ms-icon-144x144.png" />
-<meta name="theme-color" content="#ffffff" />
-<meta name="description" content="{{ synopsis|default("Personal site for Colin Morris/ Professor von Explaino. Contains PHP code, Steampunk") }}" />
-<meta property="og:image" content="{{ featureimage|default("https://s0.wp.com/mshots/v1/" ~ link|url_encode ~ "?vpw=480&vph=380") }}" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+    <title>{% if title != "" %}{{ title }} | {% endif %}Professor von Explaino</title>
+    <script type="module">
+        document.documentElement.classList.remove('no-js');
+        document.documentElement.classList.add('js');
+    </script>
+    <link rel="stylesheet" href="https://vonexplaino.com/blog/style/blog.css" />
+    <meta name="description" content="{{ synopsis|default("Personal site for Colin Morris/ Professor von Explaino. Contains PHP code, Steampunk") }}" />
+    <meta name="author" content="Colin Morris">
+    <link rel="pingback" href="https://webmention.io/vonexplaino.com/xmlrpc" />
+    <link rel="webmention" href="https://webmention.io/vonexplaino.com/webmention" />
+    <link rel="whostyle" href="https://vonexplaino.com/blog/style/whostyle.css" />
+    <link rel="alternate" type="application/rss+xml" title="Professor von Explaino's Journal RSS Feed" href="https://vonexplaino.com/blog/rss.xml" />
+    <link rel="apple-touch-icon" sizes="57x57" href="/theme/images/favicon/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="/theme/images/favicon/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/theme/images/favicon/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="/theme/images/favicon/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/theme/images/favicon/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="/theme/images/favicon/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="/theme/images/favicon/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="/theme/images/favicon/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/theme/images/favicon/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/theme/images/favicon/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/theme/images/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="/theme/images/favicon/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/theme/images/favicon/favicon-16x16.png">
+    <link rel="manifest" href="/manifest.json">
+    <meta name="msapplication-TileColor" content="#ffffff" />
+    <meta name="msapplication-TileImage" content="/theme/images/favicon/ms-icon-144x144.png" />
+    <meta name="theme-color" content="#ffffff" />
+    <meta property="og:image" content="{{ featureimage|default("https://s0.wp.com/mshots/v1/" ~ link|url_encode ~ "?vpw=480&vph=380") }}" />
 {% block extraheaders %}{% endblock %}
 </head>
 <body class="container">
@@ -46,11 +50,11 @@
         </nav>
     </section>
     <script src="https://vonexplaino.com/blog/js/blog.js" defer></script>
-    <link rel="stylesheet"
-      href="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.3.1/build/styles/default.min.css">
-    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.3.1/build/highlight.min.js" integrity="sha384-zDX/4RkDnpVxZkjJjxdzDsT1Kk2XThh7u47fXdgZ1W8AMjb//F4ZK4G4y7oNVHM1" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.3.1/languages/go.min.js" integrity="sha384-A6CJZ7OeaXXC4LutjeFo0FxlK24jyAHVL9XOabzyQq+HjDPuBg+18Zx9oyqMHheI" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.3.1/languages/dockerfile.min.js" integrity="sha384-3ilAVZi+IwUNRoAID8Q+ks9keix7cmed6fRtA8x9+PHtSRL8NA93caMUHxbhgb6G" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.3.1/build/styles/default.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js" integrity="sha512-yUUc0qWm2rhM7X0EFe82LNnv2moqArj5nro/w1bi05A09hRVeIZbN6jlMoyu0+4I/Bu4Ck/85JQIU82T82M28w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/languages/go.min.js" integrity="sha512-E39wu3ruoRgZiQ3GXdHGjdbHB3jyiq6zi6VCxT/31VnbIcKMiG0oIissj7E3XHPM8QM4CLHQzsCtiKwJXv99Og==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/languages/dockerfile.min.js" integrity="sha512-WIkfvdyru7M8xZwRAo2iaJS26LfLbiHTNxbDskU4zjmFz3zzcstiEbH+xqC21HZaK2weK1L+vvUx3ytpGCLzSA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/languages/latex.min.js" integrity="sha512-Mswap5QDVK9sDrMVPQKO+EYU/JMYzbIsymX8To/E2UfpZt0nkhM/uU6phMBmt340aqvf5U5a+Pe6KWX3ddMk+A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script>hljs.highlightAll();</script>
     <style>
     .hljs{display:block;overflow-x:auto;padding:.5em;background:#23241f}.hljs,.hljs-tag,.hljs-subst{color:#f8f8f2}.hljs-strong,.hljs-emphasis{color:#a8a8a2}.hljs-bullet,.hljs-quote,.hljs-number,.hljs-regexp,.hljs-literal,.hljs-link{color:#ae81ff}.hljs-code,.hljs-title,.hljs-section,.hljs-selector-class{color:#a6e22e}.hljs-strong{font-weight:bold}.hljs-emphasis{font-style:italic}.hljs-keyword,.hljs-selector-tag,.hljs-name,.hljs-attr{color:#f92672}.hljs-symbol,.hljs-attribute{color:#66d9ef}.hljs-params,.hljs-class .hljs-title{color:#f8f8f2}.hljs-string,.hljs-type,.hljs-built_in,.hljs-builtin-name,.hljs-selector-id,.hljs-selector-attr,.hljs-selector-pseudo,.hljs-addition,.hljs-variable,.hljs-template-variable{color:#e6db74}.hljs-comment,.hljs-deletion,.hljs-meta{color:#75715e}
