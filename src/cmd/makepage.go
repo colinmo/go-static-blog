@@ -5,7 +5,7 @@ Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+	http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
@@ -482,13 +482,7 @@ func frontMatterValidate(frontMatter *FrontMatter, filename string) []string {
 	// Valids
 	validTypes := []string{"article", "reply", "indieweb", "tweet", "resume", "event", "page", "review"}
 	if filename != "" && frontMatter.Type == "" {
-		re := regexp.MustCompile(`[/\\]posts[/\\](` + strings.Join(validTypes, "|") + `)[/\\]`)
-		indexes := re.FindStringSubmatch(filename)
-		if indexes != nil {
-			frontMatter.Type = strings.ToLower(indexes[1])
-		} else {
-			log.Fatalf("Could not auto determine type from %s\n", filename)
-		}
+		frontMatter.Type = defaultType(validTypes, filename)
 	} else {
 		frontMatter.Type = strings.ToLower(frontMatter.Type)
 	}
@@ -508,29 +502,41 @@ func frontMatterValidate(frontMatter *FrontMatter, filename string) []string {
 	}
 	// Need to do this after Link is created
 	if len(frontMatter.FeatureImage) == 0 {
-		if len(frontMatter.InReplyTo) > 0 {
-			frontMatter.FeatureImage = fmt.Sprintf(wordpressThumbnailTemplate, url.QueryEscape(frontMatter.InReplyTo))
-		} else if len(frontMatter.BookmarkOf) > 0 {
-			frontMatter.FeatureImage = fmt.Sprintf(wordpressThumbnailTemplate, url.QueryEscape(frontMatter.BookmarkOf))
-		} else if len(frontMatter.FavoriteOf) > 0 {
-			frontMatter.FeatureImage = fmt.Sprintf(wordpressThumbnailTemplate, url.QueryEscape(frontMatter.FavoriteOf))
-		} else if len(frontMatter.RepostOf) > 0 {
-			frontMatter.FeatureImage = fmt.Sprintf(wordpressThumbnailTemplate, url.QueryEscape(frontMatter.RepostOf))
-		} else if len(frontMatter.LikeOf) > 0 {
-			frontMatter.FeatureImage = fmt.Sprintf(wordpressThumbnailTemplate, url.QueryEscape(frontMatter.LikeOf))
-		} else {
-			frontMatter.FeatureImage = fmt.Sprintf(wordpressThumbnailTemplate, url.QueryEscape(frontMatter.Link))
-		}
+		frontMatter.FeatureImage = defaultFeatureImage(frontMatter)
 	}
 	var splitted = strings.Split(frontMatter.Link, "/posts")
 	if len(splitted) < 2 {
-		log.Fatalf("Could not get a posts link for %s\n", frontMatter.Link)
+		collectedErrors = append(collectedErrors, fmt.Sprintf("Could not get a posts link for %s", frontMatter.Link))
+	} else {
+		frontMatter.RelativeLink = splitted[1]
 	}
-	frontMatter.RelativeLink = strings.Split(frontMatter.Link, "/posts")[1]
 	if len(frontMatter.Resume.Contact.Name) > 0 {
 		frontMatterValidateExperience(frontMatter)
 	}
 	return collectedErrors
+}
+func defaultType(validTypes []string, filename string) string {
+	re := regexp.MustCompile(`[/\\]posts[/\\](` + strings.Join(validTypes, "|") + `)[/\\]`)
+	indexes := re.FindStringSubmatch(filename)
+	if indexes != nil {
+		return strings.ToLower(indexes[1])
+	}
+	return ""
+}
+
+func defaultFeatureImage(frontMatter *FrontMatter) string {
+	if len(frontMatter.InReplyTo) > 0 {
+		return fmt.Sprintf(wordpressThumbnailTemplate, url.QueryEscape(frontMatter.InReplyTo))
+	} else if len(frontMatter.BookmarkOf) > 0 {
+		return fmt.Sprintf(wordpressThumbnailTemplate, url.QueryEscape(frontMatter.BookmarkOf))
+	} else if len(frontMatter.FavoriteOf) > 0 {
+		return fmt.Sprintf(wordpressThumbnailTemplate, url.QueryEscape(frontMatter.FavoriteOf))
+	} else if len(frontMatter.RepostOf) > 0 {
+		return fmt.Sprintf(wordpressThumbnailTemplate, url.QueryEscape(frontMatter.RepostOf))
+	} else if len(frontMatter.LikeOf) > 0 {
+		return fmt.Sprintf(wordpressThumbnailTemplate, url.QueryEscape(frontMatter.LikeOf))
+	}
+	return fmt.Sprintf(wordpressThumbnailTemplate, url.QueryEscape(frontMatter.Link))
 }
 
 func parseFrontMatter(inFrontMatter string, filename string) (FrontMatter, error) {

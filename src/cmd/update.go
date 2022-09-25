@@ -5,7 +5,7 @@ Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+	http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
@@ -23,6 +23,7 @@ import (
 	"math"
 	"net/http"
 	"os"
+	"os/exec"
 	"path"
 	"path/filepath"
 	"regexp"
@@ -38,37 +39,63 @@ import (
 var formatStringDMonthYear = "2 January 2006"
 
 func updateFullRegenerate() (RSS, map[string][]FrontMatter, map[string]Item, map[string]struct{}, GitDiffs, error) {
-	postsById := map[string]Item{}
 	PrintIfNotSilent("Full\n")
+	postsById := map[string]Item{}
 	allPosts := RSS{}
+	tags := map[string][]FrontMatter{}
+	filesToDelete := map[string]struct{}{}
+	var changes GitDiffs
+	var err error
+
+	PrintIfNotSilent("Temp Dir\n")
+	SwapDir := ConfigData.BaseDir
+	ConfigData.BaseDir = ConfigData.TempDir
 	ClearDir(ConfigData.BaseDir)
-	os.MkdirAll(fmt.Sprintf("%s%s", ConfigData.BaseDir, "tag"), 0755)
+	os.MkdirAll(filepath.Join(ConfigData.TempDir, "tag"), 0755)
 	GitPull()
-	changes, err := PopulateAllGitFiles(ConfigData.RepositoryDir)
+	changes, err = PopulateAllGitFiles(ConfigData.RepositoryDir)
 	if err != nil {
-		log.Fatalf("Failed to get files in directory %s\n", ConfigData.RepositoryDir)
+		return allPosts, tags, postsById, filesToDelete, changes, fmt.Errorf("failed to get files in the directory %s", ConfigData.RepositoryDir)
 	}
-	tags, filesToDelete, postsById := getAllChangedTagsAndDeletedFiles(changes, postsById)
-	tags, postsById, err = processFileUpdates(changes, tags, postsById)
+	tags, filesToDelete, postsById = getAllChangedTagsAndDeletedFiles(changes, postsById)
+	tags, postsById, _ = processFileUpdates(changes, tags, postsById)
+
+	PrintIfNotSilent("Swap across\n")
+	var out bytes.Buffer
+	cmd := exec.Command(`/usr/bin/rsync`, "-ravh", ConfigData.BaseDir, SwapDir, "--delete")
+	cmd.Stdout = &out
+	err = cmd.Run()
+	PrintIfNotSilent("\n" + out.String() + "\n")
+	PrintIfNotSilent("/usr/bin/rsync -ravh --delete " + ConfigData.BaseDir + " " + SwapDir)
+	ClearDir(ConfigData.TempDir)
+	ConfigData.BaseDir = SwapDir
 	return allPosts, tags, postsById, filesToDelete, changes, err
 }
 
 func updateChangedRegenerate() (RSS, map[string][]FrontMatter, map[string]Item, map[string]struct{}, GitDiffs, error) {
-	postsById := map[string]Item{}
 	PrintIfNotSilent("Changed\n")
+	postsById := map[string]Item{}
+	allPosts := RSS{}
+	tags := map[string][]FrontMatter{}
+	filesToDelete := map[string]struct{}{}
+	var changes GitDiffs
+	var err error
 
 	// Get all posts from the all published posts RSS file
-	allPosts, _ := ReadRSS(ConfigData.BaseDir + "/rss.xml")
+	allPosts, err = ReadRSS(filepath.Join(ConfigData.BaseDir, "rss.xml"))
+	if err != nil {
+		return allPosts, tags, postsById, filesToDelete, changes, fmt.Errorf("failed to read the RSS file %v", err)
+	}
 	for _, i := range allPosts.Channel.Items {
 		postsById[i.GUID] = i
 	}
-	changes := GitRunDiff()
+	changes = GitRunDiff()
 	// Get the tags to update and files to delete
-	tags, filesToDelete, postsById := getAllChangedTagsAndDeletedFiles(changes, postsById)
+	tags, filesToDelete, postsById = getAllChangedTagsAndDeletedFiles(changes, postsById)
 	// Update the files
 	GitPull()
 	// Get the changed tags, building the new pages as we go
-	tags, postsById, err := processFileUpdates(changes, tags, postsById)
+	tags, postsById, err = processFileUpdates(changes, tags, postsById)
 	return allPosts, tags, postsById, filesToDelete, changes, err
 }
 
@@ -138,7 +165,7 @@ func getAllChangedTagsAndDeletedFiles(changes GitDiffs, postsById map[string]Ite
 		tags, _, _ = getTagsFromPost(filename, tags)
 	}
 	for _, filename := range changes.Deleted {
-		tags, _, _ = getTagsFromPost(filename, tags)
+		tags, _, _ = getTagsFromPost(filepath.Join(ConfigData.BaseDir, filename), tags)
 		// Get the linked HTML page for deleted files
 		filesToDelete, linkString = getTargetFilenameFromPost(filename, filesToDelete)
 		// Delete it from the Tag list as found in the RSS file
@@ -172,8 +199,6 @@ func getTagsFromPost(postName string, tags map[string][]FrontMatter) (map[string
 				tag = strings.ToLower(tag)
 				tags[tag] = append(tags[tag], frontmatter)
 			}
-		} else {
-			log.Fatalf("Couldn't get tags %v [%s]\n", err, ConfigData.RepositoryDir+postName)
 		}
 	}
 	return tags, frontmatter, html
@@ -209,7 +234,8 @@ func processMDFile(tags *map[string][]FrontMatter, postsById *map[string]Item, f
 		os.MkdirAll(targetDir, 0755)
 	}
 	err = os.WriteFile(targetFile, []byte(html), 0755)
-	if frontmatter.Status != "draft" && (frontmatter.Type == "article" || frontmatter.Type == "review" || (frontmatter.Type == "indieweb" && (len(frontmatter.BookmarkOf) > 0 || len(frontmatter.LikeOf) > 0))) {
+	if frontmatter.Status != "draft" &&
+		(frontmatter.Type == "article" || frontmatter.Type == "review" || (frontmatter.Type == "indieweb" && (len(frontmatter.BookmarkOf) > 0 || len(frontmatter.LikeOf) > 0))) {
 		(*postsById)[frontmatter.Link] = PostToItem(frontmatter)
 		PrintIfNotSilent("P")
 	} else {

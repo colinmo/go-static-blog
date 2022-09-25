@@ -280,3 +280,53 @@ func TestTextToSlug(t *testing.T) {
 		}
 	}
 }
+
+func TestDefaultTypes(t *testing.T) {
+	if defaultType([]string{"article"}, "/posts/article/2022/01/dude.md") != "article" {
+		t.Fatalf("Failed to get an type from a url")
+	}
+	if defaultType([]string{"article", "reply"}, "/posts/dude/2022/01/dude.md") != "" {
+		t.Fatalf("Erroneously got a type from a bad path")
+	}
+}
+
+func TestDefaultFeatureImage(t *testing.T) {
+	var x string
+	wordpressThumbnailTemplate = `https://wp.dude.com/thumbnail?%s`
+	tests := []struct {
+		fm   FrontMatter
+		xpct string
+	}{
+		{
+			fm:   FrontMatter{InReplyTo: "https://testme.com/"},
+			xpct: `https://wp.dude.com/thumbnail?https%3A%2F%2Ftestme.com%2F`,
+		},
+		{
+			fm:   FrontMatter{BookmarkOf: "https://testme.com/"},
+			xpct: `https://wp.dude.com/thumbnail?https%3A%2F%2Ftestme.com%2F`,
+		},
+		{
+			fm:   FrontMatter{FavoriteOf: "https://testme.com/"},
+			xpct: `https://wp.dude.com/thumbnail?https%3A%2F%2Ftestme.com%2F`,
+		},
+		{
+			fm:   FrontMatter{RepostOf: "https://testme.com/"},
+			xpct: `https://wp.dude.com/thumbnail?https%3A%2F%2Ftestme.com%2F`,
+		},
+		{
+			fm:   FrontMatter{LikeOf: "https://testme.com/"},
+			xpct: `https://wp.dude.com/thumbnail?https%3A%2F%2Ftestme.com%2F`,
+		},
+		{
+			fm:   FrontMatter{InReplyTo: "https://testme.com/", LikeOf: "https://mep.com"},
+			xpct: `https://wp.dude.com/thumbnail?https%3A%2F%2Ftestme.com%2F`,
+		},
+	}
+
+	for _, fTest := range tests {
+		x = defaultFeatureImage(&fTest.fm)
+		if x != fTest.xpct {
+			t.Fatalf("Bad thumbnail for [%s][%s]", x, fTest.xpct)
+		}
+	}
+}

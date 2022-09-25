@@ -64,7 +64,6 @@ func ReadRSS(filename string) (RSS, error) {
 
 	err = xml.Unmarshal(byteValue, &feed)
 	if err == nil {
-
 		for i := range feed.Channel.Items {
 			feed.Channel.Items[i].PubDateAsDate, _ = time.Parse(
 				//"Mon, 02 Jan 2006 15:04:05 -0700",

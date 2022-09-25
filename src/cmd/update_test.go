@@ -219,6 +219,16 @@ func TestWriteLatestPost(t *testing.T) {
 }
 
 func TestUpdateFullRegenerate(t *testing.T) {
+	// Bad config
+	ConfigData.BaseDir = `f:\bananadaquiry\`
+	ConfigData.RepositoryDir = `f:\enchillada\`
+	ConfigData.BaseURL = `https://vonexplaino.com/`
+	ConfigData.TemplateDir = `f:\Dropbox\swap\golang\vonblog\templates\`
+	_, _, _, _, _, err := updateFullRegenerate()
+	if err == nil {
+		t.Fatalf("Didn't detect bad directory")
+	}
+	//
 	ConfigData.BaseDir = `f:\Dropbox\swap\golang\vonblog\features\tests\update\fullregenbase\`
 	ConfigData.RepositoryDir = `f:\Dropbox\swap\golang\vonblog\features\tests\update\fullregenrep\`
 	// Empty Repo
@@ -317,6 +327,9 @@ func TestUpdateChangedRegenerate(t *testing.T) {
 	gitCommand = `f:\Dropbox\swap\golang\vonblog\features\tests\update\scripts\changed-nochanges.bat`
 
 	allPosts, tags, postsById, filesToDelete, changes, err := updateChangedRegenerate()
+	if err != nil {
+		t.Fatalf("Something dun goofed %v\n", err)
+	}
 	if len(allPosts.Channel.Items) > 0 {
 		t.Fatalf("All posts had something in it")
 	}
@@ -332,13 +345,33 @@ func TestUpdateChangedRegenerate(t *testing.T) {
 	if len(changes.Added) > 0 {
 		t.Fatalf("Changes added had things")
 	}
-	if err != nil {
-		t.Fatalf("Something dun goofed %v\n", err)
-	}
 
 	// Changed
 
 	// Deleted
+	ConfigData.BaseDir = `f:\Dropbox\swap\golang\vonblog\features\tests\update\deleted\`
+	gitCommand = `f:\Dropbox\swap\golang\vonblog\features\tests\update\scripts\changed-deleted.bat`
+
+	allPosts, tags, postsById, filesToDelete, changes, err = updateChangedRegenerate()
+	if err != nil {
+		t.Fatalf("Something dun goofed %v\n", err)
+	}
+	if len(allPosts.Channel.Items) != 2 {
+		fmt.Printf("%v\n", allPosts)
+		t.Fatalf("Failed to parse the RSS file %s [%d]", filepath.Join(ConfigData.BaseDir, "rss.xml"), len(allPosts.Channel.Items))
+	}
+	if len(tags) > 0 {
+		t.Fatalf("Tags had something in it")
+	}
+	if len(postsById) != 2 {
+		t.Fatalf("Posts by id had something in it [%d]", len(postsById))
+	}
+	if len(filesToDelete) != 1 {
+		t.Fatalf("Where's the delete?")
+	}
+	if len(changes.Added) > 0 {
+		t.Fatalf("Changes added had things")
+	}
 
 	// Added
 

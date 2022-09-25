@@ -8,7 +8,7 @@ import (
 )
 
 func TestGitRunCommand(t *testing.T) {
-	version := runGitCommand(gitCommand, []string{"version"})
+	version, _ := runGitCommand(gitCommand, []string{"version"})
 	if version[0:11] != "git version" {
 		t.Fatalf(`Curses, it was supposed to be "git version": "%s"\n`, version[0:11])
 	}

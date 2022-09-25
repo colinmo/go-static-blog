@@ -3,7 +3,6 @@ package cmd
 import (
 	"bytes"
 	"fmt"
-	"log"
 	"os"
 	"os/exec"
 	"strings"
@@ -53,11 +52,12 @@ func ProcessGitDiffs(resultsStr string) GitDiffs {
 		Unmerged:   make([]string, 0),
 	}
 	for _, line := range strings.Split(resultsStr, "\n") {
+		line = strings.TrimSpace(line)
 		if len(line) == 0 {
 			break
 		}
-		index := string(line[0])
-		rest := strings.TrimSpace(string(line[1:]))
+		index := line[0:1]
+		rest := strings.TrimSpace(line[2:])
 		switch index {
 		case "M":
 			returnDiffs.Modified = append(returnDiffs.Modified, rest)
@@ -77,14 +77,15 @@ func ProcessGitDiffs(resultsStr string) GitDiffs {
 }
 
 func GitRunDiff() GitDiffs {
-	return ProcessGitDiffs(runGitCommand(gitCommand, []string{"diff", "master", "origin/master", "--name-status"}))
+	result, _ := runGitCommand(gitCommand, []string{"diff", "master", "origin/master", "--name-status"})
+	return ProcessGitDiffs(result)
 }
 
 func GitGetFileAges(file string) {
 	runGitCommand(gitCommand, []string{"diff", "master", "origin/master", "--name-status"})
 }
 
-func runGitCommand(command string, parameters []string) string {
+func runGitCommand(command string, parameters []string) (string, error) {
 	if !gitEnvSet {
 		setEnvironments()
 	}
@@ -93,8 +94,7 @@ func runGitCommand(command string, parameters []string) string {
 	cmd.Dir = ConfigData.RepositoryDir
 	cmd.Stdout = &out
 	if err := cmd.Run(); err != nil {
-		fmt.Printf("Command didn't run %s, %v\n", command, parameters)
-		log.Fatal(err)
+		return "", fmt.Errorf("command didn't run %s, %v", command, parameters)
 	}
-	return out.String()
+	return out.String(), nil
 }
