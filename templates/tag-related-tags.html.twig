@@ -1,0 +1,6 @@
+{% if related_tags|length > 0 %}<ul id="related-tags">{% for tag in related_tags|keys %}
+<li>{{ tag }}
+<ul>{% for rel_tag in related_tags[tag] %}
+    <li><a href="{{rel_tag.Link}}">{{rel_tag.Title}}</a></li>
+{% endfor %}</ul></li>
+{% endfor %}</ul>{% endif %}
