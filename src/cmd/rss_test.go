@@ -20,6 +20,9 @@ func TestReadRSS(t *testing.T) {
 	if mek.Channel.Title != "Professor von Explaino" {
 		t.Fatalf(`Channel Title didn't parse [%s]`, mek.Channel.Title)
 	}
+	if len(mek.Channel.Items[0].Tags) != 1 {
+		t.Fatalf(`Failed to parse tag count %d`, len(mek.Channel.Items[0].Tags))
+	}
 }
 
 func TestReadWriteRSS(t *testing.T) {
@@ -30,9 +33,8 @@ func TestReadWriteRSS(t *testing.T) {
 	ConfigData.Metadata.Webmaster = `professor@vonexplaino.com (Colin Morris)`
 	ConfigData.Metadata.Ttl = 40
 	ConfigData.BaseDir = `f:\Dropbox\swap\golang\vonblog\features\tests\rss\`
-	testBaseDir := `f:\Dropbox\swap\golang\vonblog\features\tests\rss\`
 
-	mek, err := ReadRSS(testBaseDir + `rss1.xml`)
+	mek, err := ReadRSS(ConfigData.BaseDir + `rss1.xml`)
 	if err != nil {
 		t.Fatalf(`Failed to parse %s`, err)
 	}
@@ -45,8 +47,8 @@ func TestReadWriteRSS(t *testing.T) {
 		t.Fatalf(`Could not load tags`)
 	}
 
-	f1, _ := ioutil.ReadFile(testBaseDir + `rss1.xml`)
-	f2, _ := ioutil.ReadFile(testBaseDir + `rss1_out.xml`)
+	f1, _ := ioutil.ReadFile(ConfigData.BaseDir + `rss1.xml`)
+	f2, _ := ioutil.ReadFile(ConfigData.BaseDir + `rss1_out.xml`)
 
 	rep := regexp.MustCompile(`\n\s*`)
 

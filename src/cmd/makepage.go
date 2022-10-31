@@ -34,6 +34,7 @@ import (
 	"github.com/tyler-sommer/stick"
 	"github.com/tyler-sommer/stick/twig"
 	"github.com/yuin/goldmark"
+	meta "github.com/yuin/goldmark-meta"
 	"github.com/yuin/goldmark/extension"
 	"github.com/yuin/goldmark/parser"
 	"github.com/yuin/goldmark/renderer/html"
@@ -50,7 +51,7 @@ var makepageCmd = &cobra.Command{
 	Short: "Convert markdown page into html page",
 	Long: `Converts a markdown page into an html page:
 
-           Uses golang markdown and a local html template file to generate blog posts.`,
+Uses golang markdown and a local html template file to generate blog posts.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		var txt2 []byte
 		var err error
@@ -92,7 +93,7 @@ func init() {
 
 	// Default Markdown parser
 	md = goldmark.New(
-		goldmark.WithExtensions(extension.GFM, extension.Footnote),
+		goldmark.WithExtensions(extension.GFM, extension.Footnote, meta.New(meta.WithStoresInDocument())),
 		goldmark.WithParserOptions(
 			parser.WithAutoHeadingID(),
 			parser.WithAttribute(),
@@ -223,13 +224,13 @@ func parseFile(filename string) (string, FrontMatter, error) {
 }
 
 // parseString parses the passed string and returns the html conversion and yaml frontmatter
-func parseString(txt string, filename string) (string, FrontMatter, error) {
+func parseString(body string, filename string) (string, FrontMatter, error) {
 	var html2 string
 	var err error
 	var frontMatter FrontMatter
 
 	// Parse the frontmatter at the start of the file
-	split := strings.SplitN(string(txt), "===", 2)
+	split := strings.SplitN(body[3:], "---", 2)
 	if len(split) != 2 {
 		return html2, frontMatter, err
 	}
@@ -237,7 +238,6 @@ func parseString(txt string, filename string) (string, FrontMatter, error) {
 	if err != nil {
 		return html2, frontMatter, err
 	}
-	body := split[1]
 
 	// Convert the Gallery tags
 	var buf2 bytes.Buffer
