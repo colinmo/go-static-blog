@@ -16,7 +16,9 @@ limitations under the License.
 package cmd
 
 import (
+	"bytes"
 	"fmt"
+	"io"
 	"net/http"
 	"os"
 	"strconv"
@@ -93,6 +95,7 @@ type ConfigDataStruct struct {
 	BlogStats     BlogStats
 	AboutMe       AboutMe
 	Thumbnails    Thumbnails
+	TagSnippets   []string
 }
 
 var ConfigData ConfigDataStruct
@@ -183,11 +186,14 @@ func initConfig() {
 		ConfigData.AboutMe.Withings.OauthURL = viper.GetString("aboutme.withings.oauthurl")
 		ConfigData.AboutMe.Withings.MassURL = viper.GetString("aboutme.withings.massurl")
 		ConfigData.AboutMe.Withings.StepsURL = viper.GetString("aboutme.withings.stepsurl")
+		// Thumbnails
 		ConfigData.Thumbnails.Width = uint(viper.GetInt("thumbnails.width"))
 		ConfigData.Thumbnails.Height = uint(viper.GetInt("thumbnails.height"))
 		ConfigData.Thumbnails.Extension = viper.GetString("thumbnails.extension")
-		ConfigData.Thumbnails.Type = viper.GetString("thumbnails.type")
+		ConfigData.Thumbnails.Type = viper.GetString("thumbnails.type")	
 		ConfigData.TempDir = viper.GetString("tempDir")
+		// MISC
+		ConfigData.TagSnippets = viper.GetStringSlice("tagSnippets")
 	}
 }
 
@@ -204,4 +210,15 @@ func PrintIfNotSilent(toPrint string) {
 	if !Silent {
 		fmt.Print(toPrint)
 	}
+}
+
+func myReadAll(f string) (string, error) {
+	g, err := os.Open(f)
+	if err != nil {
+		return "", err
+	}
+	defer g.Close()
+	var buf bytes.Buffer
+	io.Copy(&buf, g)
+	return buf.String(), err
 }

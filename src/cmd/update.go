@@ -100,6 +100,7 @@ func updateChangedRegenerate() (RSS, map[string][]FrontMatter, map[string]Item, 
 }
 
 func deleteAndRegenerate(allPosts RSS, tags map[string][]FrontMatter, postsById map[string]Item, filesToDelete map[string]struct{}, changes GitDiffs) {
+	allTagMap := map[string][]FrontMatter{}
 	// Delete any linked deleted HTML or Media pages
 	for filename := range filesToDelete {
 		os.Remove(ConfigData.BaseDir + filename)
@@ -110,8 +111,15 @@ func deleteAndRegenerate(allPosts RSS, tags map[string][]FrontMatter, postsById 
 	allPosts.Channel.Items = []Item{}
 	allItems := []FrontMatter{}
 	for _, i := range postsById {
+		newPost := ItemToPost(i)
 		allPosts.Channel.Items = append(allPosts.Channel.Items, i)
-		allItems = append(allItems, ItemToPost(i))
+		allItems = append(allItems, newPost)
+		for _, j := range newPost.Tags {
+			if _, ok := allTagMap[j]; !ok {
+				allTagMap[j] = []FrontMatter{}
+			}
+			allTagMap[j] = append(allTagMap[j], newPost)
+		}
 	}
 	WriteRSS(allPosts, "/rss.xml")
 	WriteListHTML(allItems, "index", "Journal")
@@ -121,9 +129,62 @@ func deleteAndRegenerate(allPosts RSS, tags map[string][]FrontMatter, postsById 
 			break
 		}
 	}
+	// Create tag-page for Code and Steampunk embedding
+	for _, tag := range ConfigData.TagSnippets {
+		PrintIfNotSilent(fmt.Sprintf("Regenerating snippet for %s (%d)\n", tag, len(allTagMap[tag])))
+		content, err := createTagPageSnippetForTag(tag, allTagMap[tag], postsById)
+		if err == nil {
+			PrintIfNotSilent("ok")
+			os.WriteFile(filepath.Join(ConfigData.BaseDir, "tag-snippet-"+tag+".html"), content, 0666)
+		} else {
+			PrintIfNotSilent(fmt.Sprintf("Failed %v", err))
+			fmt.Printf("failed %v\n", err)
+		}
+	}
+	// Output stats
 	if Totals {
 		fmt.Printf("\nTotals: A: %d, M: %d, D: %d\n", len(changes.Added), len(changes.Modified)+len(changes.RenameEdit)+len(changes.Unmerged), len(changes.Deleted))
 	}
+}
+
+func createTagPageSnippetForTag(tag string, tagsForString []FrontMatter, postsById map[string]Item) ([]byte, error) {
+	var twigTags map[string]stick.Value
+	var relatedTags map[string][]struct {
+		Link  string
+		Title string
+	}
+	var err error
+
+	tDir := ConfigData.TemplateDir
+	env := twig.New(stick.NewFilesystemLoader(tDir))
+	relatedTags = map[string][]struct {
+		Link  string
+		Title string
+	}{}
+	for _, e := range tagsForString {
+		for _, f := range e.Tags {
+			if f != tag {
+				if _, ok := relatedTags[f]; !ok {
+					relatedTags[f] = []struct {
+						Link  string
+						Title string
+					}{}
+				}
+				relatedTags[f] = append(relatedTags[f], struct {
+					Link  string
+					Title string
+				}{Link: e.Link, Title: e.Title})
+			}
+		}
+	}
+	twigTags = map[string]stick.Value{}
+	twigTags["related_tags"] = relatedTags
+	buf := bytes.NewBufferString("")
+	err = env.Execute(
+		"tag-related-tags.html.twig",
+		buf,
+		twigTags)
+	return buf.Bytes(), err
 }
 
 // updateCmd represents the update command
