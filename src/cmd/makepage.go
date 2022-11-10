@@ -30,10 +30,12 @@ import (
 	"strings"
 	"time"
 
+	html2 "github.com/alecthomas/chroma/v2/formatters/html"
 	"github.com/spf13/cobra"
 	"github.com/tyler-sommer/stick"
 	"github.com/tyler-sommer/stick/twig"
 	"github.com/yuin/goldmark"
+	highlighting "github.com/yuin/goldmark-highlighting/v2"
 	meta "github.com/yuin/goldmark-meta"
 	"github.com/yuin/goldmark/extension"
 	"github.com/yuin/goldmark/parser"
@@ -93,7 +95,17 @@ func init() {
 
 	// Default Markdown parser
 	md = goldmark.New(
-		goldmark.WithExtensions(extension.GFM, extension.Footnote, meta.New(meta.WithStoresInDocument())),
+		goldmark.WithExtensions(
+			extension.GFM,
+			extension.Footnote,
+			meta.New(meta.WithStoresInDocument()),
+			highlighting.NewHighlighting(
+				highlighting.WithStyle("monokai"),
+				highlighting.WithFormatOptions(
+					html2.WithLineNumbers(true),
+				),
+			),
+		),
 		goldmark.WithParserOptions(
 			parser.WithAutoHeadingID(),
 			parser.WithAttribute(),

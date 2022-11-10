@@ -48,9 +48,9 @@ func updateFullRegenerate() (RSS, map[string][]FrontMatter, map[string]Item, map
 	var err error
 
 	PrintIfNotSilent("Temp Dir\n")
-	SwapDir := ConfigData.BaseDir
+	SwapDir2 := ConfigData.BaseDir
 	ConfigData.BaseDir = ConfigData.TempDir
-	ClearDir(ConfigData.BaseDir)
+	ClearDir(ConfigData.TempDir)
 	os.MkdirAll(filepath.Join(ConfigData.TempDir, "tag"), 0755)
 	GitPull()
 	changes, err = PopulateAllGitFiles(ConfigData.RepositoryDir)
@@ -62,13 +62,13 @@ func updateFullRegenerate() (RSS, map[string][]FrontMatter, map[string]Item, map
 
 	PrintIfNotSilent("Swap across\n")
 	var out bytes.Buffer
-	cmd := exec.Command(`/usr/bin/rsync`, "-ravh", ConfigData.BaseDir, SwapDir, "--delete")
+	cmd := exec.Command(`/usr/bin/rsync`, "-ravh", ConfigData.BaseDir, SwapDir2, "--delete")
 	cmd.Stdout = &out
 	err = cmd.Run()
 	PrintIfNotSilent("\n" + out.String() + "\n")
-	PrintIfNotSilent("/usr/bin/rsync -ravh --delete " + ConfigData.BaseDir + " " + SwapDir)
+	PrintIfNotSilent("/usr/bin/rsync -ravh --delete " + ConfigData.BaseDir + " " + SwapDir2)
 	ClearDir(ConfigData.TempDir)
-	ConfigData.BaseDir = SwapDir
+	ConfigData.BaseDir = SwapDir2
 	return allPosts, tags, postsById, filesToDelete, changes, err
 }
 
