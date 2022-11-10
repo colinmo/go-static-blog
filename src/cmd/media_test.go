@@ -55,6 +55,20 @@ func TestDefaults(t *testing.T) {
 	}
 }
 
+func TestMakeThumbnailFor(t *testing.T) {
+	ThumbnailOptions.Extension = "-thumb.jpg"
+	// for _, r := range []string{"bob.jpg", "bob.gif", "bob.jpeg", "bob.png"} {
+	// 	if !canMakeThumbnailFor(r) {
+	// 		t.Fatalf("Should have made a thumbnail for %s", r)
+	// 	}
+	// }
+	for _, r := range []string{"bob-thumb.jpg", "mike-and-friends.txt", "SteampunkStridesProfessor-233x300-thumb-thumb.jpg"} {
+		if canMakeThumbnailFor(r) {
+			t.Fatalf("Shouldn't make a thumbnail for %s", r)
+		}
+	}
+}
+
 func TestGetThumbnailFilename(t *testing.T) {
 	ThumbnailOptions.Extension = "-thumb.jpg"
 	name := getThumbnailFilename("/usr/local/zend/apache2/mep.jpg")

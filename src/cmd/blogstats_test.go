@@ -177,8 +177,7 @@ func makeFakeTraktClient(t *testing.T) {
 	dateFormat := "2006-01-02T15:04:05.000Z"
 	ConfigData.BaseDir = ``
 	ioutil.WriteFile(ConfigData.BaseDir+"../regenerate/data/trakt-cache.json", []byte(`{"last_updated": `+todate.Format(dateFormat)+`","values": {}}`), 0444)
-	//makeTestConfig()
-	// Something deleted test config :(
+	makeTestConfig()
 
 	// Have the mock client return expected JSON
 	json, err := ioutil.ReadFile(`F:\Dropbox\swap\golang\vonblog\features\tests\blogstats\trakt-generate\trakt-example-01.json`)

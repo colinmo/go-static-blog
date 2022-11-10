@@ -78,6 +78,7 @@ var thumbCmd = &cobra.Command{
 
 func letsGoThumbnail() error {
 	if ThumbnailOptions.Filename == "" {
+		PrintIfNotSilent(fmt.Sprintf("Recursive: %v\b", ThumbnailOptions.Regenerate))
 		total := recursiveMediaThumbnailer(ConfigData.BaseDir + "media/")
 		PrintIfNotSilent(fmt.Sprintf("Changed %d files in %s\n", total, ConfigData.BaseDir+"media/"))
 	} else {
@@ -86,22 +87,38 @@ func letsGoThumbnail() error {
 	return nil
 }
 
+func canMakeThumbnailFor(filename string) bool {
+	// Check that it's an image file - by extension and detected type
+	ext := filepath.Ext(filename)
+	contents, err := os.Open(filename)
+	if err != nil {
+		return false
+	}
+	body := make([]byte, 512)
+	_, err = contents.Read(body)
+	contents.Close()
+	if err != nil {
+		return false
+	}
+	fileType := http.DetectContentType(body)
+	return isElementExists(strings.ToLower(ext), []string{".jpg", ".jpeg", ".gif", ".png"}) &&
+		(len(filename) < len(ThumbnailOptions.Extension) || filename[len(filename)-len(ThumbnailOptions.Extension):] != ThumbnailOptions.Extension) &&
+		isElementExists(fileType, []string{"image/jpeg", "image/gif", "image/png"})
+}
+
 func recursiveMediaThumbnailer(directory string) int {
 	changedCount := 0
 
 	files, _ := ioutil.ReadDir(directory)
 	for _, file := range files {
 		name := file.Name()
+		dirAndName := filepath.Join(directory, name)
 		if file.IsDir() {
-			changedCount += recursiveMediaThumbnailer(directory + name + "/")
-		} else if !(len(name) > len(ThumbnailOptions.Extension) &&
-			name[len(name)-len(ThumbnailOptions.Extension):] == ThumbnailOptions.Extension) {
-			if isElementExists(filepath.Ext(name), []string{".jpg", ".jpeg", ".gif", ".png"}) {
-				// Check that it's an image file - by extension and detected type
-				ok := makeThumbnail(directory + name)
-				if ok == nil {
-					changedCount++
-				}
+			changedCount += recursiveMediaThumbnailer(dirAndName)
+		} else {
+			ok := makeThumbnail(dirAndName)
+			if ok == nil {
+				changedCount++
 			}
 		}
 	}
@@ -109,23 +126,12 @@ func recursiveMediaThumbnailer(directory string) int {
 }
 
 func makeThumbnail(filename string) error {
-	contents, err := os.Open(filename)
-	if err != nil {
-		log.Fatalf("Could not process file %s\n%v\n", filename, err)
-	}
-	body := make([]byte, 512)
-	_, err = contents.Read(body)
-	contents.Close()
-	if err != nil {
-		log.Fatalf("Cound not read file %s\n", filename)
-	}
-	fileType := http.DetectContentType(body)
-	if isElementExists(fileType, []string{"image/jpeg", "image/gif", "image/png"}) {
+	if canMakeThumbnailFor(filename) {
 		thumbnailFilename := getThumbnailFilename(filename)
 		file, err := os.Open(thumbnailFilename)
 		madeFile := false
 		if err != nil {
-			file, err = os.Create(thumbnailFilename)
+			file, _ = os.Create(thumbnailFilename)
 			madeFile = true
 		}
 		defer file.Close()
@@ -133,15 +139,14 @@ func makeThumbnail(filename string) error {
 		if ThumbnailOptions.Regenerate || madeFile {
 			img, err := readImage(filename)
 			if err != nil {
-				log.Fatalf("Could not read the base image %s\n", filename)
+				return err
 			}
 			img = resize.Thumbnail(uint(ThumbnailOptions.Width), uint(ThumbnailOptions.Height), img, resize.Lanczos3)
 			return writeImage(img, thumbnailFilename)
 		}
-	} else {
-		return fmt.Errorf("can't make a thumbnail for %s", filename)
+		return nil
 	}
-	return nil
+	return fmt.Errorf("cannot make thumbnail for %s", filename)
 }
 
 func getThumbnailFilename(filename string) string {
