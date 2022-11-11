@@ -376,6 +376,7 @@ type Resume struct {
 type SyndicationLinksS struct {
 	Twitter   string `yaml:"Twitter"`
 	Instagram string `yaml:"Instagram"`
+	Mastodon  string `yaml:"Mastodon"`
 }
 
 type ItemS struct {

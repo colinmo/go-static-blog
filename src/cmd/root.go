@@ -73,6 +73,10 @@ type Withings struct {
 	MassURL      string
 	StepsURL     string
 }
+type Mastodon struct {
+	URL   string
+	Token string
+}
 type AboutMe struct {
 	Trakt    Trakt
 	Feedly   Feedly
@@ -83,6 +87,9 @@ type Thumbnails struct {
 	Width     uint
 	Extension string
 	Type      string
+}
+type Syndics struct {
+	Mastodon Mastodon
 }
 type ConfigDataStruct struct {
 	BaseDir       string
@@ -95,6 +102,7 @@ type ConfigDataStruct struct {
 	BlogStats     BlogStats
 	AboutMe       AboutMe
 	Thumbnails    Thumbnails
+	Syndication   Syndics
 	TagSnippets   []string
 }
 
@@ -192,6 +200,9 @@ func initConfig() {
 		ConfigData.Thumbnails.Extension = viper.GetString("thumbnails.extension")
 		ConfigData.Thumbnails.Type = viper.GetString("thumbnails.type")
 		ConfigData.TempDir = viper.GetString("tempDir")
+		// Syndications
+		ConfigData.Syndication.Mastodon.URL = viper.GetString("syndication.mastodon.url")
+		ConfigData.Syndication.Mastodon.Token = viper.GetString("syndication.mastodon.token")
 		// MISC
 		ConfigData.TagSnippets = viper.GetStringSlice("tagSnippets")
 	}

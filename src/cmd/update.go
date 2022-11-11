@@ -17,10 +17,12 @@ package cmd
 
 import (
 	"bytes"
+	"encoding/json"
 	"fmt"
 	"log"
 	"math"
 	"net/http"
+	"net/url"
 	"os"
 	"os/exec"
 	"path"
@@ -294,14 +296,76 @@ func processMDFile(tags *map[string][]FrontMatter, postsById *map[string]Item, f
 		os.MkdirAll(targetDir, 0755)
 	}
 	err = os.WriteFile(targetFile, []byte(html), 0755)
-	if frontmatter.Status != "draft" &&
-		(frontmatter.Type == "article" || frontmatter.Type == "review" || (frontmatter.Type == "indieweb" && (len(frontmatter.BookmarkOf) > 0 || len(frontmatter.LikeOf) > 0))) {
-		(*postsById)[frontmatter.Link] = PostToItem(frontmatter)
+	if frontmatter.Status != "draft" {
+		if frontmatter.Type == "article" ||
+			frontmatter.Type == "review" ||
+			(frontmatter.Type == "indieweb" &&
+				(len(frontmatter.BookmarkOf) > 0 ||
+					len(frontmatter.LikeOf) > 0)) {
+			(*postsById)[frontmatter.Link] = PostToItem(frontmatter)
+		}
+		if postWantsMastodonCrosspost(frontmatter) {
+			mastodonLink, err := postToMastodon(targetFile)
+			if err == nil {
+				setMastodonLink(filename, mastodonLink)
+				GitAdd(filename)
+				GitCommit("XPost")
+				GitPush()
+				frontmatter.SyndicationLinks.Mastodon = mastodonLink
+			} else {
+				PrintIfNotSilent("X")
+			}
+		}
 		PrintIfNotSilent("P")
 	} else {
 		PrintIfNotSilent("D")
 	}
 	return err
+}
+
+func postWantsMastodonCrosspost(fm FrontMatter) bool {
+	return fm.SyndicationLinks.Mastodon == "XPOST"
+}
+
+func setMastodonLink(filename string, mastodonLink string) {
+	mep, err := os.ReadFile(filename)
+	if err == nil {
+		replc := regexp.MustCompile(`Mastodon:[ '"]*XPOST[ '"]*$`)
+		mep := replc.ReplaceAll(mep, []byte(fmt.Sprintf(`Mastodon: "%s"`, mastodonLink)))
+		os.WriteFile(filename, mep, 0777)
+	}
+}
+
+func postToMastodon(message string) (string, error) {
+	type mastodonMostResponse struct {
+		ID string `json:"id"`
+	}
+	data := url.Values{
+		"status":     {message},
+		"visibility": {"private"}, // testing
+	}
+	request, _ := http.NewRequest(
+		"POST",
+		ConfigData.Syndication.Mastodon.URL+"v1/statuses",
+		bytes.NewBuffer([]byte(data.Encode())),
+	)
+	request.Header.Set(jsonHeaders[0][0], jsonHeaders[0][1])
+	request.Header.Set("Content-type", "application/x-www-form-urlencoded")
+	request.Header.Set("Authorization", "Bearer "+ConfigData.Syndication.Mastodon.Token)
+	resp, err := Client.Do(request)
+	if err != nil {
+		return "", err
+	}
+	var res mastodonMostResponse
+	json.NewDecoder(resp.Body).Decode(&res)
+	if resp.StatusCode != 200 {
+		return "", fmt.Errorf("failed in posting to mastodon [%d]", resp.StatusCode)
+	}
+	if res.ID != "" {
+		return res.ID, nil
+	} else {
+		return "", fmt.Errorf("failed in post to mastodon attempt %s|%d", res, resp.StatusCode)
+	}
 }
 
 func processMediaFile(filename string) error {

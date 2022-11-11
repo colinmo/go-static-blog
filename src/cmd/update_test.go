@@ -378,11 +378,37 @@ func TestUpdateChangedRegenerate(t *testing.T) {
 }
 func TestMastodonPostCheck(t *testing.T) {
 	// When parsing a post, check if the Mastodon syndication is set, but empty.
+	if !postWantsMastodonCrosspost(FrontMatter{SyndicationLinks: SyndicationLinksS{Mastodon: "XPOST"}}) {
+		t.Fatalf("A post that should want a Mastodon crosspost, does not")
+	}
+
+	if postWantsMastodonCrosspost(FrontMatter{SyndicationLinks: SyndicationLinksS{}}) {
+		t.Fatalf("A post that shouldn't want a Mastodon crosspost, does want")
+	}
+
+	if postWantsMastodonCrosspost(FrontMatter{}) {
+		t.Fatalf("A post that shouldn't want a Mastodon crosspost, does want")
+	}
+
+	if postWantsMastodonCrosspost(FrontMatter{SyndicationLinks: SyndicationLinksS{Mastodon: "https://xxx"}}) {
+		t.Fatalf("A post that already has a Mastodon crosspost wants another!")
+	}
 }
 
 func TestMastodonCrosspost(t *testing.T) {
+	makeTestConfig()
+	mep, err := postToMastodon("test!")
+	if err != nil {
+		t.Fatalf("Failed %s", err)
+	}
+	if mep == "" {
+		t.Fatalf("Failed, silently")
+	}
 	// Crosspost the content of the Post to Mastodon
 	// Update the Post to have the Mastodon post ID as the Mastodon syndication value
+}
+
+func TestUpdatePostToHost(t *testing.T) {
 	// Post it back to Bitbucket.
 }
 
