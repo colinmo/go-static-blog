@@ -66,10 +66,11 @@ func TestCreateCodePage(t *testing.T) {
 	ConfigData.RepositoryDir = testroot
 	ConfigData.BaseURL = "https://vonexplaino.com/blog/"
 	ConfigData.TemplateDir = "f:/dropbox/swap/golang/vonblog/templates/"
-	result, frontMatter, error := parseString(`Title: Code
+	result, frontMatter, error := parseString(`---
+Title: Code
 Created: 2015-11-18 20:32:00 +1000
 Type: page
-===
+---
 ## Common book
 
 Learnings and personal library.
