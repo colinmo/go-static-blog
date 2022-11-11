@@ -1,3 +1,4 @@
+---
 Title: {{ datetitle }}
 Tags: [{{ tags }}]
 Created: {{ created }}
@@ -11,7 +12,7 @@ Type: {{ type }}
 Syndication:
     Twitter: ~
 Synopsis: "{% if url > "" %}{{ title|default(url)|raw }} ({{ url|raw }}): {% endif %}{{ content|replace({'"': '\\"'})|raw }}"
-===
+---
 {% if type == "article" %}{{ content }}{% else %}{% if url > "" %}[{{ title|default(url)|raw }}]({{ url|raw }})
 {% elseif title > "" %}{{ title }}
 {% endif %}{{ content }}{% if author is defined and author != "" %}
