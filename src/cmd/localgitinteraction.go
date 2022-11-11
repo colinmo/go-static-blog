@@ -33,6 +33,18 @@ func GitFetch() {
 	runGitCommand(gitCommand, []string{"fetch"})
 }
 
+func GitAdd(filename string) {
+	runGitCommand(gitCommand, []string{"add", filename})
+}
+
+func GitCommit(message string) {
+	runGitCommand(gitCommand, []string{"commit", "--message", fmt.Sprintf(`"%s"`, message)})
+}
+
+func GitPush() {
+	runGitCommand(gitCommand, []string{"push"})
+}
+
 type GitDiffs struct {
 	Modified   []string
 	CopyEdit   []string
