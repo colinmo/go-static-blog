@@ -5,7 +5,7 @@ Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+	http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
@@ -20,7 +20,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"log"
 	"math"
 	"net/http"
@@ -112,7 +112,7 @@ func generateBlogStats() error {
 	days, max := getDaysArray(known)
 	chart := barSVG(days, max, 0, -1)
 	// Create the SVG
-	return ioutil.WriteFile(filenameOfBlogSvg, chart, 0777)
+	return os.WriteFile(filenameOfBlogSvg, chart, 0777)
 }
 
 type ShowAndMovie struct {
@@ -125,7 +125,6 @@ type TraktStats struct {
 	Values          map[string]ShowAndMovie `json:"values"`
 }
 
-//
 type IDsResponse struct {
 	Trakt  int    `json:"trakt"`
 	TVDB   int    `json:"tvdb"`
@@ -168,16 +167,15 @@ func generateTraktStats() {
 	line2, total2 := lineAlone(movies, max, min, map[string]string{"strokeDashArray": "2", "stroke": "black"}, "Movies", map[string]bool{"showZero": true, "showBall": false})
 	// Create and store the SVG
 	graph := SVGGraphFromPaths(total1+total2, fmt.Sprintf("%d,%d", int(total1), int(total2)), -1, line1+line2)
-	ioutil.WriteFile(filenameOfTraktSvg, graph, 0666)
+	os.WriteFile(filenameOfTraktSvg, graph, 0666)
 }
 
 func readTraktStatsFile(filename string) TraktStats {
 	// Get the cached info
-	cacheFile, err := os.Open(filename)
 	buff := TraktStats{}
+
+	byteValue, err := os.ReadFile(filename)
 	if err == nil {
-		defer cacheFile.Close()
-		byteValue, _ := ioutil.ReadAll(cacheFile)
 		err := json.Unmarshal(byteValue, &buff)
 		if err != nil {
 			log.Fatalf("Failed to parse the Trakt cache %v\n", err)
@@ -200,7 +198,7 @@ func readTraktStatsFile(filename string) TraktStats {
 func writeTraktStatsFile(filename string, stats TraktStats) error {
 	marshalled, err := json.Marshal(stats)
 	if err == nil {
-		ioutil.WriteFile(filename, marshalled, 0666)
+		os.WriteFile(filename, marshalled, 0666)
 	}
 	return err
 }
@@ -226,7 +224,7 @@ func buildTraktLinkClient(startAt string, page int, limit int) []byte {
 		log.Fatalf("%v\n", err)
 	}
 	defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		log.Fatalf("%v\n", err)
 	}
@@ -364,7 +362,7 @@ func generateCSStats() error {
 	line, total := lineAlone(days, max, 0, map[string]string{"strokeDashArray": "", "stroke": colorBlackOpacity50}, "CodeStats", map[string]bool{"showZero": true, "showBall": false})
 	chart := SVGGraphFromPaths(total, "CodeStats", -1, line)
 	// Create the SVG
-	err = ioutil.WriteFile(filenameOfSvg, chart, 0777)
+	err = os.WriteFile(filenameOfSvg, chart, 0777)
 	if err != nil {
 		fmt.Printf("Failed to write %s:%v\n", filenameOfSvg, err)
 		return err
@@ -388,7 +386,7 @@ func getObjectFromAPI() (CodeStatsResponse, error) {
 		return parsed, err
 	}
 	defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return parsed, err
 	}
@@ -466,7 +464,7 @@ func generateFeedlyStats() {
 	line1, total1 := lineAlone(entries, max, min, map[string]string{"strokeDashArray": "", "stroke": colorBlackOpacity50}, "Entries", map[string]bool{"showZero": true, "showBall": false})
 	// Create and store the SVG
 	graph := SVGGraphFromPaths(total1, fmt.Sprintf("%d", int(total1)), -1, line1)
-	ioutil.WriteFile(filenameOfFeedlySvg, graph, 0666)
+	os.WriteFile(filenameOfFeedlySvg, graph, 0666)
 
 }
 
@@ -476,7 +474,7 @@ func readFeedlyStatsFile(filename string) FeedlyStats {
 	var buff FeedlyStats
 	if err == nil {
 		defer cacheFile.Close()
-		byteValue, _ := ioutil.ReadAll(cacheFile)
+		byteValue, _ := io.ReadAll(cacheFile)
 		err := json.Unmarshal(byteValue, &buff)
 		if err != nil {
 			log.Fatalf("Failed to parse the Feedly cache %v\n", err)
@@ -494,7 +492,7 @@ func readFeedlyStatsFile(filename string) FeedlyStats {
 func writeFeedlyStatsFile(filename string, stats FeedlyStats) error {
 	marshalled, err := json.Marshal(stats)
 	if err == nil {
-		ioutil.WriteFile(filename, marshalled, 0666)
+		os.WriteFile(filename, marshalled, 0666)
 	}
 	return err
 }
@@ -519,7 +517,7 @@ func bodyFromFeedlyLinkClient(continuation string) ([]byte, error) {
 		return []byte{}, err
 	}
 	defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return []byte{}, err
 	}
@@ -696,8 +694,8 @@ func generateWithingsStats() {
 	line2, total2 := lineAlone(steps, sMax, 0, map[string]string{"strokeDashArray": "", "stroke": colorBlackOpacity50}, "Steps", map[string]bool{"showZero": false, "showBall": false})
 	graph2 := SVGGraphFromPaths(total2, fmt.Sprintf("%d", int(total2)), -1, line2)
 	// Store the SVG
-	ioutil.WriteFile(filenameOfWithingsWeightSvg, graph1, 0666)
-	ioutil.WriteFile(filenameOfWithingsStepsSvg, graph2, 0666)
+	os.WriteFile(filenameOfWithingsWeightSvg, graph1, 0666)
+	os.WriteFile(filenameOfWithingsStepsSvg, graph2, 0666)
 }
 
 func readWithingsStats(filename string) WithingsStats {
@@ -706,7 +704,7 @@ func readWithingsStats(filename string) WithingsStats {
 	var buff WithingsStats
 	if err == nil {
 		defer cacheFile.Close()
-		byteValue, _ := ioutil.ReadAll(cacheFile)
+		byteValue, _ := io.ReadAll(cacheFile)
 		err := json.Unmarshal(byteValue, &buff)
 		if err != nil {
 			log.Fatalf("Failed to parse the Withings cache %v\n", err)
@@ -720,7 +718,7 @@ func readWithingsStats(filename string) WithingsStats {
 func writeWithingsStats(filename string, stats WithingsStats) error {
 	marshalled, err := json.Marshal(stats)
 	if err == nil {
-		ioutil.WriteFile(filename, marshalled, 0666)
+		os.WriteFile(filename, marshalled, 0666)
 	}
 	return err
 }
@@ -927,7 +925,7 @@ func getWithingsStatsForDays(days int, stats WithingsStats) (map[int]float64, ma
 	return weight2, steps2, weightMax, weightMin, weightLast - weightFirst, stepsMax, stepsMin
 }
 
-//GENERIC FUNCTIONS
+// GENERIC FUNCTIONS
 func barSVG(days map[int]float64, max float64, min float64, total float64) []byte {
 	chartHeight := 16.0
 	chartHeightStep := 0.0

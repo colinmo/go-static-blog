@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"fmt"
-	"io/ioutil"
+	"os"
 	"regexp"
 	"sort"
 	"testing"
@@ -47,8 +47,8 @@ func TestReadWriteRSS(t *testing.T) {
 		t.Fatalf(`Could not load tags`)
 	}
 
-	f1, _ := ioutil.ReadFile(ConfigData.BaseDir + `rss1.xml`)
-	f2, _ := ioutil.ReadFile(ConfigData.BaseDir + `rss1_out.xml`)
+	f1, _ := os.ReadFile(ConfigData.BaseDir + `rss1.xml`)
+	f2, _ := os.ReadFile(ConfigData.BaseDir + `rss1_out.xml`)
 
 	rep := regexp.MustCompile(`\n\s*`)
 

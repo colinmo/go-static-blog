@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"encoding/xml"
-	"io/ioutil"
+	"io"
 	"os"
 	"sort"
 	"strconv"
@@ -65,7 +65,7 @@ func ReadRSS(filename string) (RSS, error) {
 		return feed, nil
 	}
 	defer xmlFile.Close()
-	byteValue, _ := ioutil.ReadAll(xmlFile)
+	byteValue, _ := io.ReadAll(xmlFile)
 	byteValue = []byte(strings.ReplaceAll(string(byteValue), "rssTags:", ""))
 	byteValue = []byte(strings.ReplaceAll(string(byteValue), "xmlns:", ""))
 
@@ -109,7 +109,7 @@ func WriteRSS(feed RSS, filename string) error {
 	byteValue, _ := xml.MarshalIndent(feed, "", "    ")
 	byteValue = []byte(strings.ReplaceAll(string(byteValue), "subject>", "rssTags:subject>"))
 
-	err := ioutil.WriteFile(ConfigData.BaseDir+filename, append([]byte("<?xml version=\"1.0\"?>\n"), byteValue...), 0777)
+	err := os.WriteFile(ConfigData.BaseDir+filename, append([]byte("<?xml version=\"1.0\"?>\n"), byteValue...), 0777)
 	return err
 }
 

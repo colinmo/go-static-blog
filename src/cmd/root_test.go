@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"fmt"
-	"io/ioutil"
+	"io"
 	"os"
 	"testing"
 )
@@ -69,7 +69,7 @@ func TestPrintIfNotSilent(t *testing.T) {
 	PrintIfNotSilent("hi")
 
 	w.Close()
-	out, _ := ioutil.ReadAll(r)
+	out, _ := io.ReadAll(r)
 	os.Stdout = rescueStdout
 
 	if string(out) != "hi" {
@@ -83,7 +83,7 @@ func TestPrintIfNotSilent(t *testing.T) {
 	PrintIfNotSilent("again")
 
 	w.Close()
-	out, _ = ioutil.ReadAll(r)
+	out, _ = io.ReadAll(r)
 	os.Stdout = rescueStdout
 
 	if string(out) == "again" {

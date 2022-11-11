@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"math"
 	"net/http"
 	"os"
@@ -85,7 +85,7 @@ func TestGenerateBlogStats(t *testing.T) {
 		t.Fatalf("Didn't find the SVG output")
 	}
 	defer svgFile.Close()
-	byteValue, _ := ioutil.ReadAll(svgFile)
+	byteValue, _ := MyReadFile(svgFile)
 	// @todo test
 	check := `<svg version="1.1" baseProfile="full" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ev="http://www.w3.org/2001/xml-events" width="100" height="16" data-total="1" data-diff="0.00" data-title="Blog Posts"><path fill="rgba(0,0,0,0.5)" stroke="rgba(0,0,0,0.5)" stroke-width="1" d="M0.000000,16.000000 L0.000000,16.000000 L3.333333,16.000000 L3.333333,16.000000 ZM3.333333,16.000000 L3.333333,16.000000 L6.666667,16.000000 L6.666667,16.000000 ZM6.666667,16.000000 L6.666667,16.000000 L10.000000,16.000000 L10.000000,16.000000 ZM10.000000,16.000000 L10.000000,16.000000 L13.333333,16.000000 L13.333333,16.000000 ZM13.333333,16.000000 L13.333333,16.000000 L16.666667,16.000000 L16.666667,16.000000 ZM16.666667,16.000000 L16.666667,16.000000 L20.000000,16.000000 L20.000000,16.000000 ZM20.000000,16.000000 L20.000000,16.000000 L23.333333,16.000000 L23.333333,16.000000 ZM23.333333,16.000000 L23.333333,16.000000 L26.666667,16.000000 L26.666667,16.000000 ZM26.666667,16.000000 L26.666667,16.000000 L30.000000,16.000000 L30.000000,16.000000 ZM30.000000,16.000000 L30.000000,16.000000 L33.333333,16.000000 L33.333333,16.000000 ZM33.333333,16.000000 L33.333333,16.000000 L36.666667,16.000000 L36.666667,16.000000 ZM36.666667,16.000000 L36.666667,16.000000 L40.000000,16.000000 L40.000000,16.000000 ZM40.000000,16.000000 L40.000000,16.000000 L43.333333,16.000000 L43.333333,16.000000 ZM43.333333,16.000000 L43.333333,16.000000 L46.666667,16.000000 L46.666667,16.000000 ZM46.666667,16.000000 L46.666667,16.000000 L50.000000,16.000000 L50.000000,16.000000 ZM50.000000,16.000000 L50.000000,16.000000 L53.333333,16.000000 L53.333333,16.000000 ZM53.333333,16.000000 L53.333333,16.000000 L56.666667,16.000000 L56.666667,16.000000 ZM56.666667,16.000000 L56.666667,16.000000 L60.000000,16.000000 L60.000000,16.000000 ZM60.000000,16.000000 L60.000000,16.000000 L63.333333,16.000000 L63.333333,16.000000 ZM63.333333,16.000000 L63.333333,16.000000 L66.666667,16.000000 L66.666667,16.000000 ZM66.666667,16.000000 L66.666667,16.000000 L70.000000,16.000000 L70.000000,16.000000 ZM70.000000,16.000000 L70.000000,16.000000 L73.333333,16.000000 L73.333333,16.000000 ZM73.333333,16.000000 L73.333333,16.000000 L76.666667,16.000000 L76.666667,16.000000 ZM76.666667,16.000000 L76.666667,16.000000 L80.000000,16.000000 L80.000000,16.000000 ZM80.000000,16.000000 L80.000000,16.000000 L83.333333,16.000000 L83.333333,16.000000 ZM83.333333,16.000000 L83.333333,16.000000 L86.666667,16.000000 L86.666667,16.000000 ZM86.666667,16.000000 L86.666667,0.000000 L90.000000,0.000000 L90.000000,16.000000 ZM90.000000,16.000000 L90.000000,16.000000 L93.333333,16.000000 L93.333333,16.000000 ZM93.333333,16.000000 L93.333333,16.000000 L96.666667,16.000000 L96.666667,16.000000 ZM96.666667,16.000000 L96.666667,16.000000 L100.000000,16.000000 L100.000000,16.000000 Z"></path></svg>`
 	if string(byteValue) != check {
@@ -95,16 +95,14 @@ func TestGenerateBlogStats(t *testing.T) {
 
 func TestGenerateBlogStatsBadFile(t *testing.T) {
 	ConfigData.BaseDir = `F:\Dropbox\swap\golang\vonblog\features\tests\blogstats\nope\`
-	bytesRead, _ := ioutil.ReadFile(ConfigData.BaseDir + "iisbroken.xml")
-	ioutil.WriteFile(ConfigData.BaseDir+"rss.xml", bytesRead, 0644)
+	bytesRead, _ := os.ReadFile(ConfigData.BaseDir + "iisbroken.xml")
+	os.WriteFile(ConfigData.BaseDir+"rss.xml", bytesRead, 0644)
 	ConfigData.BlogStats.Days = 30
 	generateBlogStats()
-	svgFile, err := os.Open(ConfigData.BaseDir + `../regenerate/data/blog.svg`)
+	byteValue, err := os.ReadFile(ConfigData.BaseDir + `../regenerate/data/blog.svg`)
 	if err != nil {
 		t.Fatalf("Didn't find the SVG output")
 	}
-	defer svgFile.Close()
-	byteValue, _ := ioutil.ReadAll(svgFile)
 	// @todo test
 	if string(byteValue) != `<svg version="1.1" baseProfile="full" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ev="http://www.w3.org/2001/xml-events" width="100" height="16" data-total="0" data-diff="0.00" data-title="Blog Posts"><path fill="rgba(0,0,0,0.5)" stroke="rgba(0,0,0,0.5)" stroke-width="1" d="M0.000000,16.000000 L0.000000,16.000000 L3.333333,16.000000 L3.333333,16.000000 ZM3.333333,16.000000 L3.333333,16.000000 L6.666667,16.000000 L6.666667,16.000000 ZM6.666667,16.000000 L6.666667,16.000000 L10.000000,16.000000 L10.000000,16.000000 ZM10.000000,16.000000 L10.000000,16.000000 L13.333333,16.000000 L13.333333,16.000000 ZM13.333333,16.000000 L13.333333,16.000000 L16.666667,16.000000 L16.666667,16.000000 ZM16.666667,16.000000 L16.666667,16.000000 L20.000000,16.000000 L20.000000,16.000000 ZM20.000000,16.000000 L20.000000,16.000000 L23.333333,16.000000 L23.333333,16.000000 ZM23.333333,16.000000 L23.333333,16.000000 L26.666667,16.000000 L26.666667,16.000000 ZM26.666667,16.000000 L26.666667,16.000000 L30.000000,16.000000 L30.000000,16.000000 ZM30.000000,16.000000 L30.000000,16.000000 L33.333333,16.000000 L33.333333,16.000000 ZM33.333333,16.000000 L33.333333,16.000000 L36.666667,16.000000 L36.666667,16.000000 ZM36.666667,16.000000 L36.666667,16.000000 L40.000000,16.000000 L40.000000,16.000000 ZM40.000000,16.000000 L40.000000,16.000000 L43.333333,16.000000 L43.333333,16.000000 ZM43.333333,16.000000 L43.333333,16.000000 L46.666667,16.000000 L46.666667,16.000000 ZM46.666667,16.000000 L46.666667,16.000000 L50.000000,16.000000 L50.000000,16.000000 ZM50.000000,16.000000 L50.000000,16.000000 L53.333333,16.000000 L53.333333,16.000000 ZM53.333333,16.000000 L53.333333,16.000000 L56.666667,16.000000 L56.666667,16.000000 ZM56.666667,16.000000 L56.666667,16.000000 L60.000000,16.000000 L60.000000,16.000000 ZM60.000000,16.000000 L60.000000,16.000000 L63.333333,16.000000 L63.333333,16.000000 ZM63.333333,16.000000 L63.333333,16.000000 L66.666667,16.000000 L66.666667,16.000000 ZM66.666667,16.000000 L66.666667,16.000000 L70.000000,16.000000 L70.000000,16.000000 ZM70.000000,16.000000 L70.000000,16.000000 L73.333333,16.000000 L73.333333,16.000000 ZM73.333333,16.000000 L73.333333,16.000000 L76.666667,16.000000 L76.666667,16.000000 ZM76.666667,16.000000 L76.666667,16.000000 L80.000000,16.000000 L80.000000,16.000000 ZM80.000000,16.000000 L80.000000,16.000000 L83.333333,16.000000 L83.333333,16.000000 ZM83.333333,16.000000 L83.333333,16.000000 L86.666667,16.000000 L86.666667,16.000000 ZM86.666667,16.000000 L86.666667,16.000000 L90.000000,16.000000 L90.000000,16.000000 ZM90.000000,16.000000 L90.000000,16.000000 L93.333333,16.000000 L93.333333,16.000000 ZM93.333333,16.000000 L93.333333,16.000000 L96.666667,16.000000 L96.666667,16.000000 ZM96.666667,16.000000 L96.666667,16.000000 L100.000000,16.000000 L100.000000,16.000000 Z"></path></svg>` {
 		t.Fatalf("SVG For blog stats not generated right")
@@ -176,11 +174,11 @@ func makeFakeTraktClient(t *testing.T) {
 	todate := time.Now()
 	dateFormat := "2006-01-02T15:04:05.000Z"
 	ConfigData.BaseDir = ``
-	ioutil.WriteFile(ConfigData.BaseDir+"../regenerate/data/trakt-cache.json", []byte(`{"last_updated": `+todate.Format(dateFormat)+`","values": {}}`), 0444)
+	os.WriteFile(ConfigData.BaseDir+"../regenerate/data/trakt-cache.json", []byte(`{"last_updated": `+todate.Format(dateFormat)+`","values": {}}`), 0444)
 	makeTestConfig()
 
 	// Have the mock client return expected JSON
-	json, err := ioutil.ReadFile(`F:\Dropbox\swap\golang\vonblog\features\tests\blogstats\trakt-generate\trakt-example-01.json`)
+	json, err := os.ReadFile(`F:\Dropbox\swap\golang\vonblog\features\tests\blogstats\trakt-generate\trakt-example-01.json`)
 	if err != nil {
 		t.Fatal("Couldn't get test file")
 	}
@@ -195,7 +193,7 @@ func makeFakeTraktClient(t *testing.T) {
 		// fmt.Printf("Request: %v\n", x)
 		json = jsons[0]
 		jsons = jsons[1:]
-		r := ioutil.NopCloser(bytes.NewReader([]byte(json)))
+		r := io.NopCloser(bytes.NewReader([]byte(json)))
 		return &http.Response{
 			StatusCode: 200,
 			Body:       r,
@@ -465,7 +463,7 @@ func TestDownloadCS(t *testing.T) {
 				"` + (todate.Add(time.Hour * -24 * 2).Format(dateFormat)) + `": 219,
 				"` + (todate.Add(time.Hour * -24 * 4).Format(dateFormat)) + `": 2543
 				}}`
-		r := ioutil.NopCloser(bytes.NewReader([]byte(json)))
+		r := io.NopCloser(bytes.NewReader([]byte(json)))
 		return &http.Response{
 			StatusCode: 200,
 			Body:       r,
@@ -499,7 +497,7 @@ func TestGenerateCSStats(t *testing.T) {
 				"new_xp": 2270,
 				"total_xp": 3300332,
 				"user": "vonExplaino"}`
-		r := ioutil.NopCloser(bytes.NewReader([]byte(json)))
+		r := io.NopCloser(bytes.NewReader([]byte(json)))
 		return &http.Response{
 			StatusCode: 200,
 			Body:       r,
@@ -513,7 +511,7 @@ func TestGenerateCSStats(t *testing.T) {
 	SVGOptions.Steps = false
 	blogstatsStart()
 	//generateCSStats()
-	generated, _ := ioutil.ReadFile(ConfigData.BaseDir + `../regenerate/data/cs.svg`)
+	generated, _ := os.ReadFile(ConfigData.BaseDir + `../regenerate/data/cs.svg`)
 	if string(generated) != `<svg version="1.1" baseProfile="full" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ev="http://www.w3.org/2001/xml-events" width="100" height="16" data-total="2762" data-title="CodeStats"><path fill="none" stroke="rgb(0,0,0,0.5)" stroke-width="1" stroke-dasharray="0" d="M0.000000,16.000000L3.333333,16.000000 L6.666667,16.000000 L10.000000,16.000000 L13.333333,16.000000 L16.666667,16.000000 L20.000000,16.000000 L23.333333,16.000000 L26.666667,16.000000 L30.000000,16.000000 L33.333333,16.000000 L36.666667,16.000000 L40.000000,16.000000 L43.333333,16.000000 L46.666667,16.000000 L50.000000,16.000000 L53.333333,16.000000 L56.666667,16.000000 L60.000000,16.000000 L63.333333,16.000000 L66.666667,16.000000 L70.000000,16.000000 L73.333333,16.000000 L76.666667,16.000000 L80.000000,16.000000 L83.333333,0.000000 L86.666667,16.000000 L90.000000,14.622100 L93.333333,16.000000 L96.666667,16.000000 "></path></svg>` {
 		t.Fatalf("Nope %v\n", string(generated))
 	}
@@ -560,7 +558,7 @@ func TestGetObjectFromAPI(t *testing.T) {
 	mocks.GetDoFunc = func(x *http.Request) (*http.Response, error) {
 		err := errors.New("Test")
 		json := ``
-		r := ioutil.NopCloser(bytes.NewReader([]byte(json)))
+		r := io.NopCloser(bytes.NewReader([]byte(json)))
 		return &http.Response{
 			StatusCode: 500,
 			Body:       r,
@@ -629,7 +627,7 @@ func TestGenerateFeedlyStats(t *testing.T) {
 	Client = &mocks.MockClient{}
 
 	// Have the mock client return expected JSON
-	json, err := ioutil.ReadFile(`F:\Dropbox\swap\golang\vonblog\features\tests\blogstats\feedly\example-01.json`)
+	json, err := os.ReadFile(`F:\Dropbox\swap\golang\vonblog\features\tests\blogstats\feedly\example-01.json`)
 	if err != nil {
 		t.Fatal("Couldn't get test file")
 	}
@@ -642,7 +640,7 @@ func TestGenerateFeedlyStats(t *testing.T) {
 	mocks.GetDoFunc = func(x *http.Request) (*http.Response, error) {
 		json = jsons[0]
 		jsons = jsons[1:]
-		r := ioutil.NopCloser(bytes.NewReader([]byte(json)))
+		r := io.NopCloser(bytes.NewReader([]byte(json)))
 		return &http.Response{
 			StatusCode: 200,
 			Body:       r,
@@ -687,7 +685,7 @@ func TestUpdateWithingsTokenIfRequired(t *testing.T) {
 
 func TestGetWithingsStatsForDays(t *testing.T) {
 	mocks.GetDoFunc = func(x *http.Request) (*http.Response, error) {
-		r := ioutil.NopCloser(bytes.NewReader([]byte("")))
+		r := io.NopCloser(bytes.NewReader([]byte("")))
 		return &http.Response{
 			StatusCode: 200,
 			Body:       r,
@@ -736,7 +734,7 @@ func TestGetWithingsStatsForDays(t *testing.T) {
 //	line2, total2 := lineAlone(steps, sMax, 0, "", colorBlackOpacity50, "Entries", true, false)
 //	// Create and store the SVG
 //	graph1 := SVGGraphFromPaths(total1, fmt.Sprintf("%d", int(total1)), wDiff, line1)
-//	ioutil.WriteFile(filenameOfWithingsWeightSvg, graph1, 0666)
+//	os.WriteFile(filenameOfWithingsWeightSvg, graph1, 0666)
 //	graph2 := SVGGraphFromPaths(total2, fmt.Sprintf("%d", int(total2)), -1, line2)
-//	ioutil.WriteFile(filenameOfWithingsStepsSvg, graph2, 0666)
+//	os.WriteFile(filenameOfWithingsStepsSvg, graph2, 0666)
 //}

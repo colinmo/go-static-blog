@@ -18,7 +18,6 @@ package cmd
 import (
 	"bytes"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"math"
 	"net/http"
@@ -366,7 +365,7 @@ func createPageAndRSSForTags(tags map[string][]FrontMatter, filesToDelete map[st
 	// And regenerate the main page and all changed tags
 	baseDir := ConfigData.BaseDir
 	matchExp, _ := regexp.Compile(`^(.*)-[\d+].xml$`)
-	files, err := ioutil.ReadDir(baseDir)
+	files, err := os.ReadDir(baseDir)
 	if err != nil {
 		fmt.Printf("Failed to read existing RSS files from [%s]\n", baseDir)
 		log.Fatal(err)
@@ -481,7 +480,7 @@ func TwigifyPage(
 		twigTags); err != nil {
 		log.Fatal(err)
 	}
-	err := ioutil.WriteFile(fmt.Sprintf("%s%s-%d.html", ConfigData.BaseDir, filenamePrefix, page), buf.Bytes(), 0777)
+	err := os.WriteFile(fmt.Sprintf("%s%s-%d.html", ConfigData.BaseDir, filenamePrefix, page), buf.Bytes(), 0777)
 	return err
 }
 
@@ -552,7 +551,7 @@ func WriteLatestPost(entry FrontMatter) error {
 		toTwigVariables(&entry, "")); err != nil {
 		log.Fatal(err)
 	}
-	err := ioutil.WriteFile(
+	err := os.WriteFile(
 		fmt.Sprintf("%s%s.html", ConfigData.BaseDir, "latest-post"),
 		buf.Bytes(),
 		0644)
@@ -674,9 +673,9 @@ func FileCopy(source, destination string) error {
 			log.Fatalf("Failed making root dirs for %s, %v\n", targetDir, err)
 		}
 	}
-	var data, err1 = ioutil.ReadFile(source)
+	var data, err1 = os.ReadFile(source)
 	if err1 != nil {
 		return err1
 	}
-	return ioutil.WriteFile(destination, data, 0777)
+	return os.WriteFile(destination, data, 0777)
 }

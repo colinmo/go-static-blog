@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -178,7 +177,7 @@ func TestEmbeddedMarkdownInHtml(t *testing.T) {
 				"Didn't even make a single HTML file\n",
 			)
 		}
-		txt, err := ioutil.ReadFile(testroot + thing.expected)
+		txt, err := os.ReadFile(testroot + thing.expected)
 		if err != nil {
 			t.Fatalf("Failed to parse the expected file\n")
 		}
@@ -191,7 +190,7 @@ func TestEmbeddedMarkdownInHtml(t *testing.T) {
 		text2 = re.ReplaceAllString(text2, " ")
 
 		if text2 != html {
-			ioutil.WriteFile(testroot+thing.fail, []byte(html), 0777)
+			os.WriteFile(testroot+thing.fail, []byte(html), 0777)
 			fmt.Printf("Look in %s\n", testroot+thing.fail)
 			t.Fatalf(
 				"Files didn't match",
@@ -377,6 +376,15 @@ func TestUpdateChangedRegenerate(t *testing.T) {
 
 	// Posts from RSS too
 }
+func TestMastodonPostCheck(t *testing.T) {
+	// When parsing a post, check if the Mastodon syndication is set, but empty.
+}
+
+func TestMastodonCrosspost(t *testing.T) {
+	// Crosspost the content of the Post to Mastodon
+	// Update the Post to have the Mastodon post ID as the Mastodon syndication value
+	// Post it back to Bitbucket.
+}
 
 func justParseFrontMatter(front string) FrontMatter {
 	x, _ := parseFrontMatter(front, "")
@@ -392,11 +400,11 @@ func copy(source, destination string) error {
 		if info.IsDir() {
 			return os.Mkdir(filepath.Join(destination, relPath), 0755)
 		} else {
-			var data, err1 = ioutil.ReadFile(filepath.Join(source, relPath))
+			var data, err1 = os.ReadFile(filepath.Join(source, relPath))
 			if err1 != nil {
 				return err1
 			}
-			return ioutil.WriteFile(filepath.Join(destination, relPath), data, 0777)
+			return os.WriteFile(filepath.Join(destination, relPath), data, 0777)
 		}
 	})
 	return err

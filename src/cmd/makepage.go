@@ -20,7 +20,6 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"net/url"
 	"os"
@@ -80,7 +79,7 @@ Uses golang markdown and a local html template file to generate blog posts.`,
 			*toFile = filepath.Join(ConfigData.BaseDir, frontMatter.Slug+".html")
 		}
 
-		err = ioutil.WriteFile(*toFile, []byte(html), 0777)
+		err = os.WriteFile(*toFile, []byte(html), 0777)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -228,7 +227,7 @@ func parseFile(filename string) (string, FrontMatter, error) {
 	var err error
 	var frontMatter FrontMatter
 
-	txt, err := ioutil.ReadFile(filename)
+	txt, err := os.ReadFile(filename)
 	if err != nil {
 		return html2, frontMatter, err
 	}

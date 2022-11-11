@@ -190,7 +190,7 @@ func initConfig() {
 		ConfigData.Thumbnails.Width = uint(viper.GetInt("thumbnails.width"))
 		ConfigData.Thumbnails.Height = uint(viper.GetInt("thumbnails.height"))
 		ConfigData.Thumbnails.Extension = viper.GetString("thumbnails.extension")
-		ConfigData.Thumbnails.Type = viper.GetString("thumbnails.type")	
+		ConfigData.Thumbnails.Type = viper.GetString("thumbnails.type")
 		ConfigData.TempDir = viper.GetString("tempDir")
 		// MISC
 		ConfigData.TagSnippets = viper.GetStringSlice("tagSnippets")
@@ -212,13 +212,16 @@ func PrintIfNotSilent(toPrint string) {
 	}
 }
 
-func myReadAll(f string) (string, error) {
+func MyReadFilename(f string) ([]byte, error) {
 	g, err := os.Open(f)
 	if err != nil {
-		return "", err
+		return []byte(""), err
 	}
 	defer g.Close()
+	return MyReadFile(g)
+}
+func MyReadFile(g *os.File) ([]byte, error) {
 	var buf bytes.Buffer
 	io.Copy(&buf, g)
-	return buf.String(), err
+	return buf.Bytes(), nil
 }
