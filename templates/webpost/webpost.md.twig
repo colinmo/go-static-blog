@@ -1,3 +1,4 @@
+---
 Title: "{{ title }}"
 Tags: [{{ tags }}]
 Created: "{{ created }}"
@@ -16,5 +17,5 @@ Syndication:
     {{ target|capitalize }}: ~
 {% endfor %}
 Synopsis: "{{ synopsis }}" 
-===
+---
 {{ body|raw }}

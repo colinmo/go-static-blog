@@ -136,7 +136,8 @@ func TestCreateResume(t *testing.T) {
 	ConfigData.RepositoryDir = testroot
 	ConfigData.BaseURL = "https://vonexplaino.com/blog/"
 	ConfigData.TemplateDir = "f:/dropbox/swap/golang/vonblog/templates/"
-	result, frontMatter, error := parseString(`Title: Resume of Colin Morris
+	result, frontMatter, error := parseString(`---
+Title: Resume of Colin Morris
 Created: 2021-05-28T14:19:04+1000
 Tags: [code,colin]
 Resume:
@@ -209,7 +210,7 @@ Resume:
             - TOGAF
             - Agile
     Affiliation: []
-===
+---
 I strive to use my analytical, organisational and technical skills and experience to facilitate long lasting and enjoyable solutions for a variety of user desires. Since 2000 I have been involved primarily in the development of web applications, from the coal-face through to team management and solutions architecture/ design. In my current role as solution architect (integrator), that has branched out into holistics solutions sourcing - from custom development through sourcing existing solutions and reworking business processes to solve problems without technology changes - with the focus on working with the university's Research and Data management areas.`, ConfigData.RepositoryDir+"posts/resume/2021.md")
 	if error != nil {
 		t.Fatalf("Failed to parse Code: %v\n", error)
@@ -231,7 +232,8 @@ func TestCreateReview(t *testing.T) {
 	ConfigData.RepositoryDir = testroot
 	ConfigData.BaseURL = "https://vonexplaino.com/blog/"
 	ConfigData.TemplateDir = "f:/dropbox/swap/golang/vonblog/templates/"
-	result, frontMatter, error := parseString(`Title: "Review: In Sound Mind"
+	result, frontMatter, error := parseString(`---
+Title: "Review: In Sound Mind"
 Tags: [game,epic]
 Created: "2022-04-24T18:58:43+1000"
 Updated: "2022-04-24T18:58:43+1000"
@@ -244,7 +246,7 @@ Item:
     name: In Sound Mind
     type: item
     rating: 5
-===
+---
 In Sound Mind was one of the weekly free games earlier this year. Most of these games I pick up, play for a bit, get a smile, get bored, and get on with things. In Sound Mind's gameplay, steady reveal, tape-based psychology gimick and the "GOTY 10/10" acheivement had me hooked. Very little in the way of shooty times, really; and the stealth statistic seemed entirely pointless - but the game, atmosphere, and sheer mind-squirreliness was enthralling.
 
 The game starts off in a building that's run down in a flooded city, but you find ways out into the minds of your patients. Boy are you in for a wild time in each of those, with a unique mechanic in almost each of them. The manifestations of mental anguish are spellbounding and the spook factor is high.
