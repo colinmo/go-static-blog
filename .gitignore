@@ -15,3 +15,4 @@ sonar-project.properties
 src/cmd/testvars.go
 junit.xml
 src/test-report.json
+mastodon-client.txt
