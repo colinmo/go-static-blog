@@ -408,6 +408,20 @@ func TestMastodonCrosspost(t *testing.T) {
 	// Update the Post to have the Mastodon post ID as the Mastodon syndication value
 }
 
+func TestUpdateLocalFileWithMastodonLink(t *testing.T) {
+	mek, _ := os.CreateTemp(os.TempDir(), "dd")
+	fullname := mek.Name()
+	os.WriteFile(fullname, []byte("---\nTitle: bob\nSyndication:\n  Mastodon: XPOST\n---\nWell"), 0777)
+	setMastodonLink(fullname, "thisisatestlink")
+	z, err := os.ReadFile(fullname)
+	if err != nil {
+		t.Fatalf("test failed, couldn't write")
+	}
+	if !strings.Contains(string(z), "  Mastodon: \"thisisatestlink\"\n") {
+		t.Fatalf("did not update %s correctly '%s'", fullname, z)
+	}
+
+}
 func TestUpdatePostToHost(t *testing.T) {
 	// Post it back to Bitbucket.
 }

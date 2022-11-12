@@ -305,8 +305,9 @@ func processMDFile(tags *map[string][]FrontMatter, postsById *map[string]Item, f
 			(*postsById)[frontmatter.Link] = PostToItem(frontmatter)
 		}
 		if postWantsMastodonCrosspost(frontmatter) {
-			mastodonLink, err := postToMastodon(targetFile)
+			mastodonLink, err := postToMastodon(frontmatter.Synopsis + "\n" + frontmatter.Link)
 			if err == nil {
+				mastodonLink, _ = url.JoinPath(`https://mstdn.social/@vonExplaino/`, mastodonLink)
 				setMastodonLink(filename, mastodonLink)
 				GitAdd(filename)
 				GitCommit("XPost")
@@ -328,9 +329,10 @@ func postWantsMastodonCrosspost(fm FrontMatter) bool {
 }
 
 func setMastodonLink(filename string, mastodonLink string) {
+	filename = filepath.Join(ConfigData.RepositoryDir, filename)
 	mep, err := os.ReadFile(filename)
 	if err == nil {
-		replc := regexp.MustCompile(`Mastodon:[ '"]*XPOST[ '"]*$`)
+		replc := regexp.MustCompile(`Mastodon:[ '"]*XPOST[ '"]*`)
 		mep := replc.ReplaceAll(mep, []byte(fmt.Sprintf(`Mastodon: "%s"`, mastodonLink)))
 		os.WriteFile(filename, mep, 0777)
 	}
@@ -342,7 +344,7 @@ func postToMastodon(message string) (string, error) {
 	}
 	data := url.Values{
 		"status":     {message},
-		"visibility": {"private"}, // testing
+		"visibility": {"public"}, // testing
 	}
 	request, _ := http.NewRequest(
 		"POST",
