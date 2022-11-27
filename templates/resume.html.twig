@@ -5,6 +5,9 @@
 {% block content %}
     <article class="h-resume" data-tags="{{ metadata.tags|json_encode }}">
         <style>
+            section + section {
+                padding-top: 20px;
+            }
             #business-card {
                 margin:0 auto;
                 max-width:500px;
@@ -122,7 +125,8 @@
         </section>
         <section class="skill">
             {{ content|raw }}
-            <p>My skills include <ul class="legend"><li class="Languages">Languages</li><li class="Libraries">Libraries</li><li class="Methodologies">Methodologies</li><li class="Skills">Techniques</li></ul></p>
+            <h2>Skills</h2>
+            <p><ul class="legend"><li class="Languages">Languages</li><li class="Libraries">Libraries</li><li class="Methodologies">Methodologies</li><li class="Skills">Techniques</li></ul></p>
             <p><strong>Professional, 5+ years experience</strong>
             <ul>{% for skill_sub_sub in resume.Skill.SeniorDev %}{% for member in skill_sub_sub.Members %}<li class="{{ skill_sub_sub.Name }}">{{member}}</li>{% endfor %}{% endfor %}{% for skill_sub_sub in resume.Skill.HobbyPro %}{% for member in skill_sub_sub.Members %}<li class="{{ skill_sub_sub.Name }}">{{member}}</li>{% endfor %}{% endfor %}</ul>
             </p>
@@ -132,7 +136,6 @@
             <p><strong>Experimenting, using them personally for growth</strong>
             <ul>{% for skill_sub_sub in resume.Skill.Intern %}{% for member in skill_sub_sub.Members %}<li class="{{ skill_sub_sub.Name }}">{{member}}</li>{% endfor %}{% endfor %}{% for skill_sub_sub in resume.Skill.Hobbiest %}{% for member in skill_sub_sub.Members %}<li class="{{ skill_sub_sub.Name }}">{{member}}</li>{% endfor %}{% endfor %}</ul>
             </p>
-            
         </section>
         <section class="experience">
             <h2>Experience</h2>
