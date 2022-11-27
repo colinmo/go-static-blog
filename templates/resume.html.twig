@@ -1,8 +1,8 @@
 {% extends "base.html.twig" %}
-{% block title %}{{ title }}{% endblock %}
-{% block content %}
 {% set cdate = created_date|date('c') %}
 {% set udate = updated_date|date('c') %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
     <article class="h-resume" data-tags="{{ metadata.tags|json_encode }}">
         <style>
             #business-card {
@@ -61,7 +61,44 @@
                 -webkit-transform: rotateY(10deg);}
             input:checked + section .flipper:hover + div {
                 transform: rotateY(180deg);
-                -webkit-transform: rotateY(180deg)}        
+                -webkit-transform: rotateY(180deg)}
+                
+            .skill ul li {
+                display: inline;
+            }
+            .skill ul li:after {
+                content: ",\a0";
+            }
+            .skill ul li:nth-last-child(2):after {
+                content: ",\a0 and\a0";
+            }
+            .skill ul li:last-child:after {
+                content: "";
+            }
+            li.Languages:before {
+                content: "\1F4BB"
+            }
+            li.Libraries:before {
+                content: "\1f4d6"
+            }
+            li.Methodologies:before {
+                content: "\2699\FE0F"
+            }
+            li.Skills:before {
+                content: "\1f9e0"
+            }
+            ul.legend {
+                list-style-type: none;
+                margin: 0 0 0.5em 0;
+                text-align: center;
+            }
+            ul.legend li {
+                display:inline-block;
+                margin-right: 3em;
+            }
+            .skill ul.legend li:after {
+                content:"";
+            }
         </style>
         <input type="checkbox" id="business-flip" name="business-flip" style="width: 0; height: 0; position: absolute; left: -9999px;">
         <section id="business-card" class="h-card">
@@ -79,133 +116,24 @@
                     </section>
                 </div>
                 <div id="business-card-back" class="p-summary">
-                    {{ content|raw }}
+                    {{ synopsis|raw }}
                 </div>
             </div>
         </section>
         <section class="skill">
-            <h2>Skillset</h2>
-            <p class="hide-if-narrow">A passing similarity to the Gartner<sup>&reg;</sup> Magic Quadrant<sup>&trade;</sup>, the Scientific Hextant has Casual/Profession as the X-axis, and Experience on the Y-axis.</p>
-            <style>
-                @media (max-width: 576px) { 
-                    #skills-grid {
-                        grid-template-columns: 1fr !important;
-                        grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr !important;
-                        grid-template-areas: 'seniordev' 'developer' 'intern' 'hobbypro' 'hobbiest' 'dabbler' !important;
-                        background: none !important;
-                    }
-                    .hide-if-narrow {
-                        display: none !important;
-                    }
-                }
-                #skills-grid {
-                    display:grid;
-                    grid-template-columns: 1fr 1fr;
-                    grid-template-rows: 1fr 1fr 1fr;
-                    grid-template-areas: 
-                        'hobbypro seniordev'
-                        'hobbiest developer'
-                        'dabbler intern';
-                    border: 5px solid #532109;
-                    background: url(/blog/media/2022/01/23/experience-professional.png) no-repeat left 4px bottom 4px;
-                }
-                #skills-grid .shaded {
-                    background: #53210933;
-                }
-                #skills-grid > section {
-                    border:1.5px solid #532109aa;
-                    position: relative;
-                }
-                #skills-grid > section > div {
-                    position:absolute;
-                    top: -1px;
-                    right: -1px;
-                    background: rgba(128,0,0,0.8);
-                    border-bottom-left-radius: 15px;
-                    color: white;
-                    padding-left: 15px;
-                    padding-right: 10px;
-                }
-                #skills-grid > section ul {
-                    column-count: 2;
-                    -moz-column-count: 2;
-                    -o-column-count: 2;
-                    -webkit-column-count: 2;
-                    list-style-type: none;
-                    padding-left: 1em;
-                }
-                #skills-grid > section ul li:before, ul.legend li:before {
-                  width: 1.5em;
-                  display: inline-block;
-                  text-align: right;
-                  margin-right: 0.2em;
-                }
-                li.Languages:before {
-                    content: "\1F4BB"
-                }
-                li.Libraries:before {
-                    content: "\1f4d6"
-                }
-                li.Methodologies:before {
-                    content: "\2699\FE0F"
-                }
-                li.Skills:before {
-                    content: "\1f9e0"
-                }
-                ul.legend {
-                    list-style-type: none;
-                    margin: 0 0 0.5em 0;
-                    text-align: center;
-                }
-                ul.legend li {
-                    display:inline-block;
-                    margin-right: 3em;
-                }
-            </style>
-            <ul class="legend"><li class="Languages">Languages</li><li class="Libraries">Libraries</li><li class="Methodologies">Methodologies</li><li class="Skills">Skills</li></ul>
-            <section id="skills-grid">
-                <section style="grid-area: seniordev;" class="shaded">
-                    <div>Senior Dev</div>
-                    <ul>{% for skill_sub_sub in resume.Skill.SeniorDev %}{% for member in skill_sub_sub.Members %}
-                    <li class="{{ skill_sub_sub.Name }}">{{member}}</li>
-                    {% endfor %}{% endfor %}
-                    </ul>
-                </section>
-                <section style="grid-area: developer">
-                    <div>Developer</div>
-                    <ul>{% for skill_sub_sub in resume.Skill.Developer %}{% for member in skill_sub_sub.Members %}
-                    <li class="{{ skill_sub_sub.Name }}">{{member}}</li>
-                    {% endfor %}{% endfor %}
-                    </ul>
-                </section>
-                <section style="grid-area: intern" class="shaded">
-                    <div>Intern</div>
-                    <ul>{% for skill_sub_sub in resume.Skill.Intern %}{% for member in skill_sub_sub.Members %}
-                    <li class="{{ skill_sub_sub.Name }}">{{member}}</li>
-                    {% endfor %}{% endfor %}</ul>
-                </section>
-                <section style="grid-area: hobbypro;">
-                    <div>Hobby-Pro</div>
-                    <ul>{% for skill_sub_sub in resume.Skill.HobbyPro %}{% for member in skill_sub_sub.Members %}
-                    <li class="{{ skill_sub_sub.Name }}">{{member}}</li>
-                    {% endfor %}{% endfor %}</ul>
-                </section>
-                <section style="grid-area: hobbiest" class="shaded">
-                    <div>Hobbiest</div>
-                    <ul>{% for skill_sub_sub in resume.Skill.Hobbiest %}{% for member in skill_sub_sub.Members %}
-                    <li class="{{ skill_sub_sub.Name }}">{{member}}</li>
-                    {% endfor %}{% endfor %}
-                    </ul>
-                </section>
-                <section style="grid-area: dabbler;">
-                    <div>Dabbler</div>
-                    <ul>{% for skill_sub_sub in resume.Skill.Dabbler %}{% for member in skill_sub_sub.Members %}
-                    <li class="{{ skill_sub_sub.Name }}">{{member}}</li>
-                    {% endfor %}{% endfor %}
-                    </ul>
-                </section>
-            </section>
-        </section>        
+            {{ content|raw }}
+            <p>My skills include <ul class="legend"><li class="Languages">Languages</li><li class="Libraries">Libraries</li><li class="Methodologies">Methodologies</li><li class="Skills">Techniques</li></ul></p>
+            <p><strong>Professional, 5+ years experience</strong>
+            <ul>{% for skill_sub_sub in resume.Skill.SeniorDev %}{% for member in skill_sub_sub.Members %}<li class="{{ skill_sub_sub.Name }}">{{member}}</li>{% endfor %}{% endfor %}{% for skill_sub_sub in resume.Skill.HobbyPro %}{% for member in skill_sub_sub.Members %}<li class="{{ skill_sub_sub.Name }}">{{member}}</li>{% endfor %}{% endfor %}</ul>
+            </p>
+            <p><strong>Upskilling, less than 5 years experience; or not recently used</strong>
+            <ul>{% for skill_sub_sub in resume.Skill.Developer %}{% for member in skill_sub_sub.Members %}<li class="{{ skill_sub_sub.Name }}">{{member}}</li>{% endfor %}{% endfor %}{% for skill_sub_sub in resume.Skill.HobbyPro %}{% for member in skill_sub_sub.Members %}<li class="{{ skill_sub_sub.Name }}">{{member}}</li>{% endfor %}{% endfor %}</ul>
+            </p>
+            <p><strong>Experimenting, using them personally for growth</strong>
+            <ul>{% for skill_sub_sub in resume.Skill.Intern %}{% for member in skill_sub_sub.Members %}<li class="{{ skill_sub_sub.Name }}">{{member}}</li>{% endfor %}{% endfor %}{% for skill_sub_sub in resume.Skill.Hobbiest %}{% for member in skill_sub_sub.Members %}<li class="{{ skill_sub_sub.Name }}">{{member}}</li>{% endfor %}{% endfor %}</ul>
+            </p>
+            
+        </section>
         <section class="experience">
             <h2>Experience</h2>
             {% for experience in resume.Experience %}
@@ -234,7 +162,6 @@
             </div>
             {% endfor %}
         </section>
-
         <section class="education">
             <h2>Education</h2>
             {% for education in resume.Education %}
