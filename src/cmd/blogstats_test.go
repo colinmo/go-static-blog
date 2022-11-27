@@ -222,7 +222,6 @@ func TestGetDataFromTrakt(t *testing.T) {
 	if mep.LastUpdatedDate == lastLook {
 		t.Errorf("Failed to update date of process\n")
 	}
-	fmt.Printf("%v\n", mep.Values)
 	inner, ok := mep.Values[fmt.Sprintf("%d", thisIndex)]
 	if !ok {
 		t.Errorf("Failed to find %d\n", (thisIndex))
