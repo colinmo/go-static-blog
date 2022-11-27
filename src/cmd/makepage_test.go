@@ -333,3 +333,12 @@ func TestDefaultFeatureImage(t *testing.T) {
 		}
 	}
 }
+
+func TestToTwigVariables(t *testing.T) {
+	dude := FrontMatter{
+		Title: "Dude",
+	}
+	content := "xxXX!"
+	mike := toTwigVariables(&dude, content)
+	t.Fatalf("%v", mike)
+}
