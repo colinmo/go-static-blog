@@ -420,9 +420,9 @@ func textToSlug(intext string) string {
 	slug := strings.ToLower(re.ReplaceAllString(intext, "-"))
 	re = regexp.MustCompile("-+")
 	slug = re.ReplaceAllString(slug, "-")
-	re = regexp.MustCompile("-*$")
+	re = regexp.MustCompile("-+$")
 	slug = re.ReplaceAllString(slug, "")
-	re = regexp.MustCompile("^-*")
+	re = regexp.MustCompile("^-+")
 	slug = re.ReplaceAllString(slug, "")
 	return slug
 }

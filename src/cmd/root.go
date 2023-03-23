@@ -91,6 +91,10 @@ type Thumbnails struct {
 type Syndics struct {
 	Mastodon Mastodon
 }
+type Moods struct {
+	Filename string
+	Token    string
+}
 type ConfigDataStruct struct {
 	BaseDir       string
 	BaseURL       string
@@ -104,6 +108,7 @@ type ConfigDataStruct struct {
 	Thumbnails    Thumbnails
 	Syndication   Syndics
 	TagSnippets   []string
+	Moods         Moods
 }
 
 var ConfigData ConfigDataStruct
@@ -205,6 +210,9 @@ func initConfig() {
 		ConfigData.Syndication.Mastodon.Token = viper.GetString("syndication.mastodon.token")
 		// MISC
 		ConfigData.TagSnippets = viper.GetStringSlice("tagSnippets")
+		// MOODS
+		ConfigData.Moods.Filename = viper.GetString("moods.filename")
+		ConfigData.Moods.Token = viper.GetString("moods.token")
 	}
 }
 

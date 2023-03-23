@@ -104,19 +104,19 @@ func TestMakeThumbnail(t *testing.T) {
 
 	ThumbnailOptions.Type = "gif"
 	ThumbnailOptions.Extension = "-thumb.gif"
-	err = makeThumbnail(`F:\Dropbox\swap\golang\vonblog\features\tests\thumbnail\LogVisualiser.png`)
+	err = makeThumbnail(ConfigData.BaseDir + `LogVisualiser.png`)
 	if err != nil {
 		t.Fatalf("Ded %v\n", err)
 	}
 	ThumbnailOptions.Type = "png"
 	ThumbnailOptions.Extension = "-thumb.png"
-	err = makeThumbnail(`F:\Dropbox\swap\golang\vonblog\features\tests\thumbnail\LogVisualiser.png`)
+	err = makeThumbnail(ConfigData.BaseDir + `LogVisualiser.png`)
 	if err != nil {
 		t.Fatalf("Ded %v\n", err)
 	}
 	ThumbnailOptions.Type = "txt"
 	ThumbnailOptions.Extension = "-thumb.txt"
-	err = makeThumbnail(`F:\Dropbox\swap\golang\vonblog\features\tests\thumbnail\LogVisualiser.png`)
+	err = makeThumbnail(ConfigData.BaseDir + `LogVisualiser.png`)
 	if err == nil {
 		t.Fatalf("Created a thumbnail where I shoudln't")
 	}
@@ -155,55 +155,71 @@ func TestDetectImage(t *testing.T) {
 	}
 }
 
+func TestWebp2(t *testing.T) {
+	ConfigData.BaseDir = `/Users/s457972/Dropbox/swap/golang/vonblog/features/tests/thumbnail/`
+	i, e := readImage(ConfigData.BaseDir + `code-of-the-coder-cover.webp`)
+	if e != nil {
+		t.Fatalf("Failed to run %s\n", e)
+	}
+	if i == nil {
+		t.Fatalf("i failed\n")
+	}
+	writeImage(i, ConfigData.BaseDir+`code-of-the-coder-cover2.webp`)
+}
+
 func TestRecursiveThumbnail(t *testing.T) {
-	ConfigData.BaseDir = `F:\Dropbox\swap\golang\vonblog\features\tests\thumbnail\`
+	ConfigData.BaseDir = `/Users/s457972/Dropbox/swap/golang/vonblog/features/tests/thumbnail/`
 	ThumbnailOptions.Extension = "-thumb.jpg"
 	ThumbnailOptions.Width = 100
 	ThumbnailOptions.Height = 100
 	ThumbnailOptions.Type = "jpeg"
 	ThumbnailOptions.Regenerate = true
 	ThumbnailOptions.Filename = ``
-	os.Remove(ConfigData.BaseDir + `media\LogVisualiser-thumb.jpg`)
-	os.Remove(ConfigData.BaseDir + `media\x\LogVisualiser-thumb.jpg`)
-	os.Remove(ConfigData.BaseDir + `media\x\LogVisualiser copy-thumb.jpg`)
-	os.Remove(ConfigData.BaseDir + `media\x\y\LogVisualiser-thumb.jpg`)
+	os.Remove(ConfigData.BaseDir + `media/code-of-the-coder-cover-thumb.jpg`)
+	os.Remove(ConfigData.BaseDir + `media/LogVisualiser-thumb.jpg`)
+	os.Remove(ConfigData.BaseDir + `media/x/LogVisualiser-thumb.jpg`)
+	os.Remove(ConfigData.BaseDir + `media/x/LogVisualiser copy-thumb.jpg`)
+	os.Remove(ConfigData.BaseDir + `media/x/y/LogVisualiser-thumb.jpg`)
 	letsGoThumbnail()
-	if fileExists(ConfigData.BaseDir+`media\LogVisualiser-thumb.jpg`) != nil {
+	if fileExists(ConfigData.BaseDir+`media/LogVisualiser-thumb.jpg`) != nil {
 		t.Fatalf("File %s does not exist\n", ConfigData.BaseDir+`LogVisualiser-thumb.jpg`)
 	}
-	if fileExists(ConfigData.BaseDir+`media\x\LogVisualiser-thumb.jpg`) != nil {
+	if fileExists(ConfigData.BaseDir+`media/x/LogVisualiser-thumb.jpg`) != nil {
 		t.Fatalf("File %s does not exist\n", ConfigData.BaseDir+`x\LogVisualiser-thumb.jpg`)
 	}
-	if fileExists(ConfigData.BaseDir+`media\x\LogVisualiser copy-thumb.jpg`) != nil {
+	if fileExists(ConfigData.BaseDir+`media/x/LogVisualiser copy-thumb.jpg`) != nil {
 		t.Fatalf("File %s does not exist\n", ConfigData.BaseDir+`x\LogVisualiser copy-thumb.jpg`)
 	}
-	if fileExists(ConfigData.BaseDir+`media\x\y\LogVisualiser-thumb.jpg`) != nil {
+	if fileExists(ConfigData.BaseDir+`media/x/y/LogVisualiser-thumb.jpg`) != nil {
 		t.Fatalf("File %s does not exist\n", ConfigData.BaseDir+`y\LogVisualiser-thumb.jpg`)
+	}
+	if fileExists(ConfigData.BaseDir+`media/code-of-the-coder-cover-thumb.jpg`) != nil {
+		t.Fatalf("File %s does not exist\n", ConfigData.BaseDir+`code-of-the-coder-cover-thumb-thumb.jpg`)
 	}
 	letsGoThumbnail()
-	if fileExists(ConfigData.BaseDir+`media\LogVisualiser-thumb.jpg`) != nil {
+	if fileExists(ConfigData.BaseDir+`media/LogVisualiser-thumb.jpg`) != nil {
 		t.Fatalf("File %s does not exist\n", ConfigData.BaseDir+`LogVisualiser-thumb.jpg`)
 	}
-	if fileExists(ConfigData.BaseDir+`media\x\LogVisualiser-thumb.jpg`) != nil {
+	if fileExists(ConfigData.BaseDir+`media/x/LogVisualiser-thumb.jpg`) != nil {
 		t.Fatalf("File %s does not exist\n", ConfigData.BaseDir+`x\LogVisualiser-thumb.jpg`)
 	}
-	if fileExists(ConfigData.BaseDir+`media\x\LogVisualiser copy-thumb.jpg`) != nil {
+	if fileExists(ConfigData.BaseDir+`media/x/LogVisualiser copy-thumb.jpg`) != nil {
 		t.Fatalf("File %s does not exist\n", ConfigData.BaseDir+`x\LogVisualiser copy-thumb.jpg`)
 	}
-	if fileExists(ConfigData.BaseDir+`media\x\y\LogVisualiser-thumb.jpg`) != nil {
+	if fileExists(ConfigData.BaseDir+`media/x/y/LogVisualiser-thumb.jpg`) != nil {
 		t.Fatalf("File %s does not exist\n", ConfigData.BaseDir+`y\LogVisualiser-thumb.jpg`)
 	}
-	if fileExists(ConfigData.BaseDir+`media\LogVisualiser-thumb-thumb.jpg`) == nil {
-		t.Fatalf("File %s does not exist\n", ConfigData.BaseDir+`LogVisualiser-thumb-thumb.jpg`)
+	if fileExists(ConfigData.BaseDir+`media/LogVisualiser-thumb-thumb.jpg`) == nil {
+		t.Fatalf("File %s exist\n", ConfigData.BaseDir+`LogVisualiser-thumb-thumb.jpg`)
 	}
-	if fileExists(ConfigData.BaseDir+`media\x\LogVisualiser-thumb-thumb.jpg`) == nil {
-		t.Fatalf("File %s does not exist\n", ConfigData.BaseDir+`x\LogVisualiser-thumb-thumb.jpg`)
+	if fileExists(ConfigData.BaseDir+`media/x/LogVisualiser-thumb-thumb.jpg`) == nil {
+		t.Fatalf("File %s exist\n", ConfigData.BaseDir+`x\LogVisualiser-thumb-thumb.jpg`)
 	}
-	if fileExists(ConfigData.BaseDir+`media\x\LogVisualiser copy-thumb-thumb.jpg`) == nil {
-		t.Fatalf("File %s does not exist\n", ConfigData.BaseDir+`x\LogVisualiser copy-thumb-thumb.jpg`)
+	if fileExists(ConfigData.BaseDir+`media/x/LogVisualiser copy-thumb-thumb.jpg`) == nil {
+		t.Fatalf("File %s exist\n", ConfigData.BaseDir+`x\LogVisualiser copy-thumb-thumb.jpg`)
 	}
-	if fileExists(ConfigData.BaseDir+`media\x\y\LogVisualiser-thumb-thumb.jpg`) == nil {
-		t.Fatalf("File %s does not exist\n", ConfigData.BaseDir+`y\LogVisualiser-thumb-thumb.jpg`)
+	if fileExists(ConfigData.BaseDir+`media/x/y/LogVisualiser-thumb-thumb.jpg`) == nil {
+		t.Fatalf("File %s exist\n", ConfigData.BaseDir+`y\LogVisualiser-thumb-thumb.jpg`)
 	}
 }
 

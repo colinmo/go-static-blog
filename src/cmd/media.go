@@ -30,6 +30,7 @@ import (
 
 	"github.com/nfnt/resize"
 	"github.com/spf13/cobra"
+	"golang.org/x/image/webp"
 )
 
 type ThumbnailOptionsS struct {
@@ -54,8 +55,8 @@ func defaultsForMe() error {
 	if ThumbnailOptions.Extension == "" {
 		ThumbnailOptions.Extension = ConfigData.Thumbnails.Extension
 	}
-	if !isElementExists(ThumbnailOptions.Type, []string{"jpeg", "gif", "png"}) {
-		return fmt.Errorf("can only use gif, jpeg, or png as thumbnail type [%s]", ThumbnailOptions.Type)
+	if !isElementExists(ThumbnailOptions.Type, []string{"jpeg", "gif", "png", "webp"}) {
+		return fmt.Errorf("can only use gif, jpeg, webp, or png as thumbnail type [%s]", ThumbnailOptions.Type)
 	}
 	return nil
 }
@@ -100,9 +101,9 @@ func canMakeThumbnailFor(filename string) bool {
 		return false
 	}
 	fileType := http.DetectContentType(body)
-	return isElementExists(strings.ToLower(ext), []string{".jpg", ".jpeg", ".gif", ".png"}) &&
+	return isElementExists(strings.ToLower(ext), []string{".jpg", ".jpeg", ".gif", ".png", ".webp"}) &&
 		(len(filename) < len(ThumbnailOptions.Extension) || filename[len(filename)-len(ThumbnailOptions.Extension):] != ThumbnailOptions.Extension) &&
-		isElementExists(fileType, []string{"image/jpeg", "image/gif", "image/png"})
+		isElementExists(fileType, []string{"image/jpeg", "image/gif", "image/png", "image/webp"})
 }
 
 func recursiveMediaThumbnailer(directory string) int {
@@ -159,7 +160,12 @@ func readImage(name string) (image.Image, error) {
 	}
 	defer fd.Close()
 
-	img, _, err := image.Decode(fd)
+	var img image.Image
+	if len(name) > 5 && name[len(name)-5:] == ".webp" {
+		img, err = webp.Decode(fd)
+	} else {
+		img, _, err = image.Decode(fd)
+	}
 	if err != nil {
 		return nil, err
 	}
