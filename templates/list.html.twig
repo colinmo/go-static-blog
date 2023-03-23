@@ -12,14 +12,12 @@ Y" %}
     {% if page < last_page %}
     <link rel="next" href="{{ link_prefix|raw }}{{ next_page }}.html" />
     {% endif %}
-    <link rel="canonical" href="{{ link_prefix|raw }}{{ page }}.html"/>
 {% endblock %}
 {% block content %}
     <div class="h-feed">
         <h1 style="padding-top: 0; margin-top: 0; text-align: center;">{{ (title|default('Blog posts'))|replace({"Professor von Explaino's Journal":""}) }}</h1>
         {% for index, value in list %}
         <article class="h-entry">
-            <div class="article-image" style="background: url({{ value.featureimage }}) no-repeat center;background-size: 100% auto;width:100%;height:100%;"></div>
             <h2><a href="{{ value.link }}" class="p-name u-url u-uid">{{ value.title|raw }}</a></h2>
             <div class="summary">
                 <p class="p-summary">{{ value.synopsis|raw }}</p>

@@ -1,8 +1,8 @@
 <div class="h-product">
-  <h1 class="p-name"><a class="u-url" href="{{ url }}">{{ name }}</a></h1>
-  {% if photo %}<img class="u-photo" src="{{ photo }}" alt="" />{% endif %}
-  <div class="e-description">
-    {{ description|raw }}
-  </div>
-  {% if brand %}<p>from <a class="p-brand" href="{{ url }}">ACME Publishing inc.</a></p>{% endif %}
+    <h1 class="p-name"><a class="u-url" href="{{ url }}">{{ name }}</a></h1>
+    {% if photo %}<img class="u-photo" src="{{ photo }}" alt="" />{% endif %}
+    <div class="e-description">
+        {{ description|raw }}
+    </div>
+    {% if brand %}<p>from <a class="p-brand" href="{{ url }}">ACME Publishing inc.</a></p>{% endif %}
 </div>

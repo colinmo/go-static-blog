@@ -1,9 +1,7 @@
 {% extends "base.html.twig" %}
 {% block title %}{{ title }}{% endblock %}
-{% block content %}
-{% set cdate = created_date|date('c') %}
-{% set udate = updated_date|date('c') %}
-    <article class="h-entry" data-tags="{{ tag|json_encode }}" data-article-id="{{ id }}">
+{% block content %}{% set cdate = created_date|date('c') %}{% set udate = updated_date|date('c') %}
+    <article class="h-entry" data-article-id="{{ id }}">
         <header>
             <h1 class="p-name" style="">{{ title }}</h1>
             <section class="post-meta">
@@ -14,9 +12,9 @@
             </section>
         </header>
         <div>
-            <div class="e-content">
+            <section class="e-content">
             {{ content|raw }}
-            </div>
+            </section>
             <hr style="clear:both;" />
         </div>
     </article>

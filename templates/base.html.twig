@@ -1,32 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+<head>{% set cdate = created_date|date('c') %}{% set udate = updated_date|date('c') %}{% set synopsdef = (synopsis|default('Personal site for Colin Morris/ Professor von Explaino. Contains PHP code, Steampunk')) %}{% set featdef = featureimage|default("https://s0.wp.com/mshots/v1/" ~ link|url_encode ~ "?vpw=480&vph=380")%}
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
     <meta name="author" content="Colin Morris">
     <title>{% if title != "" %}{{ title}} | {% endif %}Professor von Explaino</title>
-    <link rel="stylesheet" href="https://vonexplaino.com/blog/style/blog.css" />
     <link rel="pingback" href="https://webmention.io/vonexplaino.com/xmlrpc" />
     <link rel="webmention" href="https://webmention.io/vonexplaino.com/webmention" />
-    <link rel="whostyle" href="https://vonexplaino.com/blog/style/whostyle.css" />
+    <link rel="canonical" href="{% if link == "https://vonexplaino.com/blog/posts/page/welcome.html" %}https://vonexplaino.com/{% else %}{% if page != "" %}{{ link_prefix|raw }}{{ page }}.html{% else %}{{ link }}{% endif %}{% endif %}" />
+    <link rel="stylesheet" href="https://vonexplaino.com/theme/blog/style/blog.css" />
+    <link rel="whostyle" href="https://vonexplaino.com/theme/blog/style/whostyle.css" />
     <link rel="alternate" type="application/rss+xml" title="Professor von Explaino's Journal RSS Feed" href="https://vonexplaino.com/blog/rss.xml" />
-    <link rel="apple-touch-icon" sizes="57x57" href="/theme/images/favicon/apple-icon-57x57.png">
-    <link rel="apple-touch-icon" sizes="60x60" href="/theme/images/favicon/apple-icon-60x60.png">
-    <link rel="apple-touch-icon" sizes="72x72" href="/theme/images/favicon/apple-icon-72x72.png">
-    <link rel="apple-touch-icon" sizes="76x76" href="/theme/images/favicon/apple-icon-76x76.png">
-    <link rel="apple-touch-icon" sizes="114x114" href="/theme/images/favicon/apple-icon-114x114.png">
-    <link rel="apple-touch-icon" sizes="120x120" href="/theme/images/favicon/apple-icon-120x120.png">
-    <link rel="apple-touch-icon" sizes="144x144" href="/theme/images/favicon/apple-icon-144x144.png">
-    <link rel="apple-touch-icon" sizes="152x152" href="/theme/images/favicon/apple-icon-152x152.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="/theme/images/favicon/apple-icon-180x180.png">
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <link rel="icon" type="image/png" href="/favicon.png">
     <link rel="manifest" href="/manifest.json">
     <meta name="msapplication-TileColor" content="#ffffff" />
     <meta name="msapplication-TileImage" content="/theme/images/favicon/ms-icon-144x144.png" />
-    <meta name="theme-color" content="#ffffff" />
-    <meta name="description" content="{{ (synopsis|default('Personal site for Colin Morris/ Professor von Explaino. Contains PHP code, Steampunk')) }}" />
-    <meta property="og:image" content="{{ featureimage|default("https://s0.wp.com/mshots/v1/" ~ link|url_encode ~ "?vpw=480&vph=380") }}" />
+    <meta name="theme-color" content="#ffffff" />    
+    <meta property="og:site_name" content="Professor von Explaino" />
+    <meta property="og:title" content="{{ title }}" />
+    <meta property="og:url" content="{{ link|raw }}" />
+    <meta property="og:type" content="article" />
+    <meta property="og:description" content="{{ synopsdef }}" />
+    <meta property="og:image" content="{{ featdef }}" />
+    <meta property="og:image:url" content="{{ featdef }}" />
+    <meta property="og:image:secure_url" content="{{ featdef }}" />
+    <meta property="og:updated_time" content="{{ udate }}" />
+    <meta property="article:published_time" content="{{ cdate }}" />
+    <meta property="article:modified_time" content="{{ udate }}" />
+    <meta property="article:section" content="Blog" />
+    <meta itemprop="name" content="{{ title }}" />
+    <meta itemprop="headline" content="{{ title }}" />
+    <meta itemprop="description" content="{{ synopsdef }}" />
+    <meta itemprop="image" content="{{ featdef }}" />
+    <meta itemprop="datePublished" content="{{ cdate }}" />
+    <meta itemprop="dateModified" content="{{ udate }}" />
+    <meta itemprop="author" content="Colin Morris/ Professor von Explaino" />
     {% block extraheaders %}{% endblock %}
 </head>
 <body class="container">
@@ -36,15 +45,6 @@
         <div id="top-right" class="decorative-tops"></div>
         <div id="bottom-left" class="decorative-tops"></div>
         <div id="bottom-right" class="decorative-tops"></div>
-<style>
-    .h-resume .experience h3, .h-resume .education h3 {
-        clear: both;
-        text-align:left;
-    }
-    #skills-grid > section ul {
-        padding-left: 1em;
-    }
-</style>
         {% block content %}{% endblock %}
     </main>
     <section id="header">
@@ -52,6 +52,6 @@
             <a href="/" style="position:relative;"><img src="/theme/images/header-horizontal.png" style="height:60px;position:relative;top:30px;" alt="home"/>Home</a><wbr><a href="/blog">Blog</a><wbr><a href="/blog/posts/page/steampunk.html">Steampunk</a><wbr><a href="/blog/posts/page/code.html">Code</a><wbr><a href="/blog/posts/resume/resume-of-colin-morris.html">Resume</a>
         </nav>
     </section>
-    <script src="https://vonexplaino.com/blog/js/blog.js" defer></script>
+    <script src="https://vonexplaino.com/theme/blog/js/blog.js" defer></script>
 </body>
 </html>

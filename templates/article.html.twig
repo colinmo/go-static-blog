@@ -52,7 +52,7 @@
                 {% if likeof %}<p> A like of <a href="{{ likeof }}" class="u-like-of h-cite">{{ likeof }}</a></p>{% endif %}
                 {% if favoriteof %}<p> A favourite of <a href="{{ favoriteof }}" class="u-favorite-of h-cite">{{ favoriteof }}</a></p>{% endif %}
                 {% if bookmarkof %}<p> A bookmark of <a href="{{ bookmarkof }}" class="u-bookmark-of h-cite">{{ bookmarkof }}</a></p>{% endif %}
-                {% include "syndication.html.twig" with {'links': metadata['syndication_links']} %}
+                {% include "syndication.html.twig" with {'links': syndicationlinks} %}
             </section>
             <hr style="clear:both;" />
         </div>
