@@ -5,7 +5,7 @@ test:
 	cd f:\Dropbox\swap\golang\vonblog\src && gosonar --basedir f:\Dropbox\swap\golang\vonblog\src\cmd\ --coverage coverage.out --junit junit.xml
 
 build-windows-windows:
-	set GOOS=windows&&set GOARCH=amd64&&cd src&&go build -ldflags "-w -s" -o ../bin/vonblog.exe
+	set GOOS=windows&&set GOARCH=amd64&&cd src&&go build -ldflags "-w -s -H=windowsgui" -o ../bin/vonblog.exe
 	
 build-linux-windows:
 	set GOOS=linux&&set GOARCH=amd64&&cd src&&go build -ldflags "-w -s" -o ../bin/vonblog
