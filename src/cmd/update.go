@@ -66,8 +66,8 @@ func updateFullRegenerate() (RSS, map[string][]FrontMatter, map[string]Item, map
 	cmd := exec.Command(`/usr/bin/rsync`, "-ravh", ConfigData.BaseDir, SwapDir2, "--delete")
 	cmd.Stdout = &out
 	err = cmd.Run()
-	PrintIfNotSilent("\n" + out.String() + "\n")
-	PrintIfNotSilent("/usr/bin/rsync -ravh --delete " + ConfigData.BaseDir + " " + SwapDir2)
+	//PrintIfNotSilent("\n" + out.String() + "\n")
+	//PrintIfNotSilent("/usr/bin/rsync -ravh --delete " + ConfigData.BaseDir + " " + SwapDir2)
 	ClearDir(ConfigData.TempDir)
 	ConfigData.BaseDir = SwapDir2
 	return allPosts, tags, postsById, filesToDelete, changes, err
@@ -76,14 +76,12 @@ func updateFullRegenerate() (RSS, map[string][]FrontMatter, map[string]Item, map
 func updateChangedRegenerate() (RSS, map[string][]FrontMatter, map[string]Item, map[string]struct{}, GitDiffs, error) {
 	PrintIfNotSilent("Changed\n")
 	postsById := map[string]Item{}
-	allPosts := RSS{}
 	tags := map[string][]FrontMatter{}
 	filesToDelete := map[string]struct{}{}
 	var changes GitDiffs
-	var err error
 
 	// Get all posts from the all published posts RSS file
-	allPosts, err = ReadRSS(filepath.Join(ConfigData.BaseDir, "rss.xml"))
+	allPosts, err := ReadRSS(filepath.Join(ConfigData.BaseDir, "rss.xml"))
 	if err != nil {
 		return allPosts, tags, postsById, filesToDelete, changes, fmt.Errorf("failed to read the RSS file %v", err)
 	}

@@ -190,7 +190,6 @@ func makeFakeTraktClient(t *testing.T) {
 	json = []byte(spareString)
 	jsons := [][]byte{json, []byte(`[]`)}
 	mocks.GetDoFunc = func(x *http.Request) (*http.Response, error) {
-		// fmt.Printf("Request: %v\n", x)
 		json = jsons[0]
 		jsons = jsons[1:]
 		r := io.NopCloser(bytes.NewReader([]byte(json)))

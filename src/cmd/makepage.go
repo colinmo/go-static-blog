@@ -702,6 +702,7 @@ func toTwigVariables(frontMatter *FrontMatter, content string) map[string]stick.
 		"synopsis":         frontMatter.Synopsis,
 		"created_date":     frontMatter.CreatedDate,
 		"updated_date":     frontMatter.UpdatedDate,
+		"type":             frontMatter.Type,
 		"featureimage":     frontMatter.FeatureImage,
 		"content":          content,
 		"link":             frontMatter.Link,
