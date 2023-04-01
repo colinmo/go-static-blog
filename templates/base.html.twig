@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
     <meta name="author" content="Colin Morris">
-    <title>{% if title != "" %}{{ title}} | {% endif %}Professor von Explaino</title>
+    <title>{% if title != "" %}{{ title}} - {% endif %}{% if (type != "" and type != "page") %}{{type|title}} - {% endif %}von Explaino</title>
     <link rel="pingback" href="https://webmention.io/vonexplaino.com/xmlrpc" />
     <link rel="webmention" href="https://webmention.io/vonexplaino.com/webmention" />
     <link rel="canonical" href="{% if link == "https://vonexplaino.com/blog/posts/page/welcome.html" %}https://vonexplaino.com/{% else %}{% if page != "" %}{{ link_prefix|raw }}{{ page }}.html{% else %}{{ link }}{% endif %}{% endif %}" />

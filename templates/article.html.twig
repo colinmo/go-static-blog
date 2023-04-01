@@ -1,32 +1,4 @@
 {% extends "base.html.twig" %}
-{% block extraheaders %}
-{% set cdate = created_date|date('c') %}
-{% set udate = updated_date|date('c') %}
-<meta property="og:site_name" content="Professor von Explaino" />
-<meta property="og:title" content="{{ title }}" />
-<meta property="og:url" content="{{ link|raw }}" />
-<meta property="og:type" content="article" />
-<meta property="og:description" content="{{ (synopsis|default('Personal site for Colin Morris/ Professor von Explaino. Contains PHP code, Steampunk')) }}" />
-<meta property="og:image" content="{{ featureimage|default("https://s0.wp.com/mshots/v1/" ~ link|url_encode ~ "?vpw=480&vph=380") }}" />
-<meta property="og:image:url" content="{{ featureimage|default("https://s0.wp.com/mshots/v1/" ~ link|url_encode ~ "?vpw=480&vph=380") }}" />
-<meta property="og:image:secure_url" content="{{ featureimage|default("https://s0.wp.com/mshots/v1/" ~ link|url_encode ~ "?vpw=480&vph=380") }}" />
-<meta property="article:published_time" content="{{ cdate }}" />
-<meta property="article:modified_time" content="{{ udate }}" />
-<meta property="og:updated_time" content="{{ udate }}" />
-<meta property="article:section" content="Blog" />
-
-<meta itemprop="name" content="{{ title }}" />
-<meta itemprop="headline" content="{{ title }}" />
-<meta itemprop="description" content="{{ (synopsis|default('Personal site for Colin Morris/ Professor von Explaino. Contains PHP code, Steampunk')) }}" />
-<meta itemprop="image" content="{{ featureimage|default("https://s0.wp.com/mshots/v1/" ~ link|url_encode ~ "?vpw=480&vph=380") }}" />
-<meta itemprop="datePublished" content="{{ cdate }}" />
-<meta itemprop="dateModified" content="{{ udate }}" />
-<meta itemprop="author" content="Colin Morris/ Professor von Explaino" />
-
-<meta name="twitter:card" content="summary" />
-<meta name="twitter:creator" content="@vonexplaino" />
-<meta name="twitter:site" content="@vonexplaino" />
-{% endblock %}
 {% block title %}{{ title }}{% endblock %}
 {% block content %}
 {% set cdate = created_date|date('c') %}
