@@ -19,6 +19,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"math"
 	"net/http"
@@ -39,6 +40,11 @@ import (
 
 var formatStringDMonthYear = "2 January 2006"
 
+/*
+Perform a full regenerate from source.
+1. Build the new site in a new folder under TempDir.
+2. Replace the existing symlink with this location
+*/
 func updateFullRegenerate() (RSS, map[string][]FrontMatter, map[string]Item, map[string]struct{}, GitDiffs, error) {
 	PrintIfNotSilent("Full\n")
 	postsById := map[string]Item{}
@@ -48,27 +54,67 @@ func updateFullRegenerate() (RSS, map[string][]FrontMatter, map[string]Item, map
 	var changes GitDiffs
 	var err error
 
+	// Make new target directory
 	PrintIfNotSilent("Temp Dir\n")
 	SwapDir2 := ConfigData.BaseDir
-	ConfigData.BaseDir = ConfigData.TempDir
-	ClearDir(ConfigData.TempDir)
-	os.MkdirAll(filepath.Join(ConfigData.TempDir, "tag"), 0755)
-	GitPull()
+	dirName := time.Now().Format("20060102150405")
+	ConfigData.BaseDir = filepath.Join(ConfigData.TempDir, dirName) + "/"
+	os.MkdirAll(ConfigData.BaseDir, 0755)
+	os.MkdirAll(filepath.Join(ConfigData.BaseDir, "tag"), 0755)
+	os.MkdirAll(filepath.Join(ConfigData.BaseDir, "media"), 0755)
+	os.MkdirAll(filepath.Join(ConfigData.BaseDir, "posts"), 0755)
+	// Run the generate into the target directory
+	//GitPull()
 	changes, err = PopulateAllGitFiles(ConfigData.RepositoryDir)
 	if err != nil {
-		return allPosts, tags, postsById, filesToDelete, changes, fmt.Errorf("failed to get files in the directory %s", ConfigData.RepositoryDir)
+		return allPosts, tags, postsById, filesToDelete, changes, fmt.Errorf("failed to get files in the directory %s [%s]", ConfigData.RepositoryDir, err)
 	}
 	tags, filesToDelete, postsById = getAllChangedTagsAndDeletedFiles(changes, postsById)
 	tags, postsById, _ = processFileUpdates(changes, tags, postsById)
 
+	// Swap the directory symlink
 	PrintIfNotSilent("Swap across\n")
-	var out bytes.Buffer
-	cmd := exec.Command(`/usr/bin/rsync`, "-ravh", ConfigData.BaseDir, SwapDir2, "--delete")
-	cmd.Stdout = &out
-	err = cmd.Run()
-	ClearDir(ConfigData.TempDir)
+	replaceDirectory(ConfigData.BaseDir, SwapDir2)
+	// Remove old dir
+	clearOtherPaths(ConfigData.TempDir, dirName)
 	ConfigData.BaseDir = SwapDir2
 	return allPosts, tags, postsById, filesToDelete, changes, err
+}
+
+func clearOtherPaths(inDir, notThisOne string) {
+	items, _ := ioutil.ReadDir(inDir)
+	for _, item := range items {
+		fmt.Printf("%s vs %s\n", item.Name(), notThisOne)
+		if item.Name() != notThisOne {
+			os.RemoveAll(filepath.Join(inDir, item.Name()))
+		}
+	}
+}
+
+func replaceDirectory(tempDir, blogDir string) {
+	var cmd *exec.Cmd
+	var out bytes.Buffer
+	var err error
+	os.Remove(filepath.Dir(blogDir))
+	cmd = exec.Command("ln", "-s", tempDir, filepath.Dir(blogDir))
+	cmd.Stdout = &out
+	err = cmd.Run()
+	if err != nil {
+		log.Fatalf("one: %s\n", err)
+	}
+	/*
+		if blogDir[len(blogDir)-1:] == "/" {
+			blogDir = blogDir[0 : len(blogDir)-1]
+		}
+		fmt.Printf("Bd: %s\n", blogDir)
+		cmd = exec.Command("mv", "-Tf", tempSymbolic, filepath.Dir(blogDir))
+		cmd.Stdout = &out
+
+		cmd.Run()
+		//if err != nil {
+		//	log.Fatalf("two: %s\n[%s]\nmv -Tf %s %s", err, out.String(), tempSymbolic, blogDir)
+		//}
+	*/
 }
 
 func updateChangedRegenerate() (RSS, map[string][]FrontMatter, map[string]Item, map[string]struct{}, GitDiffs, error) {
@@ -100,7 +146,7 @@ func deleteAndRegenerate(allPosts RSS, tags map[string][]FrontMatter, postsById 
 	allTagMap := map[string][]FrontMatter{}
 	// Delete any linked deleted HTML or Media pages
 	for filename := range filesToDelete {
-		os.Remove(ConfigData.BaseDir + filename)
+		os.Remove(filepath.Join(ConfigData.BaseDir, filename))
 	}
 	// Regenerate the index pages and RSS feeds
 	createPageAndRSSForTags(tags, filesToDelete)
@@ -204,7 +250,7 @@ var updateCmd = &cobra.Command{
 			allPosts, tags, postsById, filesToDelete, changes, err = updateChangedRegenerate()
 		}
 		if err != nil {
-			log.Fatalf("Something happened updating files %v\n", err)
+			log.Fatalf("Something happened updating files\n%v\n", err)
 		}
 		deleteAndRegenerate(allPosts, tags, postsById, filesToDelete, changes)
 	},
@@ -286,7 +332,7 @@ func processMDFile(tags *map[string][]FrontMatter, postsById *map[string]Item, f
 	var err error
 	t2, frontmatter, html := getTagsFromPost(filename, *tags)
 	*tags = t2
-	targetFile := ConfigData.BaseDir + baseDirectoryForPosts + frontmatter.RelativeLink
+	targetFile := filepath.Join(ConfigData.BaseDir, baseDirectoryForPosts, frontmatter.RelativeLink)
 	targetDir, _ := path.Split(targetFile)
 	if _, err = os.Stat(targetFile); os.IsNotExist(err) {
 		os.MkdirAll(targetDir, 0755)
@@ -387,7 +433,7 @@ func postToMastodon(message string) (string, error) {
 }
 
 func processMediaFile(filename string) error {
-	targetFile := ConfigData.BaseDir + filename
+	targetFile := filepath.Join(ConfigData.BaseDir, filename)
 	err := FileCopy(ConfigData.RepositoryDir+filename, targetFile)
 	PrintIfNotSilent("M")
 	return err
@@ -449,7 +495,7 @@ func createPageAndRSSForTags(tags map[string][]FrontMatter, filesToDelete map[st
 	matchExp, _ := regexp.Compile(`^(.*)-[\d+].xml$`)
 	files, err := os.ReadDir(baseDir)
 	if err != nil {
-		fmt.Printf("Failed to read existing RSS files from [%s]\n", baseDir)
+		fmt.Printf("Failed to read existing RSS files from [%s]\n[%s]\n", baseDir, err)
 		log.Fatal(err)
 	}
 
@@ -664,7 +710,7 @@ func ClearDir(dir string) error {
 func PopulateAllGitFiles(dir string) (GitDiffs, error) {
 	var foundDiffs GitDiffs
 	dirlength := len(dir)
-	err := filepath.Walk(dir+"/media",
+	err := filepath.Walk(filepath.Join(dir, "media"),
 		func(path string, info os.FileInfo, err error) error {
 			if err != nil {
 				return err

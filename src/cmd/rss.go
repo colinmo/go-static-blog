@@ -4,6 +4,7 @@ import (
 	"encoding/xml"
 	"io"
 	"os"
+	"path/filepath"
 	"sort"
 	"strconv"
 	"strings"
@@ -109,7 +110,7 @@ func WriteRSS(feed RSS, filename string) error {
 	byteValue, _ := xml.MarshalIndent(feed, "", "    ")
 	byteValue = []byte(strings.ReplaceAll(string(byteValue), "subject>", "rssTags:subject>"))
 
-	err := os.WriteFile(ConfigData.BaseDir+filename, append([]byte("<?xml version=\"1.0\"?>\n"), byteValue...), 0777)
+	err := os.WriteFile(filepath.Join(ConfigData.BaseDir, filename), append([]byte("<?xml version=\"1.0\"?>\n"), byteValue...), 0777)
 	return err
 }
 
