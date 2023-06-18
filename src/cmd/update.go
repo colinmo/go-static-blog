@@ -64,7 +64,7 @@ func updateFullRegenerate() (RSS, map[string][]FrontMatter, map[string]Item, map
 	os.MkdirAll(filepath.Join(ConfigData.BaseDir, "media"), 0755)
 	os.MkdirAll(filepath.Join(ConfigData.BaseDir, "posts"), 0755)
 	// Run the generate into the target directory
-	//GitPull()
+	GitPull()
 	changes, err = PopulateAllGitFiles(ConfigData.RepositoryDir)
 	if err != nil {
 		return allPosts, tags, postsById, filesToDelete, changes, fmt.Errorf("failed to get files in the directory %s [%s]", ConfigData.RepositoryDir, err)
@@ -81,6 +81,8 @@ func updateFullRegenerate() (RSS, map[string][]FrontMatter, map[string]Item, map
 	return allPosts, tags, postsById, filesToDelete, changes, err
 }
 
+// @todo: if the date-name of the found folder is _after_ the date-name for notThisOne
+// leave it.
 func clearOtherPaths(inDir, notThisOne string) {
 	items, _ := ioutil.ReadDir(inDir)
 	for _, item := range items {
@@ -102,19 +104,6 @@ func replaceDirectory(tempDir, blogDir string) {
 	if err != nil {
 		log.Fatalf("one: %s\n", err)
 	}
-	/*
-		if blogDir[len(blogDir)-1:] == "/" {
-			blogDir = blogDir[0 : len(blogDir)-1]
-		}
-		fmt.Printf("Bd: %s\n", blogDir)
-		cmd = exec.Command("mv", "-Tf", tempSymbolic, filepath.Dir(blogDir))
-		cmd.Stdout = &out
-
-		cmd.Run()
-		//if err != nil {
-		//	log.Fatalf("two: %s\n[%s]\nmv -Tf %s %s", err, out.String(), tempSymbolic, blogDir)
-		//}
-	*/
 }
 
 func updateChangedRegenerate() (RSS, map[string][]FrontMatter, map[string]Item, map[string]struct{}, GitDiffs, error) {
