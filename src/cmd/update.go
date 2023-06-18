@@ -66,8 +66,6 @@ func updateFullRegenerate() (RSS, map[string][]FrontMatter, map[string]Item, map
 	cmd := exec.Command(`/usr/bin/rsync`, "-ravh", ConfigData.BaseDir, SwapDir2, "--delete")
 	cmd.Stdout = &out
 	err = cmd.Run()
-	//PrintIfNotSilent("\n" + out.String() + "\n")
-	//PrintIfNotSilent("/usr/bin/rsync -ravh --delete " + ConfigData.BaseDir + " " + SwapDir2)
 	ClearDir(ConfigData.TempDir)
 	ConfigData.BaseDir = SwapDir2
 	return allPosts, tags, postsById, filesToDelete, changes, err
@@ -303,7 +301,27 @@ func processMDFile(tags *map[string][]FrontMatter, postsById *map[string]Item, f
 			(*postsById)[frontmatter.Link] = PostToItem(frontmatter)
 		}
 		if postWantsMastodonCrosspost(frontmatter) {
-			mastodonLink, err := postToMastodon(frontmatter.Synopsis + "\n" + frontmatter.Link)
+			to_syndicate := frontmatter.Synopsis
+			if frontmatter.Type == "indieweb" {
+				if len(frontmatter.InReplyTo) > 0 {
+					to_syndicate = to_syndicate + "\n\nIn reply to " + frontmatter.InReplyTo
+				}
+				if len(frontmatter.RepostOf) > 0 {
+					to_syndicate = to_syndicate + "\n\nRepost of " + frontmatter.RepostOf
+				}
+				if len(frontmatter.LikeOf) > 0 {
+					to_syndicate = to_syndicate + "\n\nLike of " + frontmatter.LikeOf
+				}
+				if len(frontmatter.FavoriteOf) > 0 {
+					to_syndicate = to_syndicate + "\n\nFavourite of " + frontmatter.FavoriteOf
+				}
+				if len(frontmatter.BookmarkOf) > 0 {
+					to_syndicate = to_syndicate + "\n\nBookmark of " + frontmatter.BookmarkOf
+				}
+			} else {
+				to_syndicate = to_syndicate + "\n\n" + frontmatter.Link
+			}
+			mastodonLink, err := postToMastodon(to_syndicate)
 			if err == nil {
 				mastodonLink, _ = url.JoinPath(`https://mstdn.social/@vonExplaino/`, mastodonLink)
 				setMastodonLink(filename, mastodonLink)
