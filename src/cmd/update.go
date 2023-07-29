@@ -166,7 +166,7 @@ func deleteAndRegenerate(allPosts RSS, tags map[string][]FrontMatter, postsById 
 		PrintIfNotSilent(fmt.Sprintf("Regenerating snippet for %s (%d)\n", tag, len(allTagMap[tag])))
 		content, err := createTagPageSnippetForTag(tag, allTagMap[tag], postsById)
 		if err == nil {
-			PrintIfNotSilent("ok")
+			PrintIfNotSilent("ok\n")
 			os.WriteFile(filepath.Join(ConfigData.BaseDir, "tag-snippet-"+tag+".html"), content, 0666)
 		} else {
 			PrintIfNotSilent(fmt.Sprintf("Failed %v", err))
