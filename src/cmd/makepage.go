@@ -59,18 +59,18 @@ Uses golang markdown and a local html template file to generate blog posts.`,
 		var html string
 		var frontMatter FrontMatter
 
-		if *fromFile != "" {
-			html, frontMatter, err = parseFile(*fromFile)
-			if err != nil {
-				fmt.Printf("Could not parse the file %s\n", *fromFile)
-				os.Exit(2)
-			}
-		} else {
+		if *fromFile == "" {
 			stdin := bufio.NewReader(os.Stdin)
 			stdin.Read(txt2)
 			html, frontMatter, err = parseString(string(txt2), "")
 			if err != nil {
 				fmt.Printf("Failed to parse %v", txt2)
+				os.Exit(2)
+			}
+		} else {
+			html, frontMatter, err = parseFile(*fromFile)
+			if err != nil {
+				fmt.Printf("Could not parse the file %s\n", *fromFile)
 				os.Exit(2)
 			}
 		}
@@ -455,7 +455,8 @@ func frontMatterDefaults(frontMatter *FrontMatter, filename string) {
 	}
 
 	frontMatter.Slug = setEmptyStringDefault(frontMatter.Slug, textToSlug(frontMatter.Title))
-	if len(frontMatter.Slug) < 5 || frontMatter.Slug[len(frontMatter.Slug)-5:] != ".html" {
+	ext := filepath.Ext(frontMatter.Slug)
+	if ext != ".html" {
 		frontMatter.Slug = frontMatter.Slug + ".html"
 	}
 	frontMatter.Status = setEmptyStringDefault(frontMatter.Status, "live")
@@ -507,9 +508,9 @@ func frontMatterValidate(frontMatter *FrontMatter, filename string) []string {
 	// Need to do this after Type is validated
 	if frontMatter.Link == "" {
 		if frontMatter.Type == "page" {
-			frontMatter.Link = ConfigData.BaseURL + baseDirectoryForPosts + strings.ToLower(frontMatter.Type) + "/" + frontMatter.Slug
+			frontMatter.Link, _ = url.JoinPath(ConfigData.BaseURL, baseDirectoryForPosts, strings.ToLower(frontMatter.Type), frontMatter.Slug)
 		} else {
-			frontMatter.Link = ConfigData.BaseURL + baseDirectoryForPosts + strings.ToLower(frontMatter.Type) + "/" + frontMatter.CreatedDate.Format("2006/01") + "/" + frontMatter.Slug
+			frontMatter.Link, _ = url.JoinPath(ConfigData.BaseURL, baseDirectoryForPosts, strings.ToLower(frontMatter.Type), frontMatter.CreatedDate.Format("2006/01"), frontMatter.Slug)
 		}
 	}
 	// Need to do this after Link is created
@@ -692,7 +693,7 @@ func contains(arr []string, str string) bool {
 func toTwigVariables(frontMatter *FrontMatter, content string) map[string]stick.Value {
 
 	if frontMatter.Link == "" {
-		frontMatter.Link = ConfigData.BaseURL + baseDirectoryForPosts + strings.ToLower(frontMatter.Type) + "/" + frontMatter.CreatedDate.Format("2006/01/02") + "/" + frontMatter.Slug + ".html"
+		frontMatter.Link, _ = url.JoinPath(ConfigData.BaseURL, baseDirectoryForPosts, strings.ToLower(frontMatter.Type), frontMatter.CreatedDate.Format("2006/01/02"), frontMatter.Slug)
 	}
 
 	return map[string]stick.Value{
@@ -749,11 +750,11 @@ func toTwigListVariables(frontMatters []FrontMatter, title string, page int) map
 			"item":             mep.Item,
 		})
 	}
-
+	baseDir, _ := url.JoinPath(ConfigData.BaseURL, "posts/")
 	return map[string]stick.Value{
 		"title":       title + " Page " + strconv.Itoa(page),
 		"page":        page,
-		"link_prefix": ConfigData.BaseURL + "posts/",
+		"link_prefix": baseDir,
 		"list":        x,
 	}
 }

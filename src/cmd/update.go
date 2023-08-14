@@ -59,10 +59,22 @@ func updateFullRegenerate() (RSS, map[string][]FrontMatter, map[string]Item, map
 	SwapDir2 := ConfigData.BaseDir
 	dirName := time.Now().Format("20060102150405")
 	ConfigData.BaseDir = filepath.Join(ConfigData.TempDir, dirName) + "/"
-	os.MkdirAll(ConfigData.BaseDir, 0755)
-	os.MkdirAll(filepath.Join(ConfigData.BaseDir, "tag"), 0755)
-	os.MkdirAll(filepath.Join(ConfigData.BaseDir, "media"), 0755)
-	os.MkdirAll(filepath.Join(ConfigData.BaseDir, "posts"), 0755)
+	err = os.MkdirAll(ConfigData.BaseDir, 0755)
+	if err != nil {
+		log.Fatalf("Make base dir error %v\n", err)
+	}
+	err = os.MkdirAll(filepath.Join(ConfigData.BaseDir, "tag"), 0755)
+	if err != nil {
+		log.Fatalf("Make tag dir error %v\n", err)
+	}
+	err = os.MkdirAll(filepath.Join(ConfigData.BaseDir, "media"), 0755)
+	if err != nil {
+		log.Fatalf("Make media dir error %v\n", err)
+	}
+	err = os.MkdirAll(filepath.Join(ConfigData.BaseDir, "posts"), 0755)
+	if err != nil {
+		log.Fatalf("Make posts dir error %v\n", err)
+	}
 	// Run the generate into the target directory
 	GitPull()
 	changes, err = PopulateAllGitFiles(ConfigData.RepositoryDir)
@@ -86,7 +98,6 @@ func updateFullRegenerate() (RSS, map[string][]FrontMatter, map[string]Item, map
 func clearOtherPaths(inDir, notThisOne string) {
 	items, _ := ioutil.ReadDir(inDir)
 	for _, item := range items {
-		fmt.Printf("%s vs %s\n", item.Name(), notThisOne)
 		if item.Name() != notThisOne {
 			os.RemoveAll(filepath.Join(inDir, item.Name()))
 		}
@@ -286,7 +297,7 @@ func getTagsFromPost(postName string, tags map[string][]FrontMatter) (map[string
 		tags = make(map[string][]FrontMatter)
 	}
 	if postName[len(postName)-3:] == ".md" {
-		html, frontmatter, err = parseFile(ConfigData.RepositoryDir + postName)
+		html, frontmatter, err = parseFile(filepath.Join(ConfigData.RepositoryDir, postName))
 		if err == nil {
 			for _, tag := range frontmatter.Tags {
 				tag = strings.ToLower(tag)
@@ -429,22 +440,15 @@ func processMediaFile(filename string) error {
 }
 
 func processUnknownFile(filename string) error {
-	info, err := os.Stat(ConfigData.RepositoryDir + filename)
+	fullPath := filepath.Join(ConfigData.RepositoryDir, filename)
+	info, err := os.Stat(fullPath)
 	if os.IsNotExist(err) {
-		fmt.Printf("Cannot do something with nothing %s\n", ConfigData.RepositoryDir+filename)
+		fmt.Printf("Cannot do something with nothing %s\n", fullPath)
 		log.Fatal("FAILED")
-	} else if info.IsDir() {
-		// nothing
-	} else {
-		split := strings.Split(filename, ".")
-		var extension string
-		if len(split) > 1 {
-			extension = split[1]
-		} else {
-			extension = ""
-		}
-		if !(extension == "m4v" || extension == "xcf" || filename[len(filename)-6:] == "README" || extension == "html" || extension == "txt" || extension == "json") {
-			fileType, err := GetFileType(ConfigData.RepositoryDir + filename)
+	} else if !info.IsDir() {
+		extension := filepath.Ext(filename)
+		if !(extension == ".m4v" || extension == ".xcf" || filename[len(filename)-6:] == "README" || extension == ".html" || extension == ".txt" || extension == ".json") {
+			fileType, err := GetFileType(fullPath)
 			fmt.Printf("Could not copy %s|%s|%v\n", filename, fileType, err)
 			log.Fatalf("FAILED")
 		}
@@ -462,10 +466,11 @@ func processFileUpdates(changes GitDiffs, tags map[string][]FrontMatter, postsBy
 		changes.Unmerged} {
 		for _, filename := range group {
 			filename = strings.ReplaceAll(filename, `\`, `/`)
-			if filename[len(filename)-3:] == ".md" {
+			extension := filepath.Ext(filename)
+			if extension == ".md" {
 				err = processMDFile(&tags, &postsById, filename)
-			} else if (filename[0:5] == "media" || filename[0:6] == "/media") && (IsMedia(ConfigData.RepositoryDir+filename) || filename[len(filename)-4:] == ".mov") {
-				processMediaFile(filename)
+			} else if (filename[0:5] == "media" || filename[0:6] == "/media") && (IsMedia(filepath.Join(ConfigData.RepositoryDir, filename)) || extension == ".mov") {
+				err = processMediaFile(filename)
 			} else {
 				err = processUnknownFile(filename)
 			}
@@ -509,10 +514,11 @@ func createPageAndRSSForTags(tags map[string][]FrontMatter, filesToDelete map[st
 			}
 		}
 		if rss.Channel.Title == "" {
+			tagLink, _ := url.JoinPath(ConfigData.BaseURL, "tag", textToSlug(tag)+".xml")
 			// New!
 			rss.Channel = Channel{
 				Title:         "Professor von Explain Feed Tagged " + tag,
-				Link:          ConfigData.BaseURL + "tag/" + textToSlug(tag) + ".xml",
+				Link:          tagLink,
 				Description:   "A feed of posts containing the tag '" + tag + "'",
 				Language:      "",
 				Copyright:     "",
@@ -564,7 +570,7 @@ func TwigifyPage(
 	env.Filters["tag_link"] = filterTagLink
 
 	twigTags["base_url"] = ConfigData.BaseURL
-	twigTags["link_prefix"] = ConfigData.BaseURL + filenamePrefix + "-"
+	twigTags["link_prefix"], _ = url.JoinPath(ConfigData.BaseURL, filenamePrefix+"-")
 	twigTags["last_page"] = pageCount
 	twigTags["next_page"] = page + 1
 	twigTags["prev_page"] = page - 1
@@ -669,7 +675,7 @@ func WriteLatestPost(entry FrontMatter) error {
 		log.Fatal(err)
 	}
 	err := os.WriteFile(
-		fmt.Sprintf("%s%s.html", ConfigData.BaseDir, "latest-post"),
+		filepath.Join(ConfigData.BaseDir, "latest-post.html"),
 		buf.Bytes(),
 		0644)
 	return err
