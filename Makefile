@@ -7,10 +7,12 @@ test:
 build-windows-windows:
 	set GOOS=windows&&set GOARCH=amd64&&cd src&&go build -ldflags "-w -s -H=windowsgui" -o ../bin/vonblog.exe
 	
- 
+
+build-linux-windows:
+	set GOOS=linux&&set GOARCH=amd64&&cd src&&go build -ldflags "-w -s" -o ../bin/vonblog
 
 build-linux-mac:
-	cd src && env GOOS=linux GOARCH=amd64 go build -o ../bin/vonblog
+	cd src && env GOOS=linux GOARCH=amd64 go build -ldflags "-w -s" -o ../bin/vonblog
 
 sonar: test
 	cd f:\Dropbox\swap\golang\vonblog && docker run --rm -v f:\Dropbox\swap\golang\vonblog:/usr/src sonarsource/sonar-scanner-cli
