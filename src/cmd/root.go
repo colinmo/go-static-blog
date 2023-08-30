@@ -219,11 +219,13 @@ func initConfig() {
 
 var DateOfExecution = time.Now()
 
+/*
 func getStartOfEverything() (time.Time, *time.Location) {
 	l, _ := time.LoadLocation(blogTimezone)
 	startOfEverything := time.Date(1970, 1, 1, 0, 0, 0, 0, l)
 	return startOfEverything, l
 }
+*/
 
 /** Global functions? **/
 func PrintIfNotSilent(toPrint string) {

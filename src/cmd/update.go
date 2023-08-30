@@ -25,7 +25,6 @@ import (
 	"net/http"
 	"net/url"
 	"os"
-	"os/exec"
 	"path"
 	"path/filepath"
 	"regexp"
@@ -58,22 +57,16 @@ func updateFullRegenerate() (RSS, map[string][]FrontMatter, map[string]Item, map
 	PrintIfNotSilent("Temp Dir\n")
 	SwapDir2 := ConfigData.BaseDir
 	dirName := time.Now().Format("20060102150405")
-	ConfigData.BaseDir = filepath.Join(ConfigData.TempDir, dirName) + "/"
+	ConfigData.BaseDir = filepath.Join(ConfigData.TempDir, dirName)
 	err = os.MkdirAll(ConfigData.BaseDir, 0755)
 	if err != nil {
 		log.Fatalf("Make base dir error %v\n", err)
 	}
-	err = os.MkdirAll(filepath.Join(ConfigData.BaseDir, "tag"), 0755)
-	if err != nil {
-		log.Fatalf("Make tag dir error %v\n", err)
-	}
-	err = os.MkdirAll(filepath.Join(ConfigData.BaseDir, "media"), 0755)
-	if err != nil {
-		log.Fatalf("Make media dir error %v\n", err)
-	}
-	err = os.MkdirAll(filepath.Join(ConfigData.BaseDir, "posts"), 0755)
-	if err != nil {
-		log.Fatalf("Make posts dir error %v\n", err)
+	for _, d := range []string{"tag", "media", "posts"} {
+		err = os.MkdirAll(filepath.Join(ConfigData.BaseDir, d), 0755)
+		if err != nil {
+			log.Fatalf("Make %s dir error %v\n", d, err)
+		}
 	}
 	// Run the generate into the target directory
 	GitPull()
@@ -105,13 +98,9 @@ func clearOtherPaths(inDir, notThisOne string) {
 }
 
 func replaceDirectory(tempDir, blogDir string) {
-	var cmd *exec.Cmd
-	var out bytes.Buffer
 	var err error
 	os.Remove(filepath.Dir(blogDir))
-	cmd = exec.Command("ln", "-s", tempDir, filepath.Dir(blogDir))
-	cmd.Stdout = &out
-	err = cmd.Run()
+	err = os.Symlink(tempDir, filepath.Dir(blogDir))
 	if err != nil {
 		log.Fatalf("one: %s\n", err)
 	}
@@ -722,7 +711,7 @@ func PopulateAllGitFiles(dir string) (GitDiffs, error) {
 
 	var foundDiffs2 GitDiffs
 	dirlength = len(dir)
-	err = filepath.Walk(dir+"/posts",
+	err = filepath.Walk(filepath.Join(dir, "posts"),
 		func(path string, info os.FileInfo, err error) error {
 			if err != nil {
 				return err

@@ -78,8 +78,8 @@ Uses golang markdown and a local html template file to generate blog posts.`,
 		if *toFile == "" {
 			*toFile = filepath.Join(ConfigData.BaseDir, frontMatter.Slug+".html")
 		}
-
-		err = os.WriteFile(*toFile, []byte(html), 0777)
+		os.MkdirAll(filepath.Dir(*toFile), 0755)
+		err = os.WriteFile(*toFile, []byte(html), 0744)
 		if err != nil {
 			log.Fatal(err)
 		}
