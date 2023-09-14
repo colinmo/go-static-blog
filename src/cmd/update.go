@@ -163,7 +163,7 @@ func deleteAndRegenerate(allPosts RSS, tags map[string][]FrontMatter, postsById 
 	}
 	// Create tag-page for Code and Steampunk embedding
 	for _, tag := range ConfigData.TagSnippets {
-		PrintIfNotSilent(fmt.Sprintf("Regenerating snippet for %s (%d)\n", tag, len(allTagMap[tag])))
+		PrintIfNotSilent(fmt.Sprintf("Regenerating snippet for %s (%d) - ", tag, len(allTagMap[tag])))
 		content, err := createTagPageSnippetForTag(tag, allTagMap[tag], postsById)
 		if err == nil {
 			PrintIfNotSilent("ok\n")
@@ -361,7 +361,7 @@ func processMDFile(tags *map[string][]FrontMatter, postsById *map[string]Item, f
 				mastodonLink, _ = url.JoinPath(`https://mstdn.social/@vonExplaino/`, mastodonLink)
 				setMastodonLink(filename, mastodonLink)
 				GitAdd(filename)
-				GitCommit("XPost")
+				GitCommit(fmt.Sprintf("XPOST - %s", mastodonLink))
 				GitPush()
 				frontmatter.SyndicationLinks.Mastodon = mastodonLink
 			} else {
