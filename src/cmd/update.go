@@ -78,7 +78,7 @@ func updateFullRegenerate() (RSS, map[string][]FrontMatter, map[string]Item, map
 	tags, postsById, _ = processFileUpdates(changes, tags, postsById)
 
 	// Swap the directory symlink
-	PrintIfNotSilent("Swap across\n")
+	PrintIfNotSilent("\nSwap across\n")
 	replaceDirectory(ConfigData.BaseDir, SwapDir2)
 	// Remove old dir
 	clearOtherPaths(ConfigData.TempDir, dirName)
