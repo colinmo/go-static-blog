@@ -3,6 +3,7 @@ package cmd
 import (
 	"bytes"
 	"fmt"
+	"log"
 	"os"
 	"os/exec"
 	"strings"
@@ -11,6 +12,7 @@ import (
 )
 
 var gitEnvSet bool
+var gitCommand = "git"
 
 func setEnvironments() {
 	envThing := viper.GetString("gitenv")
@@ -23,10 +25,11 @@ func setEnvironments() {
 	}
 }
 
-var gitCommand = "git"
-
 func GitPull() {
-	runGitCommand(gitCommand, []string{"pull"})
+	l, e := runGitCommand(gitCommand, []string{"pull"})
+	if e != nil {
+		log.Fatalf("Failed %s\n%s\n", l, e)
+	}
 }
 
 func GitFetch() {
@@ -89,12 +92,9 @@ func ProcessGitDiffs(resultsStr string) GitDiffs {
 }
 
 func GitRunDiff() GitDiffs {
-	result, _ := runGitCommand(gitCommand, []string{"diff", "master", "origin/master", "--name-status"})
+	runGitCommand(gitCommand, []string{"fetch", "origin", "master"})
+	result, _ := runGitCommand(gitCommand, []string{"diff", "--name-status", "FETCH_HEAD"})
 	return ProcessGitDiffs(result)
-}
-
-func GitGetFileAges(file string) {
-	runGitCommand(gitCommand, []string{"diff", "master", "origin/master", "--name-status"})
 }
 
 func runGitCommand(command string, parameters []string) (string, error) {

@@ -19,7 +19,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"math"
 	"net/http"
@@ -72,6 +71,8 @@ func updateFullRegenerate() (RSS, map[string][]FrontMatter, map[string]Item, map
 	GitPull()
 	changes, err = PopulateAllGitFiles(ConfigData.RepositoryDir)
 	if err != nil {
+		os.RemoveAll(ConfigData.BaseDir)
+		ConfigData.BaseDir = SwapDir2
 		return allPosts, tags, postsById, filesToDelete, changes, fmt.Errorf("failed to get files in the directory %s [%s]", ConfigData.RepositoryDir, err)
 	}
 	tags, filesToDelete, postsById = getAllChangedTagsAndDeletedFiles(changes, postsById)
@@ -89,7 +90,7 @@ func updateFullRegenerate() (RSS, map[string][]FrontMatter, map[string]Item, map
 // @todo: if the date-name of the found folder is _after_ the date-name for notThisOne
 // leave it.
 func clearOtherPaths(inDir, notThisOne string) {
-	items, _ := ioutil.ReadDir(inDir)
+	items, _ := os.ReadDir(inDir)
 	for _, item := range items {
 		if item.Name() != notThisOne {
 			os.RemoveAll(filepath.Join(inDir, item.Name()))
@@ -240,8 +241,9 @@ var updateCmd = &cobra.Command{
 		}
 		if err != nil {
 			log.Fatalf("Something happened updating files\n%v\n", err)
+		} else {
+			deleteAndRegenerate(allPosts, tags, postsById, filesToDelete, changes)
 		}
-		deleteAndRegenerate(allPosts, tags, postsById, filesToDelete, changes)
 	},
 }
 
