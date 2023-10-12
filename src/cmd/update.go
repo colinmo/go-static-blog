@@ -57,10 +57,6 @@ func updateFullRegenerate() (RSS, map[string][]FrontMatter, map[string]Item, map
 	SwapDir2 := ConfigData.BaseDir
 	dirName := time.Now().Format("20060102150405")
 	ConfigData.BaseDir = filepath.Join(ConfigData.TempDir, dirName)
-	err = os.MkdirAll(ConfigData.BaseDir, 0755)
-	if err != nil {
-		log.Fatalf("Make base dir error %v\n", err)
-	}
 	for _, d := range []string{"tag", "media", "posts"} {
 		dirPath := filepath.Join(ConfigData.BaseDir, d)
 		err = os.MkdirAll(dirPath, 0755)
