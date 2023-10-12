@@ -62,9 +62,17 @@ func updateFullRegenerate() (RSS, map[string][]FrontMatter, map[string]Item, map
 		log.Fatalf("Make base dir error %v\n", err)
 	}
 	for _, d := range []string{"tag", "media", "posts"} {
-		err = os.MkdirAll(filepath.Join(ConfigData.BaseDir, d), 0755)
+		dirPath := filepath.Join(ConfigData.BaseDir, d)
+		err = os.MkdirAll(dirPath, 0755)
 		if err != nil {
 			log.Fatalf("Make %s dir error %v\n", d, err)
+		}
+		info, err := os.Stat(dirPath)
+		if os.IsNotExist(err) {
+			log.Fatal("File does not exist.")
+		}
+		if !info.IsDir() {
+			log.Fatalf("%s is not a directory", dirPath)
 		}
 	}
 	// Run the generate into the target directory

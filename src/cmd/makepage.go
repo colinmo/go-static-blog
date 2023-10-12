@@ -30,7 +30,9 @@ import (
 	"time"
 
 	html2 "github.com/alecthomas/chroma/v2/formatters/html"
+	"github.com/mangoumbrella/goldmark-figure"
 	"github.com/spf13/cobra"
+	"github.com/stefanfritsch/goldmark-fences"
 	"github.com/tyler-sommer/stick"
 	"github.com/tyler-sommer/stick/twig"
 	"github.com/yuin/goldmark"
@@ -104,6 +106,8 @@ func init() {
 					html2.WithLineNumbers(true),
 				),
 			),
+			&fences.Extender{},
+			figure.Figure,
 		),
 		goldmark.WithParserOptions(
 			parser.WithAutoHeadingID(),

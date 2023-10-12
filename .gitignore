@@ -17,3 +17,4 @@ junit.xml
 src/test-report.json
 mastodon-client.txt
 testvars.go
+vendor
