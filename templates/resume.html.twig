@@ -133,16 +133,26 @@
         <section class="skill">
             {{ content|raw }}
             <h2>Skills</h2>
-            <p><ul class="legend"><li class="Languages">Languages</li><li class="Libraries">Libraries</li><li class="Methodologies">Methodologies</li><li class="Skills">Techniques</li></ul></p>
             <p><strong>Professional, 5+ years experience</strong>
-            <ul>{% for skill_sub_sub in resume.Skill.SeniorDev %}{% for member in skill_sub_sub.Members %}<li class="{{ skill_sub_sub.Name }}">{{member}}</li>{% endfor %}{% endfor %}{% for skill_sub_sub in resume.Skill.HobbyPro %}{% for member in skill_sub_sub.Members %}<li class="{{ skill_sub_sub.Name }}">{{member}}</li>{% endfor %}{% endfor %}</ul>
+            {% for skill_sub_sub in resume.Skill.SeniorDev %}
+{% if skill_sub_sub.Members|length >0 %}
+            <h3 class="{{ skill_sub_sub.Name }}">{{ skill_sub_sub.Name }}</h3>
+            <ul>{% for member in skill_sub_sub.Members %}<li>{{member}}</li>{% endfor %}</ul>{% endif %}{% endfor %}
             </p>
             <p><strong>Upskilling, less than 5 years experience; or not recently used</strong>
-            <ul>{% for skill_sub_sub in resume.Skill.Developer %}{% for member in skill_sub_sub.Members %}<li class="{{ skill_sub_sub.Name }}">{{member}}</li>{% endfor %}{% endfor %}{% for skill_sub_sub in resume.Skill.HobbyPro %}{% for member in skill_sub_sub.Members %}<li class="{{ skill_sub_sub.Name }}">{{member}}</li>{% endfor %}{% endfor %}</ul>
+            {% for skill_sub_sub in resume.Skill.Developer %}
+{% if skill_sub_sub.Members|length >0 %}
+            <h3 class="{{ skill_sub_sub.Name }}">{{ skill_sub_sub.Name }}</h3>
+            <ul>{% for member in skill_sub_sub.Members %}<li>{{member}}</li>{% endfor %}</ul>{% endif %}{% endfor %}
             </p>
+{% if resume.Skill.Intern.Members|length > 0 %}
             <p><strong>Experimenting, using them personally for growth</strong>
-            <ul>{% for skill_sub_sub in resume.Skill.Intern %}{% for member in skill_sub_sub.Members %}<li class="{{ skill_sub_sub.Name }}">{{member}}</li>{% endfor %}{% endfor %}{% for skill_sub_sub in resume.Skill.Hobbiest %}{% for member in skill_sub_sub.Members %}<li class="{{ skill_sub_sub.Name }}">{{member}}</li>{% endfor %}{% endfor %}</ul>
+            {% for skill_sub_sub in resume.Skill.Intern %}
+{% if skill_sub_sub.Members|length >0 %}
+            <h3 class="{{ skill_sub_sub.Name }}">{{ skill_sub_sub.Name }}</h3>
+            <ul>{% for member in skill_sub_sub.Members %}<li>{{member}}</li>{% endfor %}</ul>{% endif %}{% endfor %}
             </p>
+{% endif %}
         </section>
         <section class="experience">
             <h2>Experience</h2>
