@@ -85,7 +85,7 @@ func ReadRSS(filename string) (RSS, error) {
 	return feed, err
 }
 
-func WriteRSS(feed RSS, filename string) error {
+func WriteRSS(feed RSS, filename string, limit int) error {
 	feed.Version = "2.0"
 	feed.XmlnsA = "http://www.w3.org/2005/Atom"
 	feed.XmlnsB = "http://purl.org/dc/elements/1.1/"
@@ -107,6 +107,10 @@ func WriteRSS(feed RSS, filename string) error {
 	sort.SliceStable(feed.Channel.Items, func(p, q int) bool {
 		return feed.Channel.Items[p].PubDateAsDate.After(feed.Channel.Items[q].PubDateAsDate)
 	})
+	if limit > -1 {
+		limit = min(limit, len(feed.Channel.Items))
+		feed.Channel.Items = feed.Channel.Items[0:limit]
+	}
 	byteValue, _ := xml.MarshalIndent(feed, "", "    ")
 	byteValue = []byte(strings.ReplaceAll(string(byteValue), "subject>", "rssTags:subject>"))
 

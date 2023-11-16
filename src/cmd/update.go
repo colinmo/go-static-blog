@@ -119,7 +119,7 @@ func updateChangedRegenerate() (RSS, map[string][]FrontMatter, map[string]Item, 
 	var changes GitDiffs
 
 	// Get all posts from the all published posts RSS file
-	allPosts, err := ReadRSS(filepath.Join(ConfigData.BaseDir, "rss.xml"))
+	allPosts, err := ReadRSS(filepath.Join(ConfigData.BaseDir, "all-rss.xml"))
 	if err != nil {
 		return allPosts, tags, postsById, filesToDelete, changes, fmt.Errorf("failed to read the RSS file %v", err)
 	}
@@ -158,7 +158,8 @@ func deleteAndRegenerate(allPosts RSS, tags map[string][]FrontMatter, postsById 
 			allTagMap[j] = append(allTagMap[j], newPost)
 		}
 	}
-	WriteRSS(allPosts, "/rss.xml")
+	WriteRSS(allPosts, "/all-rss.xml", -1)
+	WriteRSS(allPosts, "/rss.xml", 10)
 	WriteListHTML(allItems, "index", "Journal")
 	for _, top := range allItems {
 		if top.Type != "indieweb" && top.Status != "draft" {
@@ -531,7 +532,7 @@ func createPageAndRSSForTags(tags map[string][]FrontMatter, filesToDelete map[st
 		}
 		// Regenerate RSS feeds and HTML pages for each Tag and Index
 		filename := "tag/" + textToSlug(tag)
-		WriteRSS(rss, fmt.Sprintf("%s.xml", filename))
+		WriteRSS(rss, fmt.Sprintf("%s.xml", filename), 20)
 		WriteListHTML(items, filename, "Tag: "+tag)
 	}
 }
