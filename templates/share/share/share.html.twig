@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width" />
+        <meta name="author" content="Colin Morris">
+        <title>Professor von Explaino</title>
+        <link rel="stylesheet" href="https://vonexplaino.com/blog/style/blog.css" />
+        <link href='//fonts.googleapis.com/css?family=Montserrat|Poppins|Nixie+One|Philosopher:900' rel='stylesheet' type='text/css'>
+        <link rel="alternate" type="application/rss+xml" title="Professor von Explaino's Journal RSS Feed" href="https://vonexplaino.com/blog/rss.xml" />
+        <link rel="pingback" href="https://webmention.io/vonexplaino.com/xmlrpc">
+        <link rel="webmention" href="https://webmention.io/vonexplaino.com/webmention">
+        <link rel="apple-touch-icon" sizes="72x72" href="/theme/images/favicon/apple-icon-72x72.png">
+        <link rel="apple-touch-icon" sizes="76x76" href="/theme/images/favicon/apple-icon-76x76.png">
+        <link rel="apple-touch-icon" sizes="114x114" href="/theme/images/favicon/apple-icon-114x114.png">
+        <link rel="apple-touch-icon" sizes="120x120" href="/theme/images/favicon/apple-icon-120x120.png">
+        <link rel="apple-touch-icon" sizes="144x144" href="/theme/images/favicon/apple-icon-144x144.png">
+        <link rel="apple-touch-icon" sizes="152x152" href="/theme/images/favicon/apple-icon-152x152.png">
+        <link rel="apple-touch-icon" sizes="180x180" href="/theme/images/favicon/apple-icon-180x180.png">
+        <link rel="icon" type="image/png" sizes="192x192" href="/theme/images/favicon/android-icon-192x192.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="/theme/images/favicon/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="96x96" href="/theme/images/favicon/favicon-96x96.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/theme/images/favicon/favicon-16x16.png">
+        <link rel="authorization_endpoint" href="https://indieauth.com/auth">
+        <link rel="token_endpoint" href="https://tokens.indieauth.com/token">
+        <link rel="microsub" href="https://aperture.p3k.io/microsub/182">
+        <link rel="manifest" href="/manifest.manifest">
+        <meta name="msapplication-TileColor" content="#ffffff" />
+        <meta name="msapplication-TileImage" content="/theme/images/favicon/ms-icon-144x144.png" />
+        <meta name="theme-color" content="#ffffff" />
+        <meta name="description" content="Personal site for Colin Morris/ Professor von Explaino. Contains PHP code, Steampunk" />
+        <style>
+        label, textarea, input[type=text], input[type=submit], input[type=password] {
+            display: block;
+            width: 100%;
+            font-family: Poppins, Arial, Helvetica, sans-serif;
+        }
+        #preview {
+            margin-left: 45px;
+            margin-right: 45px;
+            min-height: 50px;
+            border: thin solid grey;
+        }
+        </style>
+    </head>
+    <body class="container">
+        <!-- Actual template -->
+        <main id="professor-paper" class="panel">
+            <img src="/theme/images/top-left.png" style="position:absolute;top:-4px;left:-4px;z-index:2;pointer-events:none;" alt=""/>
+            <img src="/theme/images/top-right.png" style="position:absolute;top:-4px;right:-4px;z-index:2;pointer-events:none;" alt=""/>
+            <img src="/theme/images/bottom-left.png" style="position:absolute;bottom:-4px;left:-4px;z-index:2;pointer-events:none;" alt=""/>
+            <img src="/theme/images/bottom-right.png" style="position:absolute;bottom:-4px;right:-4px;z-index:2;pointer-events:none;" alt=""/>
+            <div id="preview">
+            </div>
+            <form method="post">
+                <label for="title">Title</label><input type="text" name="title" id="title" value="{{ title }}" />
+                <label for="url">URL</label><input type="text" name="url" id="url" value="{{ url }}" />
+                <label for="author">Author</label><input type="text" name="author" id="author" value="{{ author }}" />
+                <label for="tags">Tags</label><input type="text" name="tags" id="tags" value="{{ tags }}" />
+                <label for="content">Content</label><textarea name="content" id="content">{{ content }}</textarea>
+                <fieldset>
+                    <legend>Type</legend>
+                    <label><input type="radio" id="type" name="type" value="article" /> Article</label>
+                    <label><input type="radio" id="type" name="type" value="like" /> Reply</label>
+                    <label><input type="radio" id="type" name="type" value="tweet" /> Tweet</label>
+                </fieldset>
+                <fieldset>
+                    <legend>Extra types</legend>
+                    <label><input type="checkbox" id="extratype-reply" name="extratype[]" value="reply" /> Reply</label>
+                    <label><input type="checkbox" id="extratype-like" name="extratype[]" value="like" /> Like</label>
+                    <label><input type="checkbox" id="extratype-repost" name="extratype[]" value="repost" /> Repost</label>
+                    <label><input type="checkbox" id="extratype-bookmark" name="extratype[]" value="bookmark" /> Bookmark</label>
+                </fieldset>
+                <fieldset>
+                    <legend>Auth</legend>
+                    <label for="usr">User</label><input type="text" name="usr" id="usr" />
+                    <label for="pwd">Password</label><input type="password" name="pwd" id="pwd" />
+                </fieldset>
+                <input type="submit" value="Publish note" />
+            </form>
+        </main>
+    </body>
+</html>

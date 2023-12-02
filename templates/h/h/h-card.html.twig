@@ -1,0 +1,6 @@
+<div class="h-card">
+    {% if photo %}<img class="u-photo" src="{{ photo }}" alt="" />{% endif %}
+    <a class="p-name u-url" href="{{ url|default('#') }}">{{ name }}</a>
+    {% if email %}<a class="u-email" href="mailto:joebloggs@example.com">joebloggs@example.com</a>, {% endif %}
+    {% if adr %}{% include 'h/h-adr.html.twig' with adr %}{% endif %}
+</div>

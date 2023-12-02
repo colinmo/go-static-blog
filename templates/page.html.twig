@@ -4,18 +4,18 @@
     <article class="h-entry" data-article-id="{{ id }}">
         <header>
             <h1 class="p-name" style="">{{ title }}</h1>
-            <section class="post-meta">
-                <a class="p-author h-card" href="https://vonexplaino.com/">Professor von Explaino</a>
+            <div class="post-meta" {% if title == "Welcome" %}style="visibility:hidden;"{% endif %}>
+                <a class="p-author h-card" href="https://vonexplaino.com/">Colin Morris</a>
                 <time class="dt-published" datetime="{{ cdate }}">{{ created_date|date('j M Y, h:i a') }}</time>
                 {% if cdate != udate %}(&Delta; <time class="dt-updated" datetime="{{ udate }}">{{ updated_date|date('j M Y, h:i a') }}</time>){% endif %}
                 <p class="tags">{% for tag in tags %}<a href="/blog/{{tag|tag_link}}-1.html" class="p-category">{{ tag }}</a> {% endfor %}</p>
-            </section>
+            </div>
         </header>
         <div>
             <section class="e-content">
             {{ content|raw }}
             </section>
-            <hr style="clear:both;" />
+            <hr style="clear:both;">
         </div>
     </article>
 {% endblock %}

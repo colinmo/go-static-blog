@@ -5,8 +5,8 @@
         <div class="row">
             <header class="col-12">
                 <h1 class="p-name" style="">{{ title }}</h1>
-                <section class="post-meta">
-                    <span class="p-author">Professor von Explaino</span>, 
+                <div class="post-meta">
+                    <span class="p-author">Colin Morris</span>, 
                     <time class="dt-published" datetime="{{ created_date|date('c') }}">{{ created_date|date('j M Y, h:i a') }}</time>
                     (&Delta; <time class="dt-updated" datetime="{{ updated_date|date('c') }}">{{ updated_date|date('j M Y, h:i a') }}</time>)
                     <ul class="tags">
@@ -14,7 +14,7 @@
                         <li><a href="/blog/{{tag|tag_link}}-1.html" class="p-category">{{ tag }}</a></li>
                     {% endfor %}
                     </ul>
-                </section>
+                </div>
             </header>
         </div>
         <div class="row">

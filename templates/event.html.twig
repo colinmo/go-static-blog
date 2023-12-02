@@ -5,9 +5,9 @@
         <div class="row">
             <header class="col-12">
                 <h1 class="p-name" style=""><a href="{{ link|raw }}" class="u-url">{{ title }}</a></h1>
-                <section class="post-meta">
+                <div class="post-meta">
                     <div class="p-event-status status-{{event.status|default('Confirmed')|lower}}">{{ event.status|default('Confirmed') }}</div>
-                    <a class="p-author h-card" href="https://vonexplaino.com/">Professor von Explaino</a>, 
+                    <a class="p-author h-card" href="https://vonexplaino.com/">Colin Morris</a>, 
                     <time class="dt-start" datetime="{{ event.startdate|date('c') }}">{{ event.startdate|date('j M Y, h:i a T') }}</time>
                     {% if event.enddate is defined and event.enddate is not null %} - <time class="dt-end" datetime="{{ event.enddate|date('c') }}">{{ event.enddate|date('j M Y, h:i a T') }}</time>{% endif %}
                     <ul class="tags">
@@ -19,7 +19,7 @@
                     {# @todo: Check the type of location and use h-adr or h-geo as appropriate #}
                     <div class="p-location">{{ event.location }}</div>
                     {% endif %}
-                </section>
+                </div>
             </header>
         </div>
         <div class="row">
@@ -27,7 +27,7 @@
                 <div class="e-content p-description">
                 {{ content|raw }}
                 </div>
-                <hr style="clear:both;" />
+                <hr style="clear:both;">
             </div>
         </div>
     </article>

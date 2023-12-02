@@ -120,7 +120,7 @@
                         <h1 class="p-name" style="margin-top:0;margin-bottom:0;">
                             <a class="p-contact" href="{{ resume.Contact.URL|default('#') }}">{{ resume.Contact.Name }}</a>
                         </h1>
-                        <section class="post-meta" style="font-size: 0.6em;margin-bottom: 10px;">Last updated <time class="dt-updated" datetime="{{ udate }}">{{ updated_date|date('j M Y, h:i a') }}</time></section>
+                        <div class="post-meta" style="font-size: 0.6em;margin-bottom: 10px;">Last updated <time class="dt-updated" datetime="{{ udate }}">{{ updated_date|date('j M Y, h:i a') }}</time></div>
                         <h2 style="font-size: smaller;margin-bottom:0;">{{ resume.Contact.Title }}</h2>
                         {% if resume.Contact.LinkedIn|length > 0%}<a href="{{ resume.Contact.LinkedIn }}" style="font-size: 0.9em; background: url(/blog/media/2022/01/23/LinkedIn.png) no-repeat left center; background-size: 30%;padding-left: 20px;min-height: 30px;">LinkedIn</a>{% endif %}
                     </section>

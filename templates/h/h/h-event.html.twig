@@ -1,0 +1,5 @@
+<div class="h-event">
+    <h1 class="p-name">{{ name }}</h1>
+    <p>From <time class="dt-start" datetime="{{ start_date|date('c') }}">{{ event.start_date|date('j M Y, h:i a T') }}</time>{% if end_date is defined and end_date is not null %}to <time class="dt-end" datetime="{{ end_date|date('c') }}">{{ end_date|date('j M Y, h:i a T') }}</time>{% endif %}{% if adr is defined and adr is not null %}at <span class="p-location">Some bar in SF</span>{% endif %}</p>
+    <p class="p-summary">{{ summary }}</p>
+</div>

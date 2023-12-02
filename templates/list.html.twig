@@ -7,10 +7,10 @@ Y" %}
 {% block extraheaders %}
     {{ parent() }}
     {% if page > 1 %}
-    <link rel="prev" href="{{ link_prefix|raw }}{{ prev_page }}.html" />
+    <link rel="prev" href="{{ link_prefix|raw }}{{ prev_page }}.html">
     {% endif %}
     {% if page < last_page %}
-    <link rel="next" href="{{ link_prefix|raw }}{{ next_page }}.html" />
+    <link rel="next" href="{{ link_prefix|raw }}{{ next_page }}.html">
     {% endif %}
 {% endblock %}
 {% block content %}
@@ -23,11 +23,11 @@ Y" %}
                 <p class="p-summary">{{ value.synopsis|raw }}</p>
             </div>
             <time class="date-show dt-published" datetime="{{ value.createddate|date('Y-m-d H:i:s') }}">
-                <div class="day-of-month">{{ (value.createddate)|date('jS') }}</div>
-                <div class="month">{{ (value.createddate)|date('F') }}</div>
-                <div class="year">{{ (value.createddate)|date('Y') }}</div>
+                <span class="day-of-month">{{ (value.createddate)|date('jS') }}</span>
+                <span class="month">{{ (value.createddate)|date('F') }}</span>
+                <span class="year">{{ (value.createddate)|date('Y') }}</span>
             </time>
-            <p class="tags">{% for tag in value.tags %}<a href="{{ base_url }}{{tag|tag_link}}-1.html" class="p-category" rel="tag">{{ tag }}</a> {% endfor %}</p>
+            <p class="tags">{% for tag in value.tags %}<a href="{{ base_url }}{{tag|tag_link}}-1.html" class="p-category" rel="tag">{{ tag }}</a>{% endfor %}</p>
         </article>
         {% endfor %}
         <nav class="pagination">

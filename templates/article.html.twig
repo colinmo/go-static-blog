@@ -4,27 +4,28 @@
     <article class="h-entry" data-article-id="{{ id }}">
         <header>
             <h1 class="p-name"><a href="{{ link|raw }}" class="u-url">{% if type !="reply"%}{{ title }}{% endif %}</a></h1>
-            <section class="post-meta">
+            <div class="post-meta">
                 <time class="dt-published" datetime="{{ cdate }}">{{ created_date|date('j M Y, h:i a T') }}</time>
                 {% if cdate != udate %}(&Delta; <time class="dt-updated" datetime="{{ udate }}">{% if created_date|date('j M Y') == updated_date|date('j M Y') %}{{ updated_date|date('h:i a') }}{% else %}{{ updated_date|date('j M Y, h:i a T') }}{% endif %}</time>){% endif %}
-                <p class="tags">{% for tag in tags %}<a href="/blog/{{ tag|tag_link }}-1.html" class="p-category" rel="tag">{{ tag|lower }}</a> {% endfor %}</p>
-
-            </section>
+		{% if tags|json_encode != '[""]' %}
+                <p class="tags">{% for tag in tags %}<a href="/blog/{{ tag|tag_link }}-1.html" class="p-category" rel="tag">{{ tag|lower }}</a>{% endfor %}</p>
+		{% endif %}
+            </div>
         </header>
         <div>
             <section class="e-content">
             {{ content|raw }}
             </section>
-            <section class="post-meta">
-                <a rel="author" class="p-author h-card" href="https://vonexplaino.com/">Professor von Explaino</a>
+            <div class="post-meta">
+                <a rel="author" class="p-author h-card" href="https://vonexplaino.com/"><img src="/theme/images/favicon/favicon.svg" class="u-photo" />Colin Morris</a>
                 {% if inreplyto %}<p> In reply to <a href="{{ inreplyto }}" class="u-in-reply-to">{{ inreplyto }}</a></p>{% endif %}
                 {% if repostof %}<p> A repost of <a href="{{ repostof }}" class="u-repost-of">{{ repostof }}</a></p>{% endif %}
                 {% if likeof %}<p> A like of <a href="{{ likeof }}" class="u-like-of">{{ likeof }}</a></p>{% endif %}
                 {% if favoriteof %}<p> A favourite of <a href="{{ favoriteof }}" class="u-favorite-of">{{ favoriteof }}</a></p>{% endif %}
                 {% if bookmarkof %}<p> A bookmark of <a href="{{ bookmarkof }}" class="u-bookmark-of">{{ bookmarkof }}</a></p>{% endif %}
                 {% include "syndication.html.twig" with {'links': syndicationlinks} %}
-            </section>
-            <hr style="clear:both;" />
+            </div>
+            <hr style="clear:both;">
         </div>
     </article>
 {% endblock %}
