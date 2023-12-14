@@ -659,6 +659,7 @@ func WriteListHTML(feed []FrontMatter, filenamePrefix string, title string) erro
 	return nil
 }
 
+// Todo: Automatically write this inside the homepage file
 func WriteLatestPost(entry FrontMatter) error {
 	tDir := ConfigData.TemplateDir
 	env := twig.New(stick.NewFilesystemLoader(tDir))
