@@ -140,6 +140,7 @@ func deleteAndRegenerate(allPosts RSS, tags map[string][]FrontMatter, postsById 
 	allTagMap := map[string][]FrontMatter{}
 	// Delete any linked deleted HTML or Media pages
 	for filename := range filesToDelete {
+		PrintIfNotSilent("Deleting " + filepath.Join(ConfigData.BaseDir, filename))
 		os.Remove(filepath.Join(ConfigData.BaseDir, filename))
 	}
 	// Regenerate the index pages and RSS feeds
@@ -163,7 +164,10 @@ func deleteAndRegenerate(allPosts RSS, tags map[string][]FrontMatter, postsById 
 	WriteListHTML(allItems, "index", "Journal")
 	for _, top := range allItems {
 		if top.Type != "indieweb" && top.Status != "draft" {
-			WriteLatestPost(top)
+			err := WriteLatestPost(top)
+			if err != nil {
+				fmt.Printf("\nFailed to update homepage with latest %s\n", err)
+			}
 			break
 		}
 	}
@@ -671,10 +675,15 @@ func WriteLatestPost(entry FrontMatter) error {
 		toTwigVariables(&entry, "")); err != nil {
 		log.Fatal(err)
 	}
-	err := os.WriteFile(
-		filepath.Join(ConfigData.BaseDir, "latest-post.html"),
-		buf.Bytes(),
-		0644)
+
+	filename := filepath.Join(ConfigData.BaseDir, "posts/page/welcome.html")
+	mep, err := os.ReadFile(filename)
+	if err == nil {
+		replc := regexp.MustCompile(`<!-- START LAST(\n|.)*END LAST -->`)
+		mep := replc.ReplaceAll(mep, []byte(fmt.Sprintf(`<!-- START LAST -->%s<!-- END LAST -->`, buf)))
+		os.WriteFile(filename, mep, 0777)
+	}
+
 	return err
 }
 

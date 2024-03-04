@@ -8,6 +8,7 @@ This is a command line tool to integrate a git repository with a blog template s
 * [ ] Pull out HTML access component so it can be passed through as a parameter for mocking/ testing
 * [ ] Refactoring the codebase (buzzwords)
 * [ ] More unit tests for resiliance
+* [ ] Change the code-window image holders so they look less pillowy
 
 ## Build
 

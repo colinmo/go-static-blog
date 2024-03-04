@@ -39,7 +39,7 @@ func TestReadWriteRSS(t *testing.T) {
 		t.Fatalf(`Failed to parse %s`, err)
 	}
 
-	err = WriteRSS(mek, `rss1_out.xml`)
+	err = WriteRSS(mek, `rss1_out.xml`, 10)
 	if err != nil {
 		t.Fatalf(`Failed to save the file %s`, err)
 	}
