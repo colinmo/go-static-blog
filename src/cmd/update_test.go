@@ -321,7 +321,7 @@ func TestUpdateFullRegenerate(t *testing.T) {
 //	)
 //}
 
-func TestUpdateChangedRegenerate(t *testing.T) {
+func TestUpdateChangedRegenerateNoChange(t *testing.T) {
 	ConfigData.BaseDir = `f:\Dropbox\swap\golang\vonblog\features\tests\update\changed\`
 	gitCommand = `f:\Dropbox\swap\golang\vonblog\features\tests\update\scripts\changed-nochanges.bat`
 
@@ -344,14 +344,16 @@ func TestUpdateChangedRegenerate(t *testing.T) {
 	if len(changes.Added) > 0 {
 		t.Fatalf("Changes added had things")
 	}
+}
 
-	// Changed
+// Changed
 
+func TestUpdateChangedRegenerateDeleted(t *testing.T) {
 	// Deleted
 	ConfigData.BaseDir = `f:\Dropbox\swap\golang\vonblog\features\tests\update\deleted\`
 	gitCommand = `f:\Dropbox\swap\golang\vonblog\features\tests\update\scripts\changed-deleted.bat`
 
-	allPosts, tags, postsById, filesToDelete, changes, err = updateChangedRegenerate()
+	allPosts, tags, postsById, filesToDelete, changes, err := updateChangedRegenerate()
 	if err != nil {
 		t.Fatalf("Something dun goofed %v\n", err)
 	}
@@ -371,8 +373,38 @@ func TestUpdateChangedRegenerate(t *testing.T) {
 	if len(changes.Added) > 0 {
 		t.Fatalf("Changes added had things")
 	}
+}
 
+func TestUpdateChangedRegenerateAdded(t *testing.T) {
 	// Added
+	ConfigData.BaseDir = `f:\Dropbox\swap\golang\vonblog\features\tests\update\changed\`
+	ConfigData.RepositoryDir = `f:\Dropbox\swap\golang\vonblog\features\tests\update\changed-repo\`
+	ConfigData.TemplateDir = `f:\Dropbox\swap\golang\vonblog\templates\`
+	gitCommand = `f:\Dropbox\swap\golang\vonblog\features\tests\update\scripts\changed-added.bat`
+
+	allPosts, tags, postsById, filesToDelete, changes, err := updateChangedRegenerate()
+	if err != nil {
+		t.Fatalf("Something dun goofed %v\n", err)
+	}
+	if len(allPosts.Channel.Items) != 1 {
+		fmt.Printf("%v\n", allPosts)
+		t.Fatalf("Failed to parse the RSS file %s [%d]", filepath.Join(ConfigData.BaseDir, "rss.xml"), len(allPosts.Channel.Items))
+	}
+	if len(tags) != 2 {
+		t.Fatalf("Tags had something in it %d", len(tags))
+	}
+	if len(postsById) != 2 {
+		t.Fatalf("Posts by id had something in it [%d]", len(postsById))
+	}
+	if len(filesToDelete) != 0 {
+		t.Fatalf("What's to delete?")
+	}
+	if len(changes.Added) != 1 {
+		t.Fatalf("Changes miscounted had things: A%d", len(changes.Added))
+	}
+	if len(changes.Modified) != 1 {
+		t.Fatalf("Changes miscounted had things: M%d", len(changes.Modified))
+	}
 
 	// Posts from RSS too
 }

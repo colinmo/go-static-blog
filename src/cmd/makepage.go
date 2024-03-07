@@ -30,9 +30,9 @@ import (
 	"time"
 
 	html2 "github.com/alecthomas/chroma/v2/formatters/html"
-	"github.com/mangoumbrella/goldmark-figure"
+	figure "github.com/mangoumbrella/goldmark-figure"
 	"github.com/spf13/cobra"
-	"github.com/stefanfritsch/goldmark-fences"
+	fences "github.com/stefanfritsch/goldmark-fences"
 	"github.com/tyler-sommer/stick"
 	"github.com/tyler-sommer/stick/twig"
 	"github.com/yuin/goldmark"
@@ -521,7 +521,7 @@ func frontMatterValidate(frontMatter *FrontMatter, filename string) []string {
 	if len(frontMatter.FeatureImage) == 0 {
 		frontMatter.FeatureImage = defaultFeatureImage(frontMatter)
 	}
-	var splitted = strings.Split(frontMatter.Link, "/posts")
+	var splitted = strings.SplitN(frontMatter.Link, "posts", 2)
 	if len(splitted) < 2 {
 		collectedErrors = append(collectedErrors, fmt.Sprintf("Could not get a posts link for %s", frontMatter.Link))
 	} else {

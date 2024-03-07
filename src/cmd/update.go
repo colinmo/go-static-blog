@@ -24,7 +24,6 @@ import (
 	"net/http"
 	"net/url"
 	"os"
-	"path"
 	"path/filepath"
 	"regexp"
 	"sort"
@@ -333,7 +332,7 @@ func processMDFile(tags *map[string][]FrontMatter, postsById *map[string]Item, f
 	t2, frontmatter, html := getTagsFromPost(filename, *tags)
 	*tags = t2
 	targetFile := filepath.Join(ConfigData.BaseDir, baseDirectoryForPosts, frontmatter.RelativeLink)
-	targetDir, _ := path.Split(targetFile)
+	targetDir, _ := filepath.Split(targetFile)
 	if _, err = os.Stat(targetFile); os.IsNotExist(err) {
 		os.MkdirAll(targetDir, 0755)
 	}
@@ -434,7 +433,7 @@ func postToMastodon(message string) (string, error) {
 
 func processMediaFile(filename string) error {
 	targetFile := filepath.Join(ConfigData.BaseDir, filename)
-	err := FileCopy(ConfigData.RepositoryDir+filename, targetFile)
+	err := FileCopy(filepath.Join(ConfigData.RepositoryDir, filename), targetFile)
 	PrintIfNotSilent("M")
 	return err
 }
@@ -445,7 +444,9 @@ func processUnknownFile(filename string) error {
 	if os.IsNotExist(err) {
 		fmt.Printf("Cannot do something with nothing %s\n", fullPath)
 		log.Fatal("FAILED")
-	} else if !info.IsDir() {
+	} else if info.IsDir() {
+		return nil
+	} else {
 		extension := filepath.Ext(filename)
 		if !(extension == ".m4v" || extension == ".xcf" || filename[len(filename)-6:] == "README" || extension == ".html" || extension == ".txt" || extension == ".json") {
 			fileType, err := GetFileType(fullPath)
@@ -795,7 +796,7 @@ func GetFileType(file string) (string, error) {
 }
 
 func FileCopy(source, destination string) error {
-	targetDir, _ := path.Split(destination)
+	targetDir, _ := filepath.Split(destination)
 	if _, err := os.Stat(destination); os.IsNotExist(err) {
 		err = os.MkdirAll(targetDir, 0755)
 		if err != nil {
