@@ -1,205 +1,183 @@
 {% extends "base.html.twig" %}
 {% set cdate = created_date|date('c') %}
 {% set udate = updated_date|date('c') %}
-{% block title %}{{ title }}{% endblock %}
+{% block title %}
+	{{ title }}
+{% endblock %}
 {% block content %}
-    <article class="h-resume" data-tags="{{ metadata.tags|json_encode }}">
-        <style>
-            .h-resume .experience h3, .h-resume .education h3 {
-                clear: both;
-                text-align:left;
-            }
-            #skills-grid > section ul {
-                padding-left: 1em;
-            }
-            section + section {
-                padding-top: 20px;
-            }
-            #business-card {
-                margin:0 auto;
-                max-width:500px;
-                display:flex;
-                background-color: transparent;
-                perspective: 1000px;
-                height: 190px;
-                margin-bottom: 44px;
-            }
-            #business-flip:checked + #business-card > div {
-                transform: rotateY(180deg);
-                -webkit-transform: rotateY(180deg);
-                }
-            #business-card img { border-radius: 3px; }
-            #business-card > div > div {
-                position:absolute;
-                width: calc(100% - 44px);
-                height: 100%;
-                backface-visibility: hidden;
-                -webkit-backface-visibility: hidden;
-                border: 2px solid grey;
-                padding:20px;
-                border-radius: 15px;
-                margin: 0 30px 30px 0;
-                -webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.27), 0 0 40px rgba(0, 0, 0, 0.06) inset;
-                -moz-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.27), 0 0 40px rgba(0, 0, 0, 0.06) inset;
-                box-shadow: 0 1px 4px rgba(0, 0, 0, 0.27), 0 0 40px rgba(0, 0, 0, 0.06) inset;
-                background: {% if resume.Contact.Logo|length > 0 %}url({{resume.Contact.Logo}}) no-repeat bottom center, {% endif %}var(--paper-image) repeat top left;
-                border-bottom-right-radius: 60px;
-                background-size: 25%;
-                }
-            #business-card-back {
-                transform: rotateY(180deg);
-                -webkit-transform: rotateY(180deg);
-                border-bottom-right-radius: 15px !important;
-                border-bottom-left-radius: 60px !important;
-                }
-            #business-card * {
-                backface-visibility: hidden !important;
-                -webkit-backface-visibility: hidden !important;
-                }
-            #skills-grid > section ul {
-                padding-left: 1em;
-            }
-            .h-resume .experience h3, .h-resume .education h3 {
-                clear-both;
-                text-align:left;
-            }
-            .flipper { 
-                position: absolute; right: 0; bottom: -70px;cursor: pointer; font-size: 5em;color:#00e;z-index: 2;
-            }
-            input + section .flipper:hover + div {
-                transform: rotateY(10deg);
-                -webkit-transform: rotateY(10deg);}
-            input:checked + section .flipper:hover + div {
-                transform: rotateY(180deg);
-                -webkit-transform: rotateY(180deg)}
-                
-            .skill ul li {
-                display: inline;
-            }
-            .skill ul li:after {
-                content: ",\a0";
-            }
-            .skill ul li:nth-last-child(2):after {
-                content: ",\a0 and\a0";
-            }
-            .skill ul li:last-child:after {
-                content: "";
-            }
-            li.Languages:before {
-                content: "\1F4BB"
-            }
-            li.Libraries:before {
-                content: "\1f4d6"
-            }
-            li.Methodologies:before {
-                content: "\2699\FE0F"
-            }
-            li.Skills:before {
-                content: "\1f9e0"
-            }
-            ul.legend {
-                list-style-type: none;
-                margin: 0 0 0.5em 0;
-                text-align: center;
-            }
-            ul.legend li {
-                display:inline-block;
-                margin-right: 3em;
-            }
-            .skill ul.legend li:after {
-                content:"";
-            }
-        </style>
-        <input type="checkbox" id="business-flip" name="business-flip" style="width: 0; height: 0; position: absolute; left: -9999px;">
-        <section id="business-card" class="h-card">
-            <label class="flipper" for="business-flip">&#x21AC;</label>
-            <div style="position:relative;width: 100%;height: 100%;transition: transform 0.5s;transform-style: preserve-3d;-webkit-transform-style: preserve-3d">
-                <div id="business-card-front" style="display:flex;">
-                    <img class="u-photo" alt="" src="{{ resume.Contact.Photo }}" style="width:150px;height:187px;border: thin solid black;flex-basis: 150px;flex-grow: 0;flex-shrink: 0;">
-                    <section id="business-card-text" style="margin-left: 20px;">
-                        <h1 class="p-name" style="margin-top:0;margin-bottom:0;">
-                            <a class="p-contact" href="{{ resume.Contact.URL|default('#') }}">{{ resume.Contact.Name }}</a>
-                        </h1>
-                        <div class="post-meta" style="font-size: 0.6em;margin-bottom: 10px;">Last updated <time class="dt-updated" datetime="{{ udate }}">{{ updated_date|date('j M Y, h:i a') }}</time></div>
-                        <h2 style="font-size: smaller;margin-bottom:0;">{{ resume.Contact.Title }}</h2>
-                        {% if resume.Contact.LinkedIn|length > 0%}<a href="{{ resume.Contact.LinkedIn }}" style="font-size: 0.9em; background: url(/blog/media/2022/01/23/LinkedIn.png) no-repeat left center; background-size: 30%;padding-left: 20px;min-height: 30px;">LinkedIn</a>{% endif %}
-                    </section>
-                </div>
-                <div id="business-card-back" class="p-summary">
-                    {{ synopsis|raw }}
-                </div>
-            </div>
-        </section>
-        <section class="skill">
-            {{ content|raw }}
+	<style>
+		article {
+			--plus-five-xp: "\1F7B4";
+		}
+		.indicate-plus-five::before {
+			content: var(--plus-five-xp);
+		}
+		.professional {
+			list-style-type: var(--plus-five-xp);
+		}
+
+		article.h-resume {
+			display: grid;
+			grid-template: "header contact" auto "experience skills" auto "experience education" auto "summary summary" auto / 2fr 1fr !important;
+			gap: 10px 10px;
+		}
+
+		header {
+			grid-area: header;
+		}
+
+		#experience {
+			grid-area: experience;
+			padding: 0 14px;
+			box-shadow: 1px 2px 10px black;
+		}
+
+		#skill {
+			font-size: smaller;
+			grid-area: skills;
+			padding: 0 14px;
+			box-shadow: 1px 2px 10px black;
+		}
+
+		#education {
+			font-size: smaller;
+			grid-area: education;
+			padding: 0 14px;
+			box-shadow: 1px 2px 10px black;
+		}
+
+		#contact {
+			font-size: smaller;
+			grid-area: contact;
+		}
+
+		#summary {
+			grid-area: summary;
+		}
+
+		a[href^="https://www.linkedin.com"]::before {
+			content: url("data:image/svg+xml, %3Csvg width='24' height='16' viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg' fill='none'%3E%3Cpath fill='%230A66C2' d='M12.225 12.225h-1.778V9.44c0-.664-.012-1.519-.925-1.519-.926 0-1.068.724-1.068 1.47v2.834H6.676V6.498h1.707v.783h.024c.348-.594.996-.95 1.684-.925 1.802 0 2.135 1.185 2.135 2.728l-.001 3.14zM4.67 5.715a1.037 1.037 0 01-1.032-1.031c0-.566.466-1.032 1.032-1.032.566 0 1.031.466 1.032 1.032 0 .566-.466 1.032-1.032 1.032zm.889 6.51h-1.78V6.498h1.78v5.727zM13.11 2H2.885A.88.88 0 2 2.866v10.268a.88.88 0 00.885.866h10.226a.882.882 0 00.889-.866V2.865a.88.88 0 00-.889-.864z'/%3E%3C/svg%3E");
+			display: inline;
+		}
+
+		h3 span {
+			font-size: smaller;
+		}
+		h3 > cite ~ span,
+		h4 span:nth-of-type(2),
+		h5 span:nth-of-type(2) {
+			float: right;
+		}
+		h2 {
+			border-bottom: thin solid var(--header-color);
+		}
+	</style>
+	<article class="h-resume">
+		<header>
+			<h1 class="p-name">
+				<a class="p-contact" href="{{ resume.Contact.URL|default('#') }}" style="color:var(--header-color)">{{ resume.Contact.Name }}</a>
+			</h1>
+			<p class="tagline">{{ resume.Contact.Title }}</p>
+		</header>
+		<section id="experience">
+			<h2>Work Experience</h2>
+			{% for experience in resume.Experience %}
+				<div class="p-experience experience-{{ (experience.Category|lower)|replace({' ':'-'}) }}" style="clear:both">
+					{% if experience.Category == "Work History" %}
+						<div class="h-event">
+							<h3 class="p-location">
+								<a class="u-url" href="https://www.griffith.edu.au">{{ experience.Location }}</a>
+							</h3>
+							<h4>
+								<span class="p-name">{{ experience.Name }}</span>
+								<span>
+									<time class="dt-start" datetime="{{ experience.StartDate|date('c') }}">{{ experience.StartDate|date('Y') }}</time>
+									-
+									{% if experience.End|length > 0 %}
+										<time class="dt-end" datetime="{{ experience.EndDate|date('c') }}">{{ experience.EndDate|date('Y') }}</time>
+									{% else %}
+										Present
+									{% endif %}
+								</span>
+							</h4>
+							<p class="p-summary">{{ experience.Summary}}</p>
+							<span class="p-description">
+								{{ experience.Description }}
+							</span>
+						</div>
+					{% elseif experience.Category == "Publication" %}
+						<div class="h-cite">
+							<h3>Publication:
+								<cite class="p-name">{{ experience.Name }}</cite>
+								{% if experience.URL %}
+									[<a class="u-url u-uid" href="{{ experience.URL}}">Details</a>]
+								{% endif %}<br/><time class="dt-published" datetime="{{ experience.PublishedDate|date('c') }}">{{ experience.PublishedDate|date('Y-m-d') }}
+								</time>
+							</h3>
+							<span class="p-summary">{{ experience.Summary }}</span>
+						</div>
+					{% endif %}
+				</div>
+			{% endfor %}
+		</section>
+
+        <section id="skill">
             <h2>Skills</h2>
-            <p><strong>Professional, 5+ years experience</strong>
-            {% for skill_sub_sub in resume.Skill.SeniorDev %}
-{% if skill_sub_sub.Members|length >0 %}
-            <h3 class="{{ skill_sub_sub.Name }}">{{ skill_sub_sub.Name }}</h3>
-            <ul>{% for member in skill_sub_sub.Members %}<li>{{member}}</li>{% endfor %}</ul>{% endif %}{% endfor %}
-            </p>
-            <p><strong>Upskilling, less than 5 years experience; or not recently used</strong>
-            {% for skill_sub_sub in resume.Skill.Developer %}
-{% if skill_sub_sub.Members|length >0 %}
-            <h3 class="{{ skill_sub_sub.Name }}">{{ skill_sub_sub.Name }}</h3>
-            <ul>{% for member in skill_sub_sub.Members %}<li>{{member}}</li>{% endfor %}</ul>{% endif %}{% endfor %}
-            </p>
-{% if resume.Skill.Intern.Members|length > 0 %}
-            <p><strong>Experimenting, using them personally for growth</strong>
-            {% for skill_sub_sub in resume.Skill.Intern %}
-{% if skill_sub_sub.Members|length >0 %}
-            <h3 class="{{ skill_sub_sub.Name }}">{{ skill_sub_sub.Name }}</h3>
-            <ul>{% for member in skill_sub_sub.Members %}<li>{{member}}</li>{% endfor %}</ul>{% endif %}{% endfor %}
-            </p>
-{% endif %}
+            <p class="legend"><span class="indicate-plus-five"></span> indicates recent, professional uses.</p>
+            <h3 class="Methodologies">Methodologies</h3>
+            <ul>
+				{% for member,level in resume.FlatSkills.Methodologies %}
+				<li{% if level == "p" %} class="professional"{% endif %}>{{member}}</li>
+				{% endfor %}
+            </ul>
+            <h3 class="Languages">Languages</h3>
+            <ul>
+				{% for member,level in resume.FlatSkills.Languages %}
+				<li{% if level == "p" %} class="professional"{% endif %}>{{member}}</li>
+				{% endfor %}
+            </ul>
+            <h3 class="Libraries">Libraries and Tools</h3>
+            <ul>
+				{% for member,level in resume.FlatSkills.Libraries %}
+				<li{% if level == "p" %} class="professional"{% endif %}>{{member}}</li>
+				{% endfor %}
+            </ul>
         </section>
-        <section class="experience">
-            <h2>Experience</h2>
-            {% for experience in resume.Experience %}
-            <div class="p-experience experience-{{ (experience.Category|lower)|replace({' ':'-'}) }}" style="clear:both">
-                {% if experience.Category == "Work History" %}
-                <div class="h-event">
-                    <h3 class="p-name">{{ experience.Name }} {% if experience.URL %} [<a class="u-url" href="{{ experience.URL}}">Details</a>]{% endif %}<br /><span class="p-location">{{ experience.Location }}</span>, <time class="dt-start" datetime="{{ experience.StartDate|date('c') }}">{{ experience.StartDate|date('Y') }}</time> - 
-                    {% if experience.End|length > 0 %}
-                    <time class="dt-end" datetime="{{ experience.EndDate|date('c') }}">{{ experience.EndDate|date('Y') }}</time>
-                    {% endif %}</h3>
-                    <p class="p-summary">{{ experience.Summary}}</p>
-                    <span class="p-description">{{ experience.Description }}</span>
-                </div>
-                {% elseif experience.Category == "Publication" %}
-                <div class="h-cite">                    
-                    <h3>Publication: <cite class="p-name">{{ experience.Name }}</cite> {% if experience.URL %} [<a class="u-url u-uid" href="{{ experience.URL}}">Details</a>]{% endif %}<br /><time class="dt-published" datetime="{{ experience.PublishedDate|date('c') }}">{{ experience.PublishedDate|date('Y-m-d') }} </time></h3>
-                    <span class="p-summary">{{ experience.Summary }}</span>
-                </div>
-                {% elseif experience.Category == "Presentation" %}
-                <div class="h-cite">
-                    <h3>Presentation: <cite class="p-name">{{ experience.Name }}</cite> {% if experience.URL %} [<a class="u-url u-uid" href="{{ experience.URL}}">Details</a>]{% endif %}<br /><time class="dt-start" datetime="{{ experience.StartDate|date('c') }}">{{ experience.StartDate|date('Y') }} </time></h3>                        
-                    <span class="p-summary">{{ experience.Summary }}</span>      
-                    <p class="p-location">Delivered at the {{ experience.Location }}</p>                
-                </div>
+		<section class="education">
+			<h2>Education</h2>
+			{% for education in resume.Education %}
+				<div class="p-education education-{{ (education.Category|lower)|replace({' ':'-'}) }}">
+					<h3 class="p-name">{{ education.Name }}
+						{% if education.URL %}
+							[<a href="{{ education.URL}}">Confirm</a>]
+						{% endif %}
+					</h3>
+					<p style="text-align: center;">
+						{% if education.Category == "Tertiary" %}
+							Institution: {{ education.Location }}
+						{% elseif education.Category == "Certification" %}
+							Group: {{ education.Location }}
+						{% else %}
+							{{ education.Location }}
+						{% endif %}:
+						<time class="dt-start" datetime="{{ education.StartDate|date('c') }}">{{ education.StartDate|date('Y') }}</time>
+						{% if education.End %} - <time class="dt-end" datetime="{{ education.EndDate|date('c') }}">{{ education.EndDate|date('Y') }}
+							</time>
+						{% endif %}
+					</p>
+				</div>
+			{% endfor %}
+		</section>
+            <section id="contact">
+                <h2>Contact</h2>
+                {% if resume.Contact.LinkedIn|length > 0%}
+                    <a href="{{ resume.Contact.LinkedIn }}">LinkedIn</a>
                 {% endif %}
-            </div>
-            {% endfor %}
-        </section>
-        <section class="education">
-            <h2>Education</h2>
-            {% for education in resume.Education %}
-            <div class="p-education education-{{ (education.Category|lower)|replace({' ':'-'}) }}">
-                <h3 class="p-name">{{ education.Name }}{% if education.URL %} [<a href="{{ education.URL}}">Confirm</a>]{% endif %}</h3>                  
-                <p style="text-align: center;">
-                {% if education.Category == "Tertiary" %}
-                Institution: {{ education.Location }}
-                {% elseif education.Category == "Certification" %}
-                Group: {{ education.Location }}
-                {% else %}
-                {{ education.Location }}
-                {% endif %}: 
-                <time class="dt-start" datetime="{{ education.StartDate|date('c') }}">{{ education.StartDate|date('Y') }}</time>      
-                {% if education.End %} - <time class="dt-end" datetime="{{ education.EndDate|date('c') }}">{{ education.EndDate|date('Y') }} </time>{% endif %}
-                </p>
-            </div>
-            {% endfor %}
-        </section>
-    </article>
+            </section>
+            <section id="summary">
+            <hr>
+            {{ synopsis|raw }}
+            {{ content|raw }}
+            </section>
+	</article>
 {% endblock %}

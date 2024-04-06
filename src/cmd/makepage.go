@@ -369,12 +369,19 @@ type Skill struct {
 	Libraries      TimedExperience `yaml:"Libraries/ services/ technologies"`
 	Accreditations []string        `yaml:"Principal methodology accreditations"`
 }
+
+type FlatSkill struct {
+	Methodologies map[string]string `yaml:"methodologies"`
+	Languages     map[string]string `yaml:"languages"`
+	Libraries     map[string]string `yaml:"libraries"`
+}
 type Resume struct {
 	Contact     Contact      `yaml:"Contact"`
 	Education   []Education  `yaml:"Education"`
 	Experience  []Experience `yaml:"Experience"`
 	Skill       Skill        `yaml:"Skill"`
 	Affiliation []string     `yaml:"Affiliation"`
+	FlatSkills  FlatSkill    `yaml:"FlatSkill"`
 }
 
 type SyndicationLinksS struct {

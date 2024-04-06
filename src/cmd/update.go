@@ -330,14 +330,14 @@ func processMDFile(tags *map[string][]FrontMatter, postsById *map[string]Item, f
 	// // If .md Process into HTML
 	var err error
 	t2, frontmatter, html := getTagsFromPost(filename, *tags)
-	*tags = t2
-	targetFile := filepath.Join(ConfigData.BaseDir, baseDirectoryForPosts, frontmatter.RelativeLink)
-	targetDir, _ := filepath.Split(targetFile)
-	if _, err = os.Stat(targetFile); os.IsNotExist(err) {
-		os.MkdirAll(targetDir, 0755)
-	}
-	err = os.WriteFile(targetFile, []byte(html), 0755)
 	if frontmatter.Status != "draft" {
+		*tags = t2
+		targetFile := filepath.Join(ConfigData.BaseDir, baseDirectoryForPosts, frontmatter.RelativeLink)
+		targetDir, _ := filepath.Split(targetFile)
+		if _, err = os.Stat(targetFile); os.IsNotExist(err) {
+			os.MkdirAll(targetDir, 0755)
+		}
+		err = os.WriteFile(targetFile, []byte(html), 0755)
 		if frontmatter.Type == "article" ||
 			frontmatter.Type == "review" ||
 			(frontmatter.Type == "indieweb" &&
