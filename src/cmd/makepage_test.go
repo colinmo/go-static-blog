@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"fmt"
 	"strings"
 	"testing"
 	"time"
@@ -137,81 +138,110 @@ func TestCreateResume(t *testing.T) {
 	ConfigData.BaseURL = "https://vonexplaino.com/blog/"
 	ConfigData.TemplateDir = "f:/dropbox/swap/golang/vonblog/templates/"
 	result, frontMatter, error := parseString(`---
-Title: Resume of Colin Morris
-Created: 2021-05-28T14:19:04+1000
+Title: Colin Morris
+Created: 2024-04-06T22:15:50+1000
+Updated: 2024-04-06T22:15:50+1000
 Tags: [code,colin]
+Slug: resume-of-colin-morris
+Synopsis: I strive to use my analytical, organisational and technical skills and experience to facilitate long lasting and enjoyable solutions for a variety of user desires.
 Resume:
     Contact:
         name: Colin Morris
         honorific: Mr.
         email: professor@vonexplaino.com
-        u-photo: "https://vonexplaino.com/blog/media/2021/05/ProfProfilePic.png"
+        p-job-title: Solution Architect and Programmer
+        u-photo: "/blog/media/2022/01/23/BusinessCard-Thumb.png"
         u-url: "https://vonexplaino.com/"
         u-key: E2895935D852A422
+        u-logo: "https://vonexplaino.com/theme/images/header-horizontal.png"
+        linkedin: "https://www.linkedin.com/in/colinmo"
     Education:
-        -   p-name: Bachelors Degree in Information Technology (Honours)
+        -   p-name: Bachelor's degree in Information Technology (Honours)
             dt-start: 1994-01-01T00:00:00 +1000
             dt-end: 1997-11-01T00:00:00 +1000
-            u-url: "email:verifications@griffith.edu.au"
+            u-url: "mailto:verifications@griffith.edu.au"
             p-category: Tertiary
             p-location: Griffith University
-        -   p-name: TOGAF© Certified
+        -   p-name: TOGAF&#169; Certified
             dt-start: 2016-01-01T00:00:00 +1000
             u-url: "https://www.youracclaim.com/badges/d2207369-850a-46d0-b924-28f7e0cf8ff5"
             p-category: Certification
             p-location: The Open Group
+        -   p-name: Microsoft Azure certifications
+            dt-start: 2022-09-21T00:00:00 +1000
+            u-url: "https://learn.microsoft.com/en-gb/users/colinmorris-7354/"
+            p-category: Certification
+            p-location: Microsoft Learn
+    FlatSkills:
+        Methodologies:
+            Agile: "p"
+            Behaviour Driven Development: "p"
+            Business_Analysis: "p"
+            Business_Process_Improvement: "p"
+            ITIL: ""
+            Prince2: ""
+            Solution_Architecture: "p"
+            TOGAF: "p"
+        Languages:
+            CSS: p
+            Go: p
+            JavaScript: p
+            HTML: p
+            Perl: 
+            PHP: p
+            PL/SQL: 
+            Python: 
+            Shell scripts: p
+            SQL: p
+        Libraries:
+            Azure Cloud: 
+            Behat + Mink: 
+            Chart.js: 
+            D3.js: 
+            DJango: 
+            jQuery: 
+            Microsoft DevOps: 
+            New Relic: p
+            Pandoc: p
+            Regular expressions: p
+            REST: p
+            Selenium: 
+            SOAP: 
+            Swagger/ OpenAPI: p
+            Symfony: 
+    Affiliation: []
     Experience:
-        -   p-name: Currently employed as Solution Architect (Integrator)
+        -   p-name: Solution Architect (Integrator)
             p-summary: Provide expertise to identify and translate system requirements into software design documentation, identifying possible existing solutions (internal and external).
             dt-start: 2021-02-01T00:00:00 +1000
             p-description: |
-                * Development of solution architectures and system designs that comply with architecture standards across a wide range of business contexts and technologies with the ability to identify and evaluate alternative design options and trade-offs
-                * Broad knowledge of modern technologies practices and patterns (e.g. cyber security controls, integration patterns, identity management, software development, and cloud)
-                * Provide support to change programmes and projects through strong technical leadership and the preparation of relevant documentation
-                * Maintaining quality relationships with a wide variety of stakeholders and colleagues
-                * Knowledge of enterprise architecture frameworks (e.g. TOGAF)
-            u-url: "https://www.griffith.edu.au/digital-solutions/service-catalogue/professional-and-expert-review-services/solution-architecture"
+                Working with researchers, academics, fellow architects, technical staff, and vendors to collaborately design, document, review, and implement solutions to the benefit of the university. I am attached to the research area, so the work includes novel areas and novel technologies such as AI. The architects work very closely with information management and cybersecurity, so we require a knowledge of these areas to coordinate well.
+                
+                Griffith is a TOGAF-based architecture structure.
+            u-url: "https://www.griffith.edu.au/"
             p-location: Griffith University
             p-category: Work History
-        -   p-name: Working with PeopleSoft APIs
-            p-summary: Presentation to the PeopleSoft Higher Education Users Group
-            dt-start: 2009-01-01T00:00:00 +1000
-            p-location: 2009 PeopleSoft HEUG Australia Conference, Cairns.
-            p-category: Presentation
-        -   p-name: "JavaScript: It's Just Not Validation (web article)"
-            dt-published: 2007-12-28T00:00:00 +1000
-            p-author: Colin Morris
-            u-url: "https://www.sitepoint.com/javascript-just-not-validation/"
-            u-uid: "https://www.sitepoint.com/javascript-just-not-validation/"
-            p-category: Publication
-            p-summary: |
-                > The term "JavaScript validation" is a somewhat misleading one for describing the process of assisting the users to fill forms out correctly. In fact, the back-end code performs the validation â€” JavaScript merely provides assistance. But when the validation and assistance donâ€™t come from the same source, they do nothing but confuse people.
+        -   p-name: Previous experience
+            p-summary: I've been working in the education industry for over twenty years.
+            dt-start: 1997-12-01T00:00:00 +1000
+            dt-end: 2021-02-01T00:00:00 +1000
+            p-description: |
+                At Griffith University I've worked with the finance systems, the student systems, the HR systems, research systems, and everything in between. The roles have covered dedicated system support, project development, development team leader, and custom development lead.
+            p-location: Griffith University
+            p-category: Work History
         -   p-name: "Code of the Coder"
             dt-published: 2018-11-08T00:00:00 +1000
             u-url: "http://www.lulu.com/shop/colin-morris/code-of-the-coder/paperback/product-23864781.html"
             u-uid: "http://www.lulu.com/shop/colin-morris/code-of-the-coder/paperback/product-23864781.html"
             p-category: Publication
             p-summary: |
-                [![Code of the Coder](/blog/media/2018/11/code-of-the-coder-cover.jpeg)*Code of the Coder in physical book form*](https://www.lulu.com/shop/colin-morris/code-of-the-coder/paperback/product-23864781.html){.center-image-link}
-
-                > People claim to be Code Ninja or CSS Samurai, but how many of them follow a code? How many of them practice daily katas to keep in the best condition? This book foolishly applies the Seven Virtues of Bushido and the Eighteen Disciplines of Togekure-ryu ninjutsu to the coding arts, mistakenly finding some wisdom along the way.
-    Skill:
-        "Programming languages":
-            "5+ years": [PHP, Javascript, HTML, CSS, PL/SQL, SQL (Oracle + mySql focused)]
-            "1-5 years": [Objective C, Perl, Shell scripts]
-            "<1 year": [Python, Ruby]
-        "Libraries/ services/ technologies":
-            "5+ years": [jQuery, Symfony/ Silex, Behat + Mink, Selenium, D3.js, Regular expressions, REST, SOAP]
-            "1-5 years": [Microsoft DevOps, Azure Cloud, Chart.js, New Relic, Cherwell, Swagger/ OpenAPI]
-            "<1 year": [Microsoft Luis]
-        "Principal methodology accreditations": 
-            - Prince2
-            - ITIL
-            - TOGAF
-            - Agile
-    Affiliation: []
+                <blockquote style="display: grid;grid-template-columns: 100px auto;justify-items: center; align-items: center;gap:14px;">
+                <a href="https://www.lulu.com/shop/colin-morris/code-of-the-coder/paperback/product-23864781.html"><img src="/blog/media/2018/11/code-of-the-coder-cover.jpeg" width="100" alt="Book cover for Code of the Coder"></a>
+                    People claim to be Code Ninja or CSS Samurai, but how many of them follow a code? How many of them practice daily katas to keep in the best condition? This book foolishly applies the Seven Virtues of Bushido and the Eighteen Disciplines of Togekure-ryu ninjutsu to the coding arts, mistakenly finding some wisdom along the way.
+                </blockquote>
 ---
-I strive to use my analytical, organisational and technical skills and experience to facilitate long lasting and enjoyable solutions for a variety of user desires. Since 2000 I have been involved primarily in the development of web applications, from the coal-face through to team management and solutions architecture/ design. In my current role as solution architect (integrator), that has branched out into holistics solutions sourcing - from custom development through sourcing existing solutions and reworking business processes to solve problems without technology changes - with the focus on working with the university's Research and Data management areas.`, ConfigData.RepositoryDir+"posts/resume/2021.md")
+I've been working in the information technology industry since 1997. During that time I've had a variety of roles - from finance system maintenance through to an engineer on PeopleSoft technologies through to web development and currently I'm a solution architect. That's been a great benefit from working at Griffith University - the breadth of experiences and people I've been able to work with.
+	`, ConfigData.RepositoryDir+"posts/resume/2021.md")
 	if error != nil {
 		t.Fatalf("Failed to parse Code: %v\n", error)
 	}
@@ -223,6 +253,10 @@ I strive to use my analytical, organisational and technical skills and experienc
 	}
 	if strings.Contains(result, `markdown="1"`) {
 		t.Fatalf("Did not parse all markdowns")
+	}
+	if len(frontMatter.Resume.FlatSkills.Methodologies) != 8 {
+		fmt.Printf("%v\n", frontMatter.Resume.FlatSkills)
+		t.Fatalf("Bad count of methodologies %d expected %d", len(frontMatter.Resume.FlatSkills.Methodologies), 8)
 	}
 }
 

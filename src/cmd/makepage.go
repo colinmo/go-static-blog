@@ -338,6 +338,8 @@ type Experience struct {
 	Summary       string `yaml:"p-summary"`
 	Start         string `yaml:"dt-start"`
 	StartDate     time.Time
+	End           string `yaml:"dt-end"`
+	EndDate       time.Time
 	Description   string `yaml:"p-description"`
 	URL           string `yaml:"u-url"`
 	Location      string `yaml:"p-location"`
@@ -371,9 +373,9 @@ type Skill struct {
 }
 
 type FlatSkill struct {
-	Methodologies map[string]string `yaml:"methodologies"`
-	Languages     map[string]string `yaml:"languages"`
-	Libraries     map[string]string `yaml:"libraries"`
+	Methodologies map[string]string `yaml:"Methodologies"`
+	Languages     map[string]string `yaml:"Languages"`
+	Libraries     map[string]string `yaml:"Libraries"`
 }
 type Resume struct {
 	Contact     Contact      `yaml:"Contact"`
@@ -381,7 +383,7 @@ type Resume struct {
 	Experience  []Experience `yaml:"Experience"`
 	Skill       Skill        `yaml:"Skill"`
 	Affiliation []string     `yaml:"Affiliation"`
-	FlatSkills  FlatSkill    `yaml:"FlatSkill"`
+	FlatSkills  FlatSkill    `yaml:"FlatSkills"`
 }
 
 type SyndicationLinksS struct {
@@ -493,6 +495,7 @@ func frontMatterValidateExperience(frontMatter *FrontMatter) {
 			frontMatter.Resume.Experience[i].Summary = strings.Replace(strings.Replace(buf2.String(), "<p>", "", 1), "</p>", "", 1)
 		}
 		frontMatter.Resume.Experience[i].StartDate, _ = parseUnknownDateFormat(x.Start)
+		frontMatter.Resume.Experience[i].EndDate, _ = parseUnknownDateFormat(x.End)
 		frontMatter.Resume.Experience[i].PublishedDate, _ = parseUnknownDateFormat(x.Published)
 	}
 	for i, d := range frontMatter.Resume.Education {
@@ -567,7 +570,7 @@ func parseFrontMatter(inFrontMatter string, filename string) (FrontMatter, error
 	var frontMatter FrontMatter
 	err := yaml.Unmarshal([]byte(inFrontMatter), &frontMatter)
 	if err != nil {
-		fmt.Printf("Failed to parse frontmatter %s\n", inFrontMatter)
+		fmt.Println("Failed to parse frontmatter")
 		log.Fatal(err)
 		return frontMatter, err
 	}
