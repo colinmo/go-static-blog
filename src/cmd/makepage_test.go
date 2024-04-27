@@ -258,6 +258,9 @@ I've been working in the information technology industry since 1997. During that
 		fmt.Printf("%v\n", frontMatter.Resume.FlatSkills)
 		t.Fatalf("Bad count of methodologies %d expected %d", len(frontMatter.Resume.FlatSkills.Methodologies), 8)
 	}
+	if frontMatter.Resume.FlatSkills.MethodologyOrder[0] != "Agile" || frontMatter.Resume.FlatSkills.MethodologyOrder[7] != "TOGAF" {
+		t.Fatalf("Order wrong %v\n", frontMatter.Resume.FlatSkills.MethodologyOrder)
+	}
 }
 
 func TestCreateReview(t *testing.T) {

@@ -25,6 +25,7 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	"sort"
 	"strconv"
 	"strings"
 	"time"
@@ -373,9 +374,12 @@ type Skill struct {
 }
 
 type FlatSkill struct {
-	Methodologies map[string]string `yaml:"Methodologies"`
-	Languages     map[string]string `yaml:"Languages"`
-	Libraries     map[string]string `yaml:"Libraries"`
+	Methodologies    map[string]string `yaml:"Methodologies"`
+	MethodologyOrder []string          `yaml:"MethodologyOrder"`
+	Languages        map[string]string `yaml:"Languages"`
+	LanguageOrder    []string          `yaml:"LanguageOrder"`
+	Libraries        map[string]string `yaml:"Libraries"`
+	LibraryOrder     []string          `yaml:"LibraryOrder"`
 }
 type Resume struct {
 	Contact     Contact      `yaml:"Contact"`
@@ -502,6 +506,17 @@ func frontMatterValidateExperience(frontMatter *FrontMatter) {
 		frontMatter.Resume.Education[i].StartDate, _ = parseUnknownDateFormat(d.Start)
 		frontMatter.Resume.Education[i].EndDate, _ = parseUnknownDateFormat(d.End)
 	}
+}
+
+func alphaOrderMap(existing map[string]string) []string {
+	mk := make([]string, len(existing))
+	i := 0
+	for k := range existing {
+		mk[i] = k
+		i++
+	}
+	sort.Strings(mk)
+	return mk
 }
 
 func frontMatterValidate(frontMatter *FrontMatter, filename string) []string {
@@ -709,6 +724,9 @@ func toTwigVariables(frontMatter *FrontMatter, content string) map[string]stick.
 	if frontMatter.Link == "" {
 		frontMatter.Link, _ = url.JoinPath(ConfigData.BaseURL, baseDirectoryForPosts, strings.ToLower(frontMatter.Type), frontMatter.CreatedDate.Format("2006/01/02"), frontMatter.Slug)
 	}
+	frontMatter.Resume.FlatSkills.MethodologyOrder = alphaOrderMap(frontMatter.Resume.FlatSkills.Methodologies)
+	frontMatter.Resume.FlatSkills.LanguageOrder = alphaOrderMap(frontMatter.Resume.FlatSkills.Languages)
+	frontMatter.Resume.FlatSkills.LibraryOrder = alphaOrderMap(frontMatter.Resume.FlatSkills.Libraries)
 
 	return map[string]stick.Value{
 		"id":               frontMatter.ID,
