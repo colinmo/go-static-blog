@@ -278,7 +278,7 @@ func TestUpdateFullRegenerate(t *testing.T) {
 		t.Fatalf("How did that happen?")
 	}
 	if len(tags) != 2 {
-		t.Fatalf("How did that happen?")
+		t.Fatalf("How did that happen? %d", len(tags))
 	}
 	if len(postsById) != 1 {
 		t.Fatalf("How did that happen?")
@@ -324,7 +324,7 @@ func TestUpdateFullRegenerate(t *testing.T) {
 //}
 
 func TestUpdateChangedRegenerateNoChange(t *testing.T) {
-	ConfigData.BaseDir = `c:/users/relap/dropbox\swap\golang\vonblog\features\tests\update\changed\`
+	ConfigData.BaseDir = `c:/users/relap/dropbox\swap\golang\vonblog\features\tests\update\changed-no\`
 	gitCommand = `c:/users/relap/dropbox\swap\golang\vonblog\features\tests\update\scripts\changed-nochanges.bat`
 
 	allPosts, tags, postsById, filesToDelete, changes, err := updateChangedRegenerate()
@@ -352,8 +352,10 @@ func TestUpdateChangedRegenerateNoChange(t *testing.T) {
 
 func TestUpdateChangedRegenerateDeleted(t *testing.T) {
 	// Deleted
-	ConfigData.BaseDir = `c:/users/relap/dropbox\swap\golang\vonblog\features\tests\update\deleted\`
-	gitCommand = `c:/users/relap/dropbox\swap\golang\vonblog\features\tests\update\scripts\changed-deleted.bat`
+	ConfigData.BaseDir = `c:/users/relap/dropbox/swap/golang/vonblog/features/tests/update/deleted/`
+	ConfigData.RepositoryDir = `c:/users/relap/dropbox/swap/golang/vonblog/features/tests/update/deleted/`
+	gitCommand = `c:/users/relap/dropbox/swap/golang/vonblog/features/tests/update/scripts/changed-deleted.bat`
+	ConfigData.TemplateDir = `c:/users/relap/dropbox\swap\golang\vonblog\templates\`
 
 	allPosts, tags, postsById, filesToDelete, changes, err := updateChangedRegenerate()
 	if err != nil {
@@ -445,13 +447,13 @@ func TestMastodonCrosspost(t *testing.T) {
 */
 
 func TestUpdateLocalFileWithMastodonLink(t *testing.T) {
-	mek, _ := os.CreateTemp(os.TempDir(), "dd")
-	fullname := mek.Name()
-	os.WriteFile(fullname, []byte("---\nTitle: bob\nSyndication:\n  Mastodon: XPOST\n---\nWell"), 0777)
+	ConfigData.RepositoryDir = `c:/users/relap/dropbox\swap\golang\vonblog\features\tests\update\mstdn\`
+	fullname := "steve.md"
+	os.WriteFile(filepath.Join(ConfigData.RepositoryDir, fullname), []byte("---\nTitle: bob\nSyndication:\n  Mastodon: XPOST\n---\nWell"), 0777)
 	setMastodonLink(fullname, "thisisatestlink")
-	z, err := os.ReadFile(fullname)
+	z, err := os.ReadFile(filepath.Join(ConfigData.RepositoryDir, fullname))
 	if err != nil {
-		t.Fatalf("test failed, couldn't write")
+		t.Fatalf("test failed, couldn't read %v", err)
 	}
 	if !strings.Contains(string(z), "  Mastodon: \"thisisatestlink\"\n") {
 		t.Fatalf("did not update %s correctly '%s'", fullname, z)

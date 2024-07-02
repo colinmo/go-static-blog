@@ -103,7 +103,10 @@ func clearOtherPaths(inDir, notThisOne string) {
 
 func replaceDirectory(tempDir, blogDir string) {
 	var err error
-	os.Remove(filepath.Dir(blogDir))
+	err = os.Remove(filepath.Dir(blogDir))
+	if err != nil {
+		log.Fatalf("Could not remove dir %v\n", filepath.Dir(blogDir))
+	}
 	err = os.Symlink(tempDir, filepath.Dir(blogDir))
 	if err != nil {
 		log.Fatalf("one: %s\n", err)
@@ -330,7 +333,10 @@ func processMDFile(tags *map[string][]FrontMatter, postsById *map[string]Item, f
 	// // If .md Process into HTML
 	var err error
 	t2, frontmatter, html := getTagsFromPost(filename, *tags)
-	if frontmatter.Status != "draft" {
+	if frontmatter.Status == "draft" {
+		PrintIfNotSilent("D")
+		delete(*postsById, frontmatter.Link)
+	} else {
 		*tags = t2
 		targetFile := filepath.Join(ConfigData.BaseDir, baseDirectoryForPosts, frontmatter.RelativeLink)
 		targetDir, _ := filepath.Split(targetFile)
@@ -379,8 +385,6 @@ func processMDFile(tags *map[string][]FrontMatter, postsById *map[string]Item, f
 			}
 		}
 		PrintIfNotSilent("P")
-	} else {
-		PrintIfNotSilent("D")
 	}
 	return err
 }
