@@ -16,7 +16,7 @@ func TestGitRunCommand(t *testing.T) {
 
 func TestProcessEnvVariables(t *testing.T) {
 	var err error
-	testroot := "f:/dropbox/swap/golang/vonblog/features/tests/gits/config/"
+	testroot := "c:/users/relap/dropbox/swap/golang/vonblog/features/tests/gits/config/"
 	viper.SetConfigFile(testroot + "empty.yaml")
 	viper.ReadInConfig()
 	setEnvironments()

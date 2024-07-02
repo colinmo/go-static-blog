@@ -6,9 +6,9 @@
             <h1 class="p-name" style="">{{ title }}</h1>
             <div class="post-meta" {% if title == "Welcome" %}style="visibility:hidden;"{% endif %}>
                 <a class="p-author h-card" href="https://vonexplaino.com/">Colin Morris</a>
-                <time class="dt-published" datetime="{{ cdate }}">{{ created_date|date('j M Y, h:i a') }}</time>
-                {% if cdate != udate %}(&Delta; <time class="dt-updated" datetime="{{ udate }}">{{ updated_date|date('j M Y, h:i a') }}</time>){% endif %}
-                <p class="tags">{% for tag in tags %}<a href="/blog/{{tag|tag_link}}-1.html" class="p-category">{{ tag }}</a> {% endfor %}</p>
+                <time class="dt-published" datetime="{{ cdate }}">{{ created_date|date('j F Y') }}</time>
+                {% if (created_date|date('j M Y')) != (updated_date|date('j M Y')) %}(&Delta; <time class="dt-updated" datetime="{{ udate }}">{{ updated_date|date('j F Y') }}</time>){% endif %}
+                <p class="tags">{% for tag in tags %}<a href="/blog/{{tag|tag_link}}-1.html" class="p-category" rel="tag">{{ tag }}</a>{% endfor %}</p>
             </div>
         </header>
         <div>

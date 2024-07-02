@@ -87,17 +87,17 @@ func TestGetThumbnailFilename(t *testing.T) {
 
 func TestMakeThumbnail(t *testing.T) {
 	ThumbnailOptions.Extension = "-thumb.jpg"
-	ConfigData.BaseDir = `F:\Dropbox\swap\golang\vonblog\features\tests\thumbnail\`
+	ConfigData.BaseDir = `c:/users/relap/dropbox\swap\golang\vonblog\features\tests\thumbnail\`
 	ThumbnailOptions.Width = 100
 	ThumbnailOptions.Height = 100
 	ThumbnailOptions.Type = "jpeg"
 	ThumbnailOptions.Regenerate = true
-	err := makeThumbnail(`F:\Dropbox\swap\golang\vonblog\features\tests\thumbnail\LogVisualiser.png`)
+	err := makeThumbnail(`c:/users/relap/dropbox\swap\golang\vonblog\features\tests\thumbnail\LogVisualiser.png`)
 	if err != nil {
 		t.Fatalf("Ded %v\n", err)
 	}
 
-	err = makeThumbnail(`F:\Dropbox\swap\golang\vonblog\features\tests\rss\rss1_out.xml`)
+	err = makeThumbnail(`c:/users/relap/dropbox\swap\golang\vonblog\features\tests\rss\rss1_out.xml`)
 	if err == nil {
 		t.Fatalf("Created a thumbnail where I shoudln't")
 	}
@@ -124,13 +124,13 @@ func TestMakeThumbnail(t *testing.T) {
 
 func TestLetsGoThumbnailSingle(t *testing.T) {
 	ThumbnailOptions.Extension = "-thumb.jpg"
-	ConfigData.BaseDir = `F:\Dropbox\swap\golang\vonblog\features\tests\thumbnail\`
+	ConfigData.BaseDir = `c:/users/relap/dropbox\swap\golang\vonblog\features\tests\thumbnail\`
 	ThumbnailOptions.Width = 100
 	ThumbnailOptions.Height = 100
 	ThumbnailOptions.Type = "jpeg"
 	ThumbnailOptions.Regenerate = false
-	os.Remove(`F:\Dropbox\swap\golang\vonblog\features\tests\thumbnail\LogVisualiser-thumb.jpg`)
-	ThumbnailOptions.Filename = `F:\Dropbox\swap\golang\vonblog\features\tests\thumbnail\LogVisualiser.png`
+	os.Remove(`c:/users/relap/dropbox\swap\golang\vonblog\features\tests\thumbnail\LogVisualiser-thumb.jpg`)
+	ThumbnailOptions.Filename = `c:/users/relap/dropbox\swap\golang\vonblog\features\tests\thumbnail\LogVisualiser.png`
 	err := letsGoThumbnail()
 	if err != nil {
 		t.Fatalf("Ded %v\n", err)
@@ -139,15 +139,15 @@ func TestLetsGoThumbnailSingle(t *testing.T) {
 }
 
 func TestDetectImage(t *testing.T) {
-	contents, err := os.Open(`F:\Dropbox\swap\golang\vonblog\features\tests\thumbnail\LogVisualiser.png`)
+	contents, err := os.Open(`c:/users/relap/dropbox\swap\golang\vonblog\features\tests\thumbnail\LogVisualiser.png`)
 	if err != nil {
-		t.Fatalf("Could not process file %s\n%v\n", `F:\Dropbox\swap\golang\vonblog\features\tests\thumbnail\LogVisualiser.png`, err)
+		t.Fatalf("Could not process file %s\n%v\n", `c:/users/relap/dropbox\swap\golang\vonblog\features\tests\thumbnail\LogVisualiser.png`, err)
 	}
 	defer contents.Close()
 	body := make([]byte, 512)
 	_, err = contents.Read(body)
 	if err != nil {
-		t.Fatalf("Cound not read file %s\n", `F:\Dropbox\swap\golang\vonblog\features\tests\thumbnail\LogVisualiser.png`)
+		t.Fatalf("Cound not read file %s\n", `c:/users/relap/dropbox/swap/golang/vonblog/features/tests/thumbnail/LogVisualiser.png`)
 	}
 	fileType := http.DetectContentType(body)
 	if fileType != "image/png" {
@@ -156,7 +156,7 @@ func TestDetectImage(t *testing.T) {
 }
 
 func TestWebp2(t *testing.T) {
-	ConfigData.BaseDir = `/Users/s457972/Dropbox/swap/golang/vonblog/features/tests/thumbnail/`
+	ConfigData.BaseDir = `c:/users/relap/Dropbox/swap/golang/vonblog/features/tests/thumbnail/`
 	i, e := readImage(ConfigData.BaseDir + `code-of-the-coder-cover.webp`)
 	if e != nil {
 		t.Fatalf("Failed to run %s\n", e)
@@ -168,7 +168,7 @@ func TestWebp2(t *testing.T) {
 }
 
 func TestRecursiveThumbnail(t *testing.T) {
-	ConfigData.BaseDir = `/Users/s457972/Dropbox/swap/golang/vonblog/features/tests/thumbnail/`
+	ConfigData.BaseDir = `c:/users/relap/Dropbox/swap/golang/vonblog/features/tests/thumbnail/`
 	ThumbnailOptions.Extension = "-thumb.jpg"
 	ThumbnailOptions.Width = 100
 	ThumbnailOptions.Height = 100

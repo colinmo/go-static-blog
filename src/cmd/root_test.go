@@ -8,7 +8,7 @@ import (
 )
 
 func TestFullRebuild(t *testing.T) {
-	testroot := `F:\Dropbox\swap\golang\vonblog\features\tests\update\tags\`
+	testroot := `c:/users/relap/dropbox\swap\golang\vonblog\features\tests\update\tags\`
 	type testexpect struct {
 		filename string
 		expected map[string][]FrontMatter
@@ -23,7 +23,7 @@ func TestFullRebuild(t *testing.T) {
 	} {
 		ConfigData.RepositoryDir = testroot
 		ConfigData.BaseURL = "https://vonexplaino.com/blog/"
-		ConfigData.TemplateDir = "f:/dropbox/swap/golang/vonblog/templates/"
+		ConfigData.TemplateDir = "c:/users/relap/dropbox/swap/golang/vonblog/templates/"
 		var tags map[string][]FrontMatter
 		tags, _, _ = getTagsFromPost(thing.filename, tags)
 

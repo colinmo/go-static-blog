@@ -16,9 +16,7 @@ limitations under the License.
 package cmd
 
 import (
-	"bytes"
 	"fmt"
-	"io"
 	"net/http"
 	"os"
 	"strconv"
@@ -219,31 +217,9 @@ func initConfig() {
 
 var DateOfExecution = time.Now()
 
-/*
-func getStartOfEverything() (time.Time, *time.Location) {
-	l, _ := time.LoadLocation(blogTimezone)
-	startOfEverything := time.Date(1970, 1, 1, 0, 0, 0, 0, l)
-	return startOfEverything, l
-}
-*/
-
 /** Global functions? **/
 func PrintIfNotSilent(toPrint string) {
 	if !Silent {
 		fmt.Print(toPrint)
 	}
-}
-
-func MyReadFilename(f string) ([]byte, error) {
-	g, err := os.Open(f)
-	if err != nil {
-		return []byte(""), err
-	}
-	defer g.Close()
-	return MyReadFile(g)
-}
-func MyReadFile(g *os.File) ([]byte, error) {
-	var buf bytes.Buffer
-	io.Copy(&buf, g)
-	return buf.Bytes(), nil
 }

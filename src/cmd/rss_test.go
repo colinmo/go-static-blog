@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"fmt"
 	"os"
 	"regexp"
 	"sort"
@@ -10,7 +9,7 @@ import (
 
 // TestReadRSS test parses some RSS Feeds
 func TestReadRSS(t *testing.T) {
-	mek, err := ReadRSS(`f:\Dropbox\swap\golang\vonblog\features\tests\rss\rss1.xml`)
+	mek, err := ReadRSS(`c:/users/relap/dropbox\swap\golang\vonblog\features\tests\rss\rss1.xml`)
 	if err != nil {
 		t.Fatalf(`Failed to parse %s`, err)
 	}
@@ -32,7 +31,7 @@ func TestReadWriteRSS(t *testing.T) {
 	ConfigData.Metadata.Language = `en-au`
 	ConfigData.Metadata.Webmaster = `professor@vonexplaino.com (Colin Morris)`
 	ConfigData.Metadata.Ttl = 40
-	ConfigData.BaseDir = `f:\Dropbox\swap\golang\vonblog\features\tests\rss\`
+	ConfigData.BaseDir = `c:/users/relap/dropbox\swap\golang\vonblog\features\tests\rss\`
 
 	mek, err := ReadRSS(ConfigData.BaseDir + `rss1.xml`)
 	if err != nil {
@@ -58,10 +57,8 @@ func TestReadWriteRSS(t *testing.T) {
 	if f1s != f2s {
 		for i := range f1s {
 			if f1s[i:i+1] != f2s[i:i+1] {
-				fmt.Printf("Index %d is different %s:%s\n", i, f1s[i:i+1], f2s[i:i+1])
-				fmt.Printf("\n%s\n%s\n", f1s[(i-10):(i+10)], f2s[(i-10):(i+10)])
+				t.Fatalf("Index %d is different %s:%s\n%s\n%s\n", i, f1s[i:i+1], f2s[i:i+1], f1s[(i-10):(i+10)], f2s[(i-10):(i+10)])
 
-				t.Fatalf(`Nuts`)
 			}
 		}
 		t.Fatalf(`Files didn't match`)
@@ -69,7 +66,7 @@ func TestReadWriteRSS(t *testing.T) {
 }
 
 func TestSortRSS(t *testing.T) {
-	mek, err := ReadRSS(`f:\Dropbox\swap\golang\vonblog\features\tests\rss\rss1.xml`)
+	mek, err := ReadRSS(`c:/users/relap/dropbox\swap\golang\vonblog\features\tests\rss\rss1.xml`)
 	if err != nil {
 		t.Fatalf(`Failed to parse %s`, err)
 	}

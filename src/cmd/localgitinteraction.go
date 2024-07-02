@@ -106,7 +106,7 @@ func runGitCommand(command string, parameters []string) (string, error) {
 	cmd.Dir = ConfigData.RepositoryDir
 	cmd.Stdout = &out
 	if err := cmd.Run(); err != nil {
-		return "", fmt.Errorf("command didn't run %s, %v", command, parameters)
+		return "", fmt.Errorf("command didn't run %s, %v\n%v", command, parameters, err)
 	}
 	return out.String(), nil
 }

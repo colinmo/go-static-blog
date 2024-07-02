@@ -9,6 +9,10 @@ This is a command line tool to integrate a git repository with a blog template s
 * [ ] Refactoring the codebase (buzzwords)
 * [ ] More unit tests for resiliance
 * [ ] Change the code-window image holders so they look less pillowy
+* [ ] Add a Webmention extension
+  * [ ] Verifies incoming webmentions
+  * [ ] Saves it to a .js file specific to the file ID
+* [ ] Fix RSS feeds to not include drafts
 
 ## Build
 
@@ -59,7 +63,7 @@ Cucumber style Go testing
 * Coverage - https://community.sonarsource.com/t/sonargo-code-coverage-0/19473
   * `go test "./..." -coverprofile="coverage.out"`
   * `go test "./..." -coverprofile="coverage.out" -json > test-report.json`
-  * `go test "./..." -coverprofile="coverage.out" -v 2>&1 | go-junit-report > junit.xml ; gosonar --basedir f:\Dropbox\swap\golang\vonblog\src\cmd\ --coverage coverage.out --junit junit.xml`
+  * `go test "./..." -coverprofile="coverage.out" -v 2>&1 | go-junit-report > junit.xml ; gosonar --basedir ${PWD}\src\cmd\ --coverage coverage.out --junit junit.xml`
 
 ## XCompiling
 

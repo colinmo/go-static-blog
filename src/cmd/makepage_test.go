@@ -66,7 +66,7 @@ func TestCreateCodePage(t *testing.T) {
 	testroot := `E:\xampp\vonexplaino-bitbucket-static`
 	ConfigData.RepositoryDir = testroot
 	ConfigData.BaseURL = "https://vonexplaino.com/blog/"
-	ConfigData.TemplateDir = "f:/dropbox/swap/golang/vonblog/templates/"
+	ConfigData.TemplateDir = "c:/users/relap/dropbox/swap/golang/vonblog/templates/"
 	result, frontMatter, error := parseString(`---
 Title: Code
 Created: 2015-11-18 20:32:00 +1000
@@ -136,7 +136,7 @@ func TestCreateResume(t *testing.T) {
 	testroot := `E:\xampp\vonexplaino-bitbucket-static\`
 	ConfigData.RepositoryDir = testroot
 	ConfigData.BaseURL = "https://vonexplaino.com/blog/"
-	ConfigData.TemplateDir = "f:/dropbox/swap/golang/vonblog/templates/"
+	ConfigData.TemplateDir = "c:/users/relap/dropbox/swap/golang/vonblog/templates/"
 	result, frontMatter, error := parseString(`---
 Title: Colin Morris
 Created: 2024-04-06T22:15:50+1000
@@ -268,7 +268,7 @@ func TestCreateReview(t *testing.T) {
 	testroot := `E:\xampp\vonexplaino-bitbucket-static\`
 	ConfigData.RepositoryDir = testroot
 	ConfigData.BaseURL = "https://vonexplaino.com/blog/"
-	ConfigData.TemplateDir = "f:/dropbox/swap/golang/vonblog/templates/"
+	ConfigData.TemplateDir = "c:/users/relap/dropbox/swap/golang/vonblog/templates/"
 	result, frontMatter, error := parseString(`---
 Title: "Review: In Sound Mind"
 Tags: [game,epic]
@@ -377,5 +377,10 @@ func TestToTwigVariables(t *testing.T) {
 	}
 	content := "xxXX!"
 	mike := toTwigVariables(&dude, content)
-	t.Fatalf("%v", mike)
+	if mike["content"] != "xxXX!" {
+		t.Fatalf("Did not get content")
+	}
+	if mike["title"] != "Dude" {
+		t.Fatalf("Did not get title %v\n", mike)
+	}
 }

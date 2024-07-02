@@ -1,6 +1,62 @@
 {% extends "base.html.twig" %}
 {% block title %}{{ title }}{% endblock %}
 {% block content %}
+<style>
+/** RATINGS **/
+.rating .star:before {
+    content: "☆";
+}
+
+.rating.star-0-5 .star:nth-child(1):before {
+    content: "½";
+}
+
+.rating[class*=star-1] .star:nth-child(1):before,
+.rating[class*=star-2] .star:nth-child(1):before,
+.rating[class*=star-3] .star:nth-child(1):before,
+.rating[class*=star-4] .star:nth-child(1):before,
+.rating[class*=star-5] .star:nth-child(1):before {
+    content: "★";
+}
+
+.rating.star-1-5 .star:nth-child(2):before {
+    content: "½";
+}
+
+.rating[class*=star-2] .star:nth-child(2):before,
+.rating[class*=star-3] .star:nth-child(2):before,
+.rating[class*=star-4] .star:nth-child(2):before,
+.rating[class*=star-5] .star:nth-child(2):before {
+    content: "★";
+}
+
+.rating.star-2-5 .star:nth-child(3):before {
+    content: "½";
+}
+
+.rating[class*=star-3] .star:nth-child(3):before,
+.rating[class*=star-4] .star:nth-child(3):before,
+.rating[class*=star-5] .star:nth-child(3):before {
+    content: "★";
+}
+
+.rating.star-3-5 .star:nth-child(4):before {
+    content: "½";
+}
+
+.rating[class*=star-4] .star:nth-child(4):before,
+.rating[class*=star-5] .star:nth-child(4):before {
+    content: "★";
+}
+
+.rating.star-4-5 .star:nth-child(5):before {
+    content: "½";
+}
+
+.rating[class*=star-5] .star:nth-child(5):before {
+    content: "★";
+}
+</style>
     <article class="h-entry h-review" data-info="{{ metadata|json_encode }}" data-tags="{{ metadata.tags|json_encode }}" data-article-id="{{ metadata.id }}">
         <header>
             <h1 class="p-name" style=""><a href="{{ link|raw }}" class="u-url">{% if type !="reply"%}{{ title }}{% endif %}</a></h1>
