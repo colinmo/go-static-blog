@@ -133,7 +133,7 @@ See more of [Trinity](http://theonyxpath.com/category/worlds/trinitycontinuum/).
 }
 
 func TestCreateResume(t *testing.T) {
-	testroot := `E:\xampp\vonexplaino-bitbucket-static\`
+	testroot := `C:\Laboratory\temp\`
 	ConfigData.RepositoryDir = testroot
 	ConfigData.BaseURL = "https://vonexplaino.com/blog/"
 	ConfigData.TemplateDir = "c:/users/relap/dropbox/swap/golang/vonblog/templates/"
@@ -265,7 +265,7 @@ I've been working in the information technology industry since 1997. During that
 
 func TestCreateReview(t *testing.T) {
 
-	testroot := `E:\xampp\vonexplaino-bitbucket-static\`
+	testroot := `C:\Laboratory\temp\`
 	ConfigData.RepositoryDir = testroot
 	ConfigData.BaseURL = "https://vonexplaino.com/blog/"
 	ConfigData.TemplateDir = "c:/users/relap/dropbox/swap/golang/vonblog/templates/"

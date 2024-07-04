@@ -55,7 +55,7 @@ Cucumber style Go testing
 
 * Server
   * [Local run server](https://docs.sonarqube.org/latest/setup/get-started-2-minutes/)
-  * Docker: `docker run -d --name sonarqube -e SONAR_ES_BOOTSTRAP_CHECKS_DISABLE=true -p 9000:9000 sonarqube:latest`
+  * Docker: `docker run -d --name sonarqube -e SONAR_ES_BOOTSTRAP_CHECKS_DISABLE=true -p 9000:9000 -vc:/laboratory/sonarqubedata:/opt/sonarqube/data sonarqube:latest `
 * Client
   * [Local run client](https://docs.sonarqube.org/latest/analysis/scan/sonarscanner/)
   * Docker: `docker run --rm -v "%cd%:/usr/src" sonarsource/sonar-scanner-cli`

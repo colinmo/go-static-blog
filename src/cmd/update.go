@@ -90,12 +90,10 @@ func updateFullRegenerate() (RSS, map[string][]FrontMatter, map[string]Item, map
 	return allPosts, tags, postsById, filesToDelete, changes, err
 }
 
-// @todo: if the date-name of the found folder is _after_ the date-name for notThisOne
-// leave it.
 func clearOtherPaths(inDir, notThisOne string) {
 	items, _ := os.ReadDir(inDir)
 	for _, item := range items {
-		if item.Name() != notThisOne {
+		if item.Name() < notThisOne {
 			os.RemoveAll(filepath.Join(inDir, item.Name()))
 		}
 	}
@@ -138,16 +136,15 @@ func updateChangedRegenerate() (RSS, map[string][]FrontMatter, map[string]Item, 
 	return allPosts, tags, postsById, filesToDelete, changes, err
 }
 
-func deleteAndRegenerate(allPosts RSS, tags map[string][]FrontMatter, postsById map[string]Item, filesToDelete map[string]struct{}, changes GitDiffs) {
-	allTagMap := map[string][]FrontMatter{}
-	// Delete any linked deleted HTML or Media pages
+func deleteFiles(filesToDelete map[string]struct{}) {
 	for filename := range filesToDelete {
 		PrintIfNotSilent("Deleting " + filepath.Join(ConfigData.BaseDir, filename))
 		os.Remove(filepath.Join(ConfigData.BaseDir, filename))
 	}
-	// Regenerate the index pages and RSS feeds
-	createPageAndRSSForTags(tags, filesToDelete)
-	// Regenerate the all published posts RSS file
+}
+
+func regenerateIndexAndRSS(allPosts RSS, postsById map[string]Item) map[string][]FrontMatter {
+	allTagMap := map[string][]FrontMatter{}
 	allPosts.Channel.Items = []Item{}
 	allItems := []FrontMatter{}
 	for _, i := range postsById {
@@ -173,6 +170,32 @@ func deleteAndRegenerate(allPosts RSS, tags map[string][]FrontMatter, postsById 
 			break
 		}
 	}
+	return allTagMap
+}
+
+func outputStats(changes GitDiffs) {
+	if !Silent {
+		// Output stats
+		if Totals {
+			fmt.Printf("\nTotals: A: %d, M: %d, D: %d\n", len(changes.Added), len(changes.Modified)+len(changes.RenameEdit)+len(changes.Unmerged), len(changes.Deleted))
+		}
+
+	}
+}
+
+func deleteAndRegenerate(
+	allPosts RSS,
+	tags map[string][]FrontMatter,
+	postsById map[string]Item,
+	filesToDelete map[string]struct{},
+	changes GitDiffs,
+) {
+	// Delete any linked deleted HTML or Media pages
+	deleteFiles(filesToDelete)
+	// Regenerate the index pages and RSS feeds
+	createPageAndRSSForTags(tags)
+	// Regenerate the all published posts RSS file
+	allTagMap := regenerateIndexAndRSS(allPosts, postsById)
 	// Create tag-page for Code and Steampunk embedding
 	for _, tag := range ConfigData.TagSnippets {
 		PrintIfNotSilent(fmt.Sprintf("Regenerating snippet for %s (%d) - ", tag, len(allTagMap[tag])))
@@ -185,10 +208,7 @@ func deleteAndRegenerate(allPosts RSS, tags map[string][]FrontMatter, postsById 
 			fmt.Printf("failed %v\n", err)
 		}
 	}
-	// Output stats
-	if Totals {
-		fmt.Printf("\nTotals: A: %d, M: %d, D: %d\n", len(changes.Added), len(changes.Modified)+len(changes.RenameEdit)+len(changes.Unmerged), len(changes.Deleted))
-	}
+	outputStats(changes)
 }
 
 func createTagPageSnippetForTag(tag string, tagsForString []FrontMatter, postsById map[string]Item) ([]byte, error) {
@@ -300,7 +320,7 @@ func getTagsFromPost(postName string, tags map[string][]FrontMatter) (map[string
 	}
 	if postName[len(postName)-3:] == ".md" {
 		html, frontmatter, err = parseFile(filepath.Join(ConfigData.RepositoryDir, postName))
-		if err == nil {
+		if err == nil && frontmatter.Status != "draft" {
 			for _, tag := range frontmatter.Tags {
 				tag = strings.ToLower(tag)
 				tags[tag] = append(tags[tag], frontmatter)
@@ -329,6 +349,41 @@ func getTargetFilenameFromPost(postName string, files map[string]struct{}) (map[
 	return files, link
 }
 
+func indieWeb(link, label string) string {
+	if len(link) > 0 {
+		return fmt.Sprintf("\n\n%s %s", label, link)
+	}
+	return ""
+}
+
+func postWantsCrosspost(frontmatter *FrontMatter, filename string) {
+	if postWantsMastodonCrosspost(*frontmatter) {
+		toSyndicate := frontmatter.Synopsis
+		if frontmatter.Type == "indieweb" {
+			toSyndicate = toSyndicate +
+				fmt.Sprintf("%s%s%s%s%s",
+					indieWeb(frontmatter.InReplyTo, "In reply to"),
+					indieWeb(frontmatter.RepostOf, "Repost of"),
+					indieWeb(frontmatter.LikeOf, "Like of"),
+					indieWeb(frontmatter.FavoriteOf, "Favourite of"),
+					indieWeb(frontmatter.BookmarkOf, "Bookmark of"),
+				)
+		} else {
+			toSyndicate = toSyndicate + "\n\n" + frontmatter.Link
+		}
+		mastodonLink, err := postToMastodon(toSyndicate)
+		if err == nil {
+			mastodonLink, _ = url.JoinPath(`https://mstdn.social/@vonExplaino/`, mastodonLink)
+			setMastodonLink(filename, mastodonLink)
+			GitAdd(filename)
+			GitCommit(fmt.Sprintf("XPOST - %s", mastodonLink))
+			GitPush()
+			frontmatter.SyndicationLinks.Mastodon = mastodonLink
+		} else {
+			PrintIfNotSilent("X")
+		}
+	}
+}
 func processMDFile(tags *map[string][]FrontMatter, postsById *map[string]Item, filename string) error {
 	// // If .md Process into HTML
 	var err error
@@ -336,56 +391,24 @@ func processMDFile(tags *map[string][]FrontMatter, postsById *map[string]Item, f
 	if frontmatter.Status == "draft" {
 		PrintIfNotSilent("D")
 		delete(*postsById, frontmatter.Link)
-	} else {
-		*tags = t2
-		targetFile := filepath.Join(ConfigData.BaseDir, baseDirectoryForPosts, frontmatter.RelativeLink)
-		targetDir, _ := filepath.Split(targetFile)
-		if _, err = os.Stat(targetFile); os.IsNotExist(err) {
-			os.MkdirAll(targetDir, 0755)
-		}
-		err = os.WriteFile(targetFile, []byte(html), 0755)
-		if frontmatter.Type == "article" ||
-			frontmatter.Type == "review" ||
-			(frontmatter.Type == "indieweb" &&
-				(len(frontmatter.BookmarkOf) > 0 ||
-					len(frontmatter.LikeOf) > 0)) {
-			(*postsById)[frontmatter.Link] = PostToItem(frontmatter)
-		}
-		if postWantsMastodonCrosspost(frontmatter) {
-			to_syndicate := frontmatter.Synopsis
-			if frontmatter.Type == "indieweb" {
-				if len(frontmatter.InReplyTo) > 0 {
-					to_syndicate = to_syndicate + "\n\nIn reply to " + frontmatter.InReplyTo
-				}
-				if len(frontmatter.RepostOf) > 0 {
-					to_syndicate = to_syndicate + "\n\nRepost of " + frontmatter.RepostOf
-				}
-				if len(frontmatter.LikeOf) > 0 {
-					to_syndicate = to_syndicate + "\n\nLike of " + frontmatter.LikeOf
-				}
-				if len(frontmatter.FavoriteOf) > 0 {
-					to_syndicate = to_syndicate + "\n\nFavourite of " + frontmatter.FavoriteOf
-				}
-				if len(frontmatter.BookmarkOf) > 0 {
-					to_syndicate = to_syndicate + "\n\nBookmark of " + frontmatter.BookmarkOf
-				}
-			} else {
-				to_syndicate = to_syndicate + "\n\n" + frontmatter.Link
-			}
-			mastodonLink, err := postToMastodon(to_syndicate)
-			if err == nil {
-				mastodonLink, _ = url.JoinPath(`https://mstdn.social/@vonExplaino/`, mastodonLink)
-				setMastodonLink(filename, mastodonLink)
-				GitAdd(filename)
-				GitCommit(fmt.Sprintf("XPOST - %s", mastodonLink))
-				GitPush()
-				frontmatter.SyndicationLinks.Mastodon = mastodonLink
-			} else {
-				PrintIfNotSilent("X")
-			}
-		}
-		PrintIfNotSilent("P")
+		return nil
 	}
+	*tags = t2
+	targetFile := filepath.Join(ConfigData.BaseDir, baseDirectoryForPosts, frontmatter.RelativeLink)
+	targetDir, _ := filepath.Split(targetFile)
+	if _, err = os.Stat(targetFile); os.IsNotExist(err) {
+		os.MkdirAll(targetDir, 0755)
+	}
+	err = os.WriteFile(targetFile, []byte(html), 0755)
+	if frontmatter.Type == "article" ||
+		frontmatter.Type == "review" ||
+		(frontmatter.Type == "indieweb" &&
+			(len(frontmatter.BookmarkOf) > 0 ||
+				len(frontmatter.LikeOf) > 0)) {
+		(*postsById)[frontmatter.Link] = PostToItem(frontmatter)
+	}
+	postWantsCrosspost(&frontmatter, filename)
+	PrintIfNotSilent("P")
 	return err
 }
 
@@ -447,7 +470,6 @@ func processUnknownFile(filename string) error {
 	info, err := os.Stat(fullPath)
 	if os.IsNotExist(err) {
 		fmt.Printf("Cannot do something with nothing %s\n", fullPath)
-		log.Fatal("FAILED")
 	} else if info.IsDir() {
 		return nil
 	} else {
@@ -455,13 +477,14 @@ func processUnknownFile(filename string) error {
 		if !(extension == ".m4v" || extension == ".xcf" || filename[len(filename)-6:] == "README" || extension == ".html" || extension == ".txt" || extension == ".json") {
 			fileType, err := GetFileType(fullPath)
 			fmt.Printf("Could not copy %s|%s|%v\n", filename, fileType, err)
-			log.Fatalf("FAILED")
+			return fmt.Errorf("unknown file type not copied %s|%s|%v", filename, fileType, err)
 		}
 	}
 	return err
 }
 
 func processFileUpdates(changes GitDiffs, tags map[string][]FrontMatter, postsById map[string]Item) (map[string][]FrontMatter, map[string]Item, error) {
+	var errors []string
 	var err error
 	for _, group := range [][]string{
 		changes.Added,
@@ -479,12 +502,18 @@ func processFileUpdates(changes GitDiffs, tags map[string][]FrontMatter, postsBy
 			} else {
 				err = processUnknownFile(filename)
 			}
+			if err != nil {
+				errors = append(errors, err.Error())
+			}
 		}
+	}
+	if len(errors) > 0 {
+		err = fmt.Errorf("errors during update: %s", strings.Join(errors, ""))
 	}
 	return tags, postsById, err
 }
 
-func createPageAndRSSForTags(tags map[string][]FrontMatter, filesToDelete map[string]struct{}) {
+func createPageAndRSSForTags(tags map[string][]FrontMatter) {
 	// NEW IDEA
 	// Read the main RSS feed of all content first, that'll give us all entries AND all tags
 	// Then we delete any tags+entries that been deleted
@@ -668,7 +697,6 @@ func WriteListHTML(feed []FrontMatter, filenamePrefix string, title string) erro
 	return nil
 }
 
-// Todo: Automatically write this inside the homepage file
 func WriteLatestPost(entry FrontMatter) error {
 	tDir := ConfigData.TemplateDir
 	env := twig.New(stick.NewFilesystemLoader(tDir))

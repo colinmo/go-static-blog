@@ -3,7 +3,6 @@ package cmd
 import (
 	"bytes"
 	"fmt"
-	"log"
 	"os"
 	"os/exec"
 	"strings"
@@ -28,7 +27,7 @@ func setEnvironments() {
 func GitPull() {
 	l, e := runGitCommand(gitCommand, []string{"pull"})
 	if e != nil {
-		log.Fatalf("Failed %s\n%s\n", l, e)
+		fmt.Printf("Failed %s\n%s\n", l, e)
 	}
 }
 

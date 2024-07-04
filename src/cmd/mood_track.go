@@ -18,9 +18,7 @@ limitations under the License.
 package cmd
 
 import (
-	"encoding/json"
 	"fmt"
-	"log"
 	"os"
 	"strings"
 	"time"
@@ -58,61 +56,83 @@ var moodCmd = &cobra.Command{
 	Short: "Tracks the mood",
 	Long:  `Tracks the mood in a YAML file - a 0-10 score of the mood 'goodness' as well as a text string attached describing the mood`,
 	Run: func(cmd *cobra.Command, args []string) {
-		var err error
-		if len(MoodOptions.Filename) == 0 {
-			MoodOptions.Filename = ConfigData.Moods.Filename
+		err := setupMoods()
+		if err == nil {
+			if MoodOptions.Read {
+				err = doReadMoods()
+			} else if MoodOptions.Write {
+				err = doWriteMoods()
+			}
 		}
-		if len(ConfigData.Moods.Token) == 0 ||
-			len(MoodOptions.Token) == 0 {
-			log.Fatalf("Invalid token information")
-		}
-		if MoodOptions.Token != ConfigData.Moods.Token {
-			log.Fatalf("Invalid token")
-		}
-		if MoodOptions.Read {
-			moodEntries.readMoods()
-
-			if err == nil {
-				x, _ := json.Marshal(moodEntries)
-				fmt.Printf("%s\n", x)
-			} else {
-				fmt.Printf("%s\n", err)
-			}
-		} else if MoodOptions.Write {
-			// ensure required parameters
-			errors := []string{}
-			if len(MoodOptions.Text) == 0 {
-				errors = append(errors, "text")
-			}
-			if MoodOptions.Score < 0 || MoodOptions.Score > 10 {
-				errors = append(errors, "score")
-			}
-			MoodOptions.DateAsDate, err = time.Parse("20060102", MoodOptions.Date)
-			if err != nil {
-				errors = append(errors, "Date")
-			}
-			if len(errors) == 0 {
-				err := moodEntries.readMoods()
-				if err == nil {
-					if _, ok := moodEntries.Moods[MoodOptions.DateAsDate.Year()]; !ok {
-						moodEntries.Moods[MoodOptions.DateAsDate.Year()] = map[time.Month]map[int]MoodEntryS{}
-					}
-					if _, ok := moodEntries.Moods[MoodOptions.DateAsDate.Year()][MoodOptions.DateAsDate.Month()]; !ok {
-						moodEntries.Moods[MoodOptions.DateAsDate.Year()][MoodOptions.DateAsDate.Month()] = map[int]MoodEntryS{}
-					}
-					moodEntries.setMood(MoodOptions.DateAsDate.Year(), MoodOptions.DateAsDate.Month(), MoodOptions.DateAsDate.Day(), MoodEntryS{
-						Text:  MoodOptions.Text,
-						Score: MoodOptions.Score,
-					})
-					moodEntries.writeMoods()
-				}
-			} else {
-				log.Fatalf("Missing or invalid values for %s", strings.Join(errors, ", "))
-			}
+		if err != nil {
+			fmt.Printf("Error: %v\n", err)
 		}
 	},
 }
 
+func setupMoods() error {
+	var err error
+	var problems = ""
+	moodEntries = MoodEntriesS{
+		Moods: map[int]map[time.Month]map[int]MoodEntryS{},
+	}
+	if len(MoodOptions.Filename) == 0 {
+		MoodOptions.Filename = ConfigData.Moods.Filename
+	}
+	if len(ConfigData.Moods.Token) == 0 ||
+		len(MoodOptions.Token) == 0 {
+		problems = problems + "invalid token information "
+	}
+	if MoodOptions.Token != ConfigData.Moods.Token {
+		problems = problems + "invalid token "
+	}
+	if len(problems) > 0 {
+		err = fmt.Errorf(problems)
+	}
+	return err
+}
+
+func doReadMoods() error {
+	err := moodEntries.readMoods()
+	return err
+}
+
+func doWriteMoods() error {
+	var err error
+	// ensure required parameters
+	errors := []string{}
+	if len(MoodOptions.Text) == 0 {
+		errors = append(errors, "text")
+	}
+	if MoodOptions.Score < 0 || MoodOptions.Score > 10 {
+		errors = append(errors, "score")
+	}
+	MoodOptions.DateAsDate, err = time.Parse("20060102", MoodOptions.Date)
+	if err != nil {
+		errors = append(errors, "Date")
+	}
+	if len(errors) == 0 {
+		err := moodEntries.readMoods()
+		if err == nil {
+			if _, ok := moodEntries.Moods[MoodOptions.DateAsDate.Year()]; !ok {
+				moodEntries.Moods[MoodOptions.DateAsDate.Year()] = map[time.Month]map[int]MoodEntryS{}
+			}
+			if _, ok := moodEntries.Moods[MoodOptions.DateAsDate.Year()][MoodOptions.DateAsDate.Month()]; !ok {
+				moodEntries.Moods[MoodOptions.DateAsDate.Year()][MoodOptions.DateAsDate.Month()] = map[int]MoodEntryS{}
+			}
+			moodEntries.setMood(MoodOptions.DateAsDate.Year(), MoodOptions.DateAsDate.Month(), MoodOptions.DateAsDate.Day(), MoodEntryS{
+				Text:  MoodOptions.Text,
+				Score: MoodOptions.Score,
+			})
+			moodEntries.writeMoods()
+		} else {
+			return fmt.Errorf("bad read %v", err)
+		}
+	} else {
+		err = fmt.Errorf("missing or invalid values for %s", strings.Join(errors, ", "))
+	}
+	return err
+}
 func init() {
 	rootCmd.AddCommand(moodCmd)
 	moodCmd.Flags().IntVarP(&MoodOptions.Score, "score", "s", -1, "Score (0-10)")
@@ -140,6 +160,12 @@ func (m *MoodEntriesS) byteToMoods(bytes []byte) error {
 
 func (m *MoodEntriesS) readMoods() error {
 	content, err := m.readMoodsFile()
+	if os.IsNotExist(err) {
+		moodEntries = MoodEntriesS{
+			Moods: map[int]map[time.Month]map[int]MoodEntryS{},
+		}
+		err = nil
+	}
 	if err == nil {
 		m.byteToMoods(content)
 	}
@@ -158,6 +184,18 @@ func (m *MoodEntriesS) writeMoods() error {
 }
 
 func (m *MoodEntriesS) setMood(year int, month time.Month, day int, moodEntry MoodEntryS) error {
+	if m.Moods == nil {
+		m.Moods = map[int]map[time.Month]map[int]MoodEntryS{}
+	}
+	if _, ok := m.Moods[year]; !ok {
+		m.Moods[year] = map[time.Month]map[int]MoodEntryS{}
+	}
+	if _, ok := m.Moods[year][month]; !ok {
+		m.Moods[year][month] = map[int]MoodEntryS{}
+	}
+	if _, ok := m.Moods[year][month][day]; !ok {
+		m.Moods[year][month][day] = MoodEntryS{}
+	}
 	m.Moods[year][month][day] = moodEntry
 	return nil
 }

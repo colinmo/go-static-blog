@@ -1,5 +1,12 @@
 build: build-windows-windows build-linux-windows
 
+# Start in vonblog
+# cd src
+# go test "./..." -coverprofile="coverage.out" > junit.xml
+# .\gosonar.exe --basedir c:/users/relap/dropbox/swap/golang/vonblog/src/cmd/ --coverage coverage.out --junit junit.xml
+# cd ..
+# docker run --rm -v "${PWD}:/usr/src" sonarsource/sonar-scanner-cli
+
 test:
 	cd c:/users/relap/dropbox\swap\golang\vonblog\src && go test "./..." -coverprofile="coverage.out" -v 2>&1 | go-junit-report > junit.xml
 	cd c:/users/relap/dropbox\swap\golang\vonblog\src && gosonar --basedir c:/users/relap/dropbox\swap\golang\vonblog\src\cmd\ --coverage coverage.out --junit junit.xml

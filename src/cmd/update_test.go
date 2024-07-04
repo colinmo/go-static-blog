@@ -120,7 +120,7 @@ func TestCreatePageAndRSSForTags(t *testing.T) {
 		// Init the scenario
 		ClearDir(testroot + "rundir/")
 		copy(testroot+"scenarios/"+thing.scenariodir, testroot+"rundir/")
-		createPageAndRSSForTags(thing.tags, thing.filesToDelete)
+		createPageAndRSSForTags(thing.tags)
 		// Check the file and rss are OK
 		// failed := true
 		// if failed {
