@@ -16,7 +16,8 @@ build-windows-windows:
 	
 
 build-linux-windows:
-	set GOOS=linux&&set GOARCH=amd64&&cd src&&go build -ldflags "-w -s" -o ../bin/vonblog
+	docker run --rm -v src:/usr/src/myapp -v bin:/usr/src/bin -w /usr/src/myapp/src golang:1.23.0-bullseye go build -ldflags "-w -s" -o /usr/src/myapp/vonblog
+#	set GOOS=linux&&set GOARCH=amd64&&cd src&&go build -ldflags "-w -s" -o ../bin/vonblog
 
 build-linux-mac:
 	cd src && env GOOS=linux GOARCH=amd64 go build -ldflags "-w -s" -o ../bin/vonblog

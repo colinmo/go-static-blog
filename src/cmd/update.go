@@ -371,6 +371,9 @@ func postWantsCrosspost(frontmatter *FrontMatter, filename string) {
 		} else {
 			toSyndicate = toSyndicate + "\n\n" + frontmatter.Link
 		}
+		if len(frontmatter.Tags) > 0 {
+			toSyndicate = toSyndicate + "\n#" + strings.Join(frontmatter.Tags, " #")
+		}
 		mastodonLink, err := postToMastodon(toSyndicate)
 		if err == nil {
 			mastodonLink, _ = url.JoinPath(`https://mstdn.social/@vonExplaino/`, mastodonLink)
