@@ -76,6 +76,11 @@ type Mastodon struct {
 	URL   string
 	Token string
 }
+type Bluesky struct {
+	URL      string
+	Userid   string
+	Password string
+}
 type AboutMe struct {
 	Trakt    Trakt
 	Feedly   Feedly
@@ -89,6 +94,7 @@ type Thumbnails struct {
 }
 type Syndics struct {
 	Mastodon Mastodon
+	Bluesky  Bluesky
 }
 type Moods struct {
 	Filename string
@@ -202,6 +208,9 @@ func initConfig() {
 		// Syndications
 		ConfigData.Syndication.Mastodon.URL = viper.GetString("syndication.mastodon.url")
 		ConfigData.Syndication.Mastodon.Token = viper.GetString("syndication.mastodon.token")
+		ConfigData.Syndication.Bluesky.URL = viper.GetString("syndication.bluesky.url")
+		ConfigData.Syndication.Bluesky.Userid = viper.GetString("syndication.bluesky.userid")
+		ConfigData.Syndication.Bluesky.Password = viper.GetString("syndication.bluesky.password")
 		// MISC
 		ConfigData.TagSnippets = viper.GetStringSlice("tagSnippets")
 		// MOODS

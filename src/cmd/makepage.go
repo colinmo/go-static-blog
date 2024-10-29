@@ -394,6 +394,7 @@ type SyndicationLinksS struct {
 	Twitter   string `yaml:"Twitter"`
 	Instagram string `yaml:"Instagram"`
 	Mastodon  string `yaml:"Mastodon"`
+	Bluesky   string `yaml:"Bluesky"`
 }
 
 type ItemS struct {
