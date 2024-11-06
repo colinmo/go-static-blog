@@ -523,7 +523,7 @@ func alphaOrderMap(existing map[string]string) []string {
 func frontMatterValidate(frontMatter *FrontMatter, filename string) []string {
 	var collectedErrors []string
 	// Valids
-	validTypes := []string{"article", "reply", "indieweb", "tweet", "resume", "event", "page", "review"}
+	validTypes := []string{"article", "reply", "indieweb", "tweet", "toot", "resume", "event", "page", "review"}
 	if filename != "" && frontMatter.Type == "" {
 		frontMatter.Type = defaultType(validTypes, filename)
 	} else {

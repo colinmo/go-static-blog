@@ -75,6 +75,54 @@ type facetStruct struct {
 	Features []featureStruct `json:"features"`
 }
 
+func makeBlueskyPost(frontmatter *FrontMatter) (string, []facetStruct) {
+	toSyndicate := frontmatter.Synopsis
+	facets := []facetStruct{}
+	posttype := strings.ToLower(frontmatter.Type)
+	if posttype == "indieweb" {
+		prefix := "\n"
+		for _, x := range [][]string{
+			{frontmatter.InReplyTo, "In reply to"},
+			{frontmatter.RepostOf, "Repost of"},
+			{frontmatter.LikeOf, "Like of"},
+			{frontmatter.FavoriteOf, "Favourite of"},
+			{frontmatter.BookmarkOf, "Bookmark of"},
+		} {
+			if len(x[0]) > 0 {
+				toSyndicate += prefix + "\n" + x[1] + ": "
+				prefix = ""
+				start := len(toSyndicate)
+				toSyndicate = toSyndicate + x[0]
+				facets = append(facets, facetStruct{
+					Index: indexStruct{
+						ByteStart: start,
+						ByteEnd:   len(toSyndicate),
+					},
+					Features: []featureStruct{
+						{Type: "app.bsky.richtext.facet#link", URI: x[0]},
+					},
+				})
+			}
+		}
+	} else if posttype != "tweet" && posttype != "toot" {
+		start := len(toSyndicate)
+		toSyndicate = toSyndicate + "\n\n" + frontmatter.Link
+		facets = append(facets, facetStruct{
+			Index: indexStruct{
+				ByteStart: start,
+				ByteEnd:   len(toSyndicate),
+			},
+			Features: []featureStruct{
+				{Type: "app.bsky.richtext.facet#link", URI: frontmatter.Link},
+			},
+		})
+	}
+	if len(frontmatter.Tags) > 0 {
+		toSyndicate = toSyndicate + "\n#" + strings.Join(frontmatter.Tags, " #")
+	}
+	return toSyndicate, facets
+}
+
 func postToBluesky(message string, facets []facetStruct, createdAt time.Time) (string, error) {
 	type blueskyPostResponse struct {
 		URI string `json:"uri"`

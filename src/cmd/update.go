@@ -387,55 +387,12 @@ func postWantsCrosspost(frontmatter *FrontMatter, filename string) {
 		}
 	}
 	if postWantsBlueskyCrosspost(*frontmatter) {
-
-		toSyndicate := frontmatter.Synopsis
-		facets := []facetStruct{}
-		if frontmatter.Type == "indieweb" {
-			prefix := "\n"
-			for _, x := range [][]string{
-				{frontmatter.InReplyTo, "In reply to"},
-				{frontmatter.RepostOf, "Repost of"},
-				{frontmatter.LikeOf, "Like of"},
-				{frontmatter.FavoriteOf, "Favourite of"},
-				{frontmatter.BookmarkOf, "Bookmark of"},
-			} {
-				if len(x[0]) > 0 {
-					toSyndicate += prefix + "\n" + x[1] + ": "
-					prefix = ""
-					start := len(toSyndicate)
-					toSyndicate = toSyndicate + x[0]
-					facets = append(facets, facetStruct{
-						Index: indexStruct{
-							ByteStart: start,
-							ByteEnd:   len(toSyndicate),
-						},
-						Features: []featureStruct{
-							{Type: "app.bsky.richtext.facet#link", URI: x[0]},
-						},
-					})
-				}
-			}
-		} else if frontmatter.Type != "tweet" {
-			start := len(toSyndicate)
-			toSyndicate = toSyndicate + "\n\n" + frontmatter.Link
-			facets = append(facets, facetStruct{
-				Index: indexStruct{
-					ByteStart: start,
-					ByteEnd:   len(toSyndicate),
-				},
-				Features: []featureStruct{
-					{Type: "app.bsky.richtext.facet#link", URI: frontmatter.Link},
-				},
-			})
-		}
-		if len(frontmatter.Tags) > 0 {
-			toSyndicate = toSyndicate + "\n#" + strings.Join(frontmatter.Tags, " #")
-		}
+		toSyndicate, facets := makeBlueskyPost(frontmatter)
 		blueskyLink, err := postToBluesky(toSyndicate, facets, frontmatter.CreatedDate)
 		if err == nil {
 			setBlueskyLink(filename, blueskyLink)
 			GitAdd(filename)
-			GitCommit(fmt.Sprintf("XPOST - %s", blueskyLink))
+			GitCommit(fmt.Sprintf("BPOST - %s", blueskyLink))
 			GitPush()
 			frontmatter.SyndicationLinks.Bluesky = blueskyLink
 		} else {
