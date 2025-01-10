@@ -106,7 +106,7 @@ func makeBlueskyPost(frontmatter *FrontMatter) (string, []facetStruct) {
 		}
 	} else if posttype != "tweet" && posttype != "toot" {
 		start := len(toSyndicate)
-		toSyndicate = toSyndicate + "\n\n" + frontmatter.Link
+		toSyndicate = toSyndicate + "\r\n\r\n" + frontmatter.Link
 		facets = append(facets, facetStruct{
 			Index: indexStruct{
 				ByteStart: start,
@@ -174,7 +174,7 @@ func postToBluesky(message string, facets []facetStruct, createdAt time.Time) (s
 	json.NewDecoder(resp.Body).Decode(&res)
 	if res.URI != "" {
 		bits := strings.Split(res.URI, "/")
-		newURI := fmt.Sprintf("https://bsky.app/profile/vonexplaino.bsky.social/post/%s", bits[len(bits)-1])
+		newURI := fmt.Sprintf("https://bsky.app/profile/vonexplaino.com/post/%s", bits[len(bits)-1])
 		return newURI, nil
 	} else {
 		return "", fmt.Errorf("failed in post to bluesky attempt %s|%d", res, resp.StatusCode)
