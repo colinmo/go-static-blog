@@ -49,29 +49,6 @@ type Metadata struct {
 type BlogStats struct {
 	Days int
 }
-type Trakt struct {
-	ID           string
-	Secret       string
-	AccessToken  string
-	RefreshToken string
-	Cache        string
-}
-type Feedly struct {
-	Key   string
-	Cache string
-	URL   string
-}
-type Withings struct {
-	Client       string
-	Secret       string
-	AccessToken  string
-	RefreshToken string
-	ExpiresAt    int64
-	Cache        string
-	OauthURL     string
-	MassURL      string
-	StepsURL     string
-}
 type Mastodon struct {
 	URL   string
 	Token string
@@ -80,11 +57,6 @@ type Bluesky struct {
 	URL      string
 	Userid   string
 	Password string
-}
-type AboutMe struct {
-	Trakt    Trakt
-	Feedly   Feedly
-	Withings Withings
 }
 type Thumbnails struct {
 	Height    uint
@@ -109,7 +81,6 @@ type ConfigDataStruct struct {
 	TemplateDir   string
 	Metadata      Metadata
 	BlogStats     BlogStats
-	AboutMe       AboutMe
 	Thumbnails    Thumbnails
 	Syndication   Syndics
 	TagSnippets   []string
@@ -181,24 +152,6 @@ func initConfig() {
 		ConfigData.Metadata.Ttl, _ = strconv.Atoi(x)
 		ConfigData.Metadata.Webmaster = viper.GetString("metadata.webmaster")
 		ConfigData.BlogStats.Days, _ = strconv.Atoi(viper.GetStringMapString("blogstats")["days"])
-		// ABOUT ME
-		ConfigData.AboutMe.Trakt.ID = viper.GetString("aboutme.trakt.id")
-		ConfigData.AboutMe.Trakt.Secret = viper.GetString("aboutme.trakt.secret")
-		ConfigData.AboutMe.Trakt.AccessToken = viper.GetString("aboutme.trakt.accesstoken")
-		ConfigData.AboutMe.Trakt.RefreshToken = viper.GetString("aboutme.trakt.refreshtoken")
-		ConfigData.AboutMe.Trakt.Cache = viper.GetString("aboutme.trakt.cache")
-		ConfigData.AboutMe.Feedly.Key = viper.GetString("aboutme.feedly.key")
-		ConfigData.AboutMe.Feedly.Cache = viper.GetString("aboutme.feedly.cache")
-		ConfigData.AboutMe.Feedly.URL = viper.GetString("aboutme.feedly.url")
-		ConfigData.AboutMe.Withings.Client = viper.GetString("aboutme.withings.client")
-		ConfigData.AboutMe.Withings.Secret = viper.GetString("aboutme.withings.secret")
-		ConfigData.AboutMe.Withings.AccessToken = viper.GetString("aboutme.withings.accesstoken")
-		ConfigData.AboutMe.Withings.RefreshToken = viper.GetString("aboutme.withings.refreshtoken")
-		ConfigData.AboutMe.Withings.ExpiresAt = viper.GetInt64("aboutme.withings.expiresat")
-		ConfigData.AboutMe.Withings.Cache = viper.GetString("aboutme.withings.cache")
-		ConfigData.AboutMe.Withings.OauthURL = viper.GetString("aboutme.withings.oauthurl")
-		ConfigData.AboutMe.Withings.MassURL = viper.GetString("aboutme.withings.massurl")
-		ConfigData.AboutMe.Withings.StepsURL = viper.GetString("aboutme.withings.stepsurl")
 		// Thumbnails
 		ConfigData.Thumbnails.Width = uint(viper.GetInt("thumbnails.width"))
 		ConfigData.Thumbnails.Height = uint(viper.GetInt("thumbnails.height"))
