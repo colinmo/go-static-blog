@@ -66,7 +66,7 @@ func TestCreateCodePage(t *testing.T) {
 	testroot := `E:\xampp\vonexplaino-bitbucket-static`
 	ConfigData.RepositoryDir = testroot
 	ConfigData.BaseURL = "https://vonexplaino.com/blog/"
-	ConfigData.TemplateDir = "c:/users/relap/dropbox/swap/golang/vonblog/templates/"
+	ConfigData.TemplateDir = "/home/colin/Laboratory/go-static-blog/templates/"
 	result, frontMatter, error := parseString(`---
 Title: Code
 Created: 2015-11-18 20:32:00 +1000

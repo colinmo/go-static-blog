@@ -87,7 +87,7 @@ func setupMoods() error {
 		problems = problems + "invalid token "
 	}
 	if len(problems) > 0 {
-		err = fmt.Errorf(problems)
+		err = fmt.Errorf("%s", problems)
 	}
 	return err
 }

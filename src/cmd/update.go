@@ -199,7 +199,7 @@ func deleteAndRegenerate(
 	// Create tag-page for Code and Steampunk embedding
 	for _, tag := range ConfigData.TagSnippets {
 		PrintIfNotSilent(fmt.Sprintf("Regenerating snippet for %s (%d) - ", tag, len(allTagMap[tag])))
-		content, err := createTagPageSnippetForTag(tag, allTagMap[tag], postsById)
+		content, err := createTagPageSnippetForTag(tag, allTagMap[tag])
 		if err == nil {
 			PrintIfNotSilent("ok\n")
 			os.WriteFile(filepath.Join(ConfigData.BaseDir, "tag-snippet-"+tag+".html"), content, 0666)
@@ -211,7 +211,7 @@ func deleteAndRegenerate(
 	outputStats(changes)
 }
 
-func createTagPageSnippetForTag(tag string, tagsForString []FrontMatter, postsById map[string]Item) ([]byte, error) {
+func createTagPageSnippetForTag(tag string, tagsForString []FrontMatter) ([]byte, error) {
 	var twigTags map[string]stick.Value
 	var relatedTags map[string][]struct {
 		Link  string

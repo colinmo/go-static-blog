@@ -14,7 +14,7 @@ func TestMoodSetup(t *testing.T) {
 
 	err = setupMoods()
 	if err.Error() != "invalid token information " {
-		t.Errorf(err.Error())
+		t.Errorf("%s", err.Error())
 	}
 	if MoodOptions.Filename != "steve" {
 		t.Errorf("did not default name correctly %s", MoodOptions.Filename)
