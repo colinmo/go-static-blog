@@ -42,14 +42,19 @@ Perform a full regenerate from source.
 1. Build the new site in a new folder under TempDir.
 2. Replace the existing symlink with this location
 */
-func updateFullRegenerate() (RSS, map[string][]FrontMatter, map[string]Item, map[string]struct{}, GitDiffs, error) {
+func updateFullRegenerate() (
+	allPosts RSS,
+	tags map[string][]FrontMatter,
+	postsById map[string]Item,
+	filesToDelete map[string]struct{},
+	changes GitDiffs,
+	err error) {
+
 	PrintIfNotSilent("Full\n")
-	postsById := map[string]Item{}
-	allPosts := RSS{}
-	tags := map[string][]FrontMatter{}
-	filesToDelete := map[string]struct{}{}
-	var changes GitDiffs
-	var err error
+	postsById = map[string]Item{}
+	allPosts = RSS{}
+	tags = map[string][]FrontMatter{}
+	filesToDelete = map[string]struct{}{}
 
 	// Make new target directory
 	PrintIfNotSilent("Temp Dir\n")
@@ -70,13 +75,15 @@ func updateFullRegenerate() (RSS, map[string][]FrontMatter, map[string]Item, map
 			log.Fatalf("%s is not a directory", dirPath)
 		}
 	}
+
 	// Run the generate into the target directory
 	GitPull()
 	changes, err = PopulateAllGitFiles(ConfigData.RepositoryDir)
 	if err != nil {
 		os.RemoveAll(ConfigData.BaseDir)
 		ConfigData.BaseDir = SwapDir2
-		return allPosts, tags, postsById, filesToDelete, changes, fmt.Errorf("failed to get files in the directory %s [%s]", ConfigData.RepositoryDir, err)
+		err = fmt.Errorf("failed to get files in the directory %s [%s]", ConfigData.RepositoryDir, err)
+		return
 	}
 	tags, filesToDelete, postsById = getAllChangedTagsAndDeletedFiles(changes, postsById)
 	tags, postsById, _ = processFileUpdates(changes, tags, postsById)
@@ -87,7 +94,7 @@ func updateFullRegenerate() (RSS, map[string][]FrontMatter, map[string]Item, map
 	// Remove old dir
 	clearOtherPaths(ConfigData.TempDir, dirName)
 	ConfigData.BaseDir = SwapDir2
-	return allPosts, tags, postsById, filesToDelete, changes, err
+	return
 }
 
 func clearOtherPaths(inDir, notThisOne string) {
@@ -111,17 +118,24 @@ func replaceDirectory(tempDir, blogDir string) {
 	}
 }
 
-func updateChangedRegenerate() (RSS, map[string][]FrontMatter, map[string]Item, map[string]struct{}, GitDiffs, error) {
+func updateChangedRegenerate() (
+	allPosts RSS,
+	tags map[string][]FrontMatter,
+	postsById map[string]Item,
+	filesToDelete map[string]struct{},
+	changes GitDiffs,
+	err error) {
+
 	PrintIfNotSilent("Changed\n")
-	postsById := map[string]Item{}
-	tags := map[string][]FrontMatter{}
-	filesToDelete := map[string]struct{}{}
-	var changes GitDiffs
+	postsById = map[string]Item{}
+	tags = map[string][]FrontMatter{}
+	filesToDelete = map[string]struct{}{}
 
 	// Get all posts from the all published posts RSS file
-	allPosts, err := ReadRSS(filepath.Join(ConfigData.BaseDir, "all-rss.xml"))
+	allPosts, err = ReadRSS(filepath.Join(ConfigData.BaseDir, "all-rss.xml"))
 	if err != nil {
-		return allPosts, tags, postsById, filesToDelete, changes, fmt.Errorf("failed to read the RSS file %v", err)
+		err = fmt.Errorf("failed to read the RSS file %v", err)
+		return
 	}
 	for _, i := range allPosts.Channel.Items {
 		postsById[i.GUID] = i
@@ -133,7 +147,7 @@ func updateChangedRegenerate() (RSS, map[string][]FrontMatter, map[string]Item, 
 	GitPull()
 	// Get the changed tags, building the new pages as we go
 	tags, postsById, err = processFileUpdates(changes, tags, postsById)
-	return allPosts, tags, postsById, filesToDelete, changes, err
+	return
 }
 
 func deleteFiles(filesToDelete map[string]struct{}) {
@@ -270,6 +284,7 @@ var updateCmd = &cobra.Command{
 		} else {
 			allPosts, tags, postsById, filesToDelete, changes, err = updateChangedRegenerate()
 		}
+
 		if err != nil {
 			log.Fatalf("Something happened updating files\n%v\n", err)
 		} else {

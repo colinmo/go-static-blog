@@ -3,7 +3,6 @@ package cmd
 import (
 	"encoding/xml"
 	"io"
-	"log"
 	"os"
 	"path/filepath"
 	"sort"
@@ -57,7 +56,6 @@ func ReadRSS(filename string) (RSS, error) {
 
 	xmlFile, err := os.Open(filename)
 	if err != nil {
-		log.Fatalf("Failed to open %s\n%v\n", filename, err)
 		// Default
 		feed = RSS{
 			Version: "2.0",
