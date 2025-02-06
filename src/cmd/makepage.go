@@ -556,6 +556,7 @@ func frontMatterValidate(frontMatter *FrontMatter, filename string) []string {
 	if len(frontMatter.Resume.Contact.Name) > 0 {
 		frontMatterValidateExperience(frontMatter)
 	}
+	frontMatter.Title = titleWithIcons(*frontMatter)
 	return collectedErrors
 }
 func defaultType(validTypes []string, filename string) string {
@@ -568,18 +569,22 @@ func defaultType(validTypes []string, filename string) string {
 }
 
 func defaultFeatureImage(frontMatter *FrontMatter) string {
-	if len(frontMatter.InReplyTo) > 0 {
-		return fmt.Sprintf(wordpressThumbnailTemplate, url.QueryEscape(frontMatter.InReplyTo))
-	} else if len(frontMatter.BookmarkOf) > 0 {
-		return fmt.Sprintf(wordpressThumbnailTemplate, url.QueryEscape(frontMatter.BookmarkOf))
-	} else if len(frontMatter.FavoriteOf) > 0 {
-		return fmt.Sprintf(wordpressThumbnailTemplate, url.QueryEscape(frontMatter.FavoriteOf))
-	} else if len(frontMatter.RepostOf) > 0 {
-		return fmt.Sprintf(wordpressThumbnailTemplate, url.QueryEscape(frontMatter.RepostOf))
-	} else if len(frontMatter.LikeOf) > 0 {
-		return fmt.Sprintf(wordpressThumbnailTemplate, url.QueryEscape(frontMatter.LikeOf))
+	var returning string
+	switch true {
+	case len(frontMatter.InReplyTo) > 0:
+		returning = frontMatter.InReplyTo
+	case len(frontMatter.BookmarkOf) > 0:
+		returning = frontMatter.BookmarkOf
+	case len(frontMatter.FavoriteOf) > 0:
+		returning = frontMatter.FavoriteOf
+	case len(frontMatter.RepostOf) > 0:
+		returning = frontMatter.RepostOf
+	case len(frontMatter.LikeOf) > 0:
+		returning = frontMatter.LikeOf
+	default:
+		returning = frontMatter.Link
 	}
-	return fmt.Sprintf(wordpressThumbnailTemplate, url.QueryEscape(frontMatter.Link))
+	return fmt.Sprintf(wordpressThumbnailTemplate, url.QueryEscape(returning))
 }
 
 func parseFrontMatter(inFrontMatter string, filename string) (FrontMatter, error) {
@@ -587,6 +592,7 @@ func parseFrontMatter(inFrontMatter string, filename string) (FrontMatter, error
 	err := yaml.Unmarshal([]byte(inFrontMatter), &frontMatter)
 	if err != nil {
 		fmt.Println("Failed to parse frontmatter")
+		fmt.Printf(" - %s\n", filename)
 		log.Fatal(err)
 		return frontMatter, err
 	}
@@ -790,4 +796,28 @@ func toTwigListVariables(frontMatters []FrontMatter, title string, page int) map
 		"link_prefix": baseDir,
 		"list":        x,
 	}
+}
+
+func titleWithIcons(fm FrontMatter) string {
+	icons := map[string]string{
+		"&#x1F496;": fm.LikeOf,
+		"&#x1F516;": fm.BookmarkOf,
+		"&#x1F5EA;": fm.InReplyTo,
+		"&#x1F31F;": fm.FavoriteOf,
+		"&#x3003;":  fm.RepostOf,
+	}
+	toprefix := []string{}
+	for c, r := range icons {
+		if len(r) > 0 {
+			toprefix = append(toprefix, c)
+		}
+	}
+
+	if contains(fm.Tags, "wilt") {
+		toprefix = append(toprefix, "&#x1F9E0;")
+	}
+	if len(toprefix) > 0 {
+		fm.Title = strings.Join(toprefix, "") + " " + fm.Title
+	}
+	return fm.Title
 }

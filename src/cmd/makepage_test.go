@@ -346,8 +346,8 @@ func TestDefaultFeatureImage(t *testing.T) {
 			xpct: `https://wp.dude.com/thumbnail?https%3A%2F%2Ftestme.com%2F`,
 		},
 		{
-			fm:   FrontMatter{FavoriteOf: "https://testme.com/"},
-			xpct: `https://wp.dude.com/thumbnail?https%3A%2F%2Ftestme.com%2F`,
+			fm:   FrontMatter{FavoriteOf: "https://testme2.com/"},
+			xpct: `https://wp.dude.com/thumbnail?https%3A%2F%2Ftestme2.com%2F`,
 		},
 		{
 			fm:   FrontMatter{RepostOf: "https://testme.com/"},
@@ -382,5 +382,28 @@ func TestToTwigVariables(t *testing.T) {
 	}
 	if mike["title"] != "Dude" {
 		t.Fatalf("Did not get title %v\n", mike)
+	}
+}
+
+func TestTitleWithIcons(t *testing.T) {
+	var dude FrontMatter
+	dude = FrontMatter{Title: "Dude"}
+	if titleWithIcons(dude) != "Dude" {
+		t.Fatalf("Polluted the title")
+	}
+
+	dude = FrontMatter{Title: "Dude", LikeOf: "X"}
+	if titleWithIcons(dude) != "&#x1F496; Dude" {
+		t.Fatalf("Unliked the title")
+	}
+
+	dude = FrontMatter{Title: "Dude", RepostOf: "X", InReplyTo: "X"}
+	if titleWithIcons(dude) != "&#x1F5EA;&#x3003; Dude" {
+		t.Fatalf("Wrong prefixed the title\n[%s]", titleWithIcons(dude))
+	}
+
+	dude = FrontMatter{Title: "Dude", BookmarkOf: "X", FavoriteOf: "X", Tags: []string{"x", "wilt", "y", "z"}}
+	if titleWithIcons(dude) != "&#x1F516;&#x1F31F;&#x3003; Dude" {
+		t.Fatalf("Wrong prefixed the title2\n%s", titleWithIcons(dude))
 	}
 }
