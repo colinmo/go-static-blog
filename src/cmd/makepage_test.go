@@ -7,6 +7,8 @@ import (
 	"time"
 
 	"github.com/cucumber/godog"
+
+	testdataloader "github.com/peteole/testdata-loader"
 )
 
 func pageExists(filename string) error {
@@ -63,14 +65,16 @@ func TestParseUnknownDateFormat(t *testing.T) {
 }
 
 func TestCreateCodePage(t *testing.T) {
-	testroot := `E:\xampp\vonexplaino-bitbucket-static`
+	testroot := testdataloader.GetBasePath() + "/statictest"
 	ConfigData.RepositoryDir = testroot
 	ConfigData.BaseURL = "https://vonexplaino.com/blog/"
-	ConfigData.TemplateDir = "/home/colin/Laboratory/go-static-blog/templates/"
+	ConfigData.TemplateDir = testdataloader.GetBasePath() + "/../templates/"
 	result, frontMatter, error := parseString(`---
 Title: Code
 Created: 2015-11-18 20:32:00 +1000
+Updated: 2024-05-15 19:23:49 +1000
 Type: page
+Tags: [left,right]
 ---
 ## Common book
 
@@ -130,13 +134,14 @@ See more of [Trinity](http://theonyxpath.com/category/worlds/trinitycontinuum/).
 	if strings.Contains(result, `markdown="1"`) {
 		t.Fatalf("Did not parse all markdowns")
 	}
+	t.Fatalf("%s", result)
 }
 
 func TestCreateResume(t *testing.T) {
 	testroot := `C:\Laboratory\temp\`
 	ConfigData.RepositoryDir = testroot
 	ConfigData.BaseURL = "https://vonexplaino.com/blog/"
-	ConfigData.TemplateDir = "c:/users/relap/dropbox/swap/golang/vonblog/templates/"
+	ConfigData.TemplateDir = testdataloader.GetBasePath()
 	result, frontMatter, error := parseString(`---
 Title: Colin Morris
 Created: 2024-04-06T22:15:50+1000
@@ -371,12 +376,12 @@ func TestDefaultFeatureImage(t *testing.T) {
 	}
 }
 
-func TestToTwigVariables(t *testing.T) {
+func TestToTemplateVariables(t *testing.T) {
 	dude := FrontMatter{
 		Title: "Dude",
 	}
 	content := "xxXX!"
-	mike := toTwigVariables(&dude, content)
+	mike := toTemplateVariables(&dude, content)
 	if mike["content"] != "xxXX!" {
 		t.Fatalf("Did not get content")
 	}
@@ -387,6 +392,8 @@ func TestToTwigVariables(t *testing.T) {
 
 func TestTitleWithIcons(t *testing.T) {
 	var dude FrontMatter
+	var expected string
+	var got string
 	dude = FrontMatter{Title: "Dude"}
 	if titleWithIcons(dude) != "Dude" {
 		t.Fatalf("Polluted the title")
@@ -398,12 +405,16 @@ func TestTitleWithIcons(t *testing.T) {
 	}
 
 	dude = FrontMatter{Title: "Dude", RepostOf: "X", InReplyTo: "X"}
-	if titleWithIcons(dude) != "&#x1F5EA;&#x3003; Dude" {
-		t.Fatalf("Wrong prefixed the title\n[%s]", titleWithIcons(dude))
+	expected = "&#x1F5EA;&#x3003; Dude"
+	got = titleWithIcons(dude)
+	if got != expected {
+		t.Fatalf("Wrong prefixed the title\n[%s]\n[%s]", got, expected)
 	}
 
 	dude = FrontMatter{Title: "Dude", BookmarkOf: "X", FavoriteOf: "X", Tags: []string{"x", "wilt", "y", "z"}}
-	if titleWithIcons(dude) != "&#x1F516;&#x1F31F;&#x3003; Dude" {
-		t.Fatalf("Wrong prefixed the title2\n%s", titleWithIcons(dude))
+	expected = "&#x1F516;&#x1F31F;&#x1F9E0; Dude"
+	got = titleWithIcons(dude)
+	if got != expected {
+		t.Fatalf("Wrong prefixed the title2\n[%s]\n[%s]", got, expected)
 	}
 }

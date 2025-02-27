@@ -22,8 +22,6 @@ go get github.com/spf13/cobra
 go get github.com/spf13/viper
 go get github.com/gernest/front
 go get github.com/gomarkdown/markdown 
-go get -u github.com/tyler-sommer/stick
-go get -u github.com/tyler-sommer/stick/twig
 go get github.com/hashicorp/go-memdb
 go get github.com/cucumber/gherkin-go  
 go get github.com/cucumber/godog
@@ -40,12 +38,6 @@ JSON or YAML frontmatter parser
 ### Markdown
 
 Converts markdown into HTML
-
-### Stick
-
-Golang conversion of `twig` template tool for PHP
-
-Twig extra extensions adds macros familiar to twig authors
 
 ### Godog
 

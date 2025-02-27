@@ -4,7 +4,7 @@ to
 Y" %}
 {% set date_format = "d F Y" %}
 {% block title %}{{ title }}{% endblock %}
-{% block extraheaders %}
+{{ define "extraheaders"}}
     {{ parent() }}
     {% if page > 1 %}
     <link rel="prev" href="{{ link_prefix|raw }}{{ prev_page }}.html">
@@ -12,6 +12,8 @@ Y" %}
     {% if page < last_page %}
     <link rel="next" href="{{ link_prefix|raw }}{{ next_page }}.html">
     {% endif %}
+{{ end }}
+{% block extraheaders %}
 {% endblock %}
 {% block content %}
     <div class="h-feed">

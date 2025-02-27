@@ -30,12 +30,12 @@ import (
 	"strings"
 	"time"
 
+	"html/template"
+
 	html2 "github.com/alecthomas/chroma/v2/formatters/html"
 	figure "github.com/mangoumbrella/goldmark-figure"
 	"github.com/spf13/cobra"
 	fences "github.com/stefanfritsch/goldmark-fences"
-	"github.com/tyler-sommer/stick"
-	"github.com/tyler-sommer/stick/twig"
 	"github.com/yuin/goldmark"
 	highlighting "github.com/yuin/goldmark-highlighting/v2"
 	meta "github.com/yuin/goldmark-meta"
@@ -195,8 +195,24 @@ func convertMarkdownHtml(mep []byte) []byte {
 var gallery_index int
 var md goldmark.Markdown
 
-func filterTagLink(ctx stick.Context, val stick.Value, args ...stick.Value) stick.Value {
-	return "tag/" + textToSlug(stick.CoerceString(val))
+func filterTagLink(tag interface{}) string {
+	return "tag/" + textToSlug(fmt.Sprintf("%s", tag))
+}
+
+func defaultFor(value, defvalue interface{}) string {
+	val := fmt.Sprintf("%s", value)
+	if value == nil || len(val) == 0 {
+		return defvalue.(string)
+	}
+	return val
+}
+
+func dateFormat(value interface{}, format string) string {
+	return value.(time.Time).Format(format)
+}
+
+func rawHTML(value interface{}) template.HTML {
+	return template.HTML(fmt.Sprint(value))
 }
 
 func getFirstWords(text string, lineWidth int) string {
@@ -285,14 +301,23 @@ func parseString(body string, filename string) (string, FrontMatter, error) {
 	if len(ConfigData.TemplateDir) > 0 {
 		tDir = ConfigData.TemplateDir
 	}
-	env := twig.New(stick.NewFilesystemLoader(tDir))
-
+	templ := template.Must(
+		template.New("base").Funcs(template.FuncMap{
+			"tag_link":   filterTagLink,
+			"defaultFor": defaultFor,
+			"dateFormat": dateFormat,
+			"html":       rawHTML,
+		}).ParseFiles(
+			tDir+"base.html",
+			tDir+strings.ToLower(articleType)+".html",
+		))
 	buf := bytes.NewBufferString("")
-	env.Filters["tag_link"] = filterTagLink
-	if err := env.Execute(
-		strings.ToLower(articleType)+".html.twig",
+
+	if err := templ.ExecuteTemplate(
 		buf,
-		toTwigVariables(&frontMatter, html2)); err != nil {
+		"base",
+		toTemplateVariables(&frontMatter, html2),
+	); err != nil {
 		fmt.Printf("Couldn't write the file\n")
 		log.Fatal(err)
 	}
@@ -726,7 +751,7 @@ func contains(arr []string, str string) bool {
 	return false
 }
 
-func toTwigVariables(frontMatter *FrontMatter, content string) map[string]stick.Value {
+func toTemplateVariables(frontMatter *FrontMatter, content string) map[string]interface{} {
 
 	if frontMatter.Link == "" {
 		frontMatter.Link, _ = url.JoinPath(ConfigData.BaseURL, baseDirectoryForPosts, strings.ToLower(frontMatter.Type), frontMatter.CreatedDate.Format("2006/01/02"), frontMatter.Slug)
@@ -735,7 +760,7 @@ func toTwigVariables(frontMatter *FrontMatter, content string) map[string]stick.
 	frontMatter.Resume.FlatSkills.LanguageOrder = alphaOrderMap(frontMatter.Resume.FlatSkills.Languages)
 	frontMatter.Resume.FlatSkills.LibraryOrder = alphaOrderMap(frontMatter.Resume.FlatSkills.Libraries)
 
-	return map[string]stick.Value{
+	return map[string]interface{}{
 		"id":               frontMatter.ID,
 		"title":            frontMatter.Title,
 		"tags":             frontMatter.Tags,
@@ -757,11 +782,11 @@ func toTwigVariables(frontMatter *FrontMatter, content string) map[string]stick.
 	}
 }
 
-func toTwigListVariables(frontMatters []FrontMatter, title string, page int) map[string]stick.Value {
+func toTemplateListVariables(frontMatters []FrontMatter, title string, page int) map[string]interface{} {
 
-	x := make([]map[string]stick.Value, 0)
+	x := make([]map[string]interface{}, 0)
 	for _, mep := range frontMatters {
-		x = append(x, map[string]stick.Value{
+		x = append(x, map[string]interface{}{
 			"id":               mep.ID,
 			"title":            mep.Title,
 			"tags":             mep.Tags,
@@ -790,7 +815,7 @@ func toTwigListVariables(frontMatters []FrontMatter, title string, page int) map
 		})
 	}
 	baseDir, _ := url.JoinPath(ConfigData.BaseURL, "posts/")
-	return map[string]stick.Value{
+	return map[string]interface{}{
 		"title":       title + " Page " + strconv.Itoa(page),
 		"page":        page,
 		"link_prefix": baseDir,

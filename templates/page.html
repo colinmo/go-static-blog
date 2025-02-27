@@ -1,0 +1,23 @@
+{{define "body"}}
+{{ $cdate := dateFormat .created_date `2006-01-02T15:04:05-07:00` -}}
+{{ $udate := dateFormat .updated_date `2006-01-02T15:04:05-07:00` -}}
+<article class="h-entry" data-article-id="{{ .id }}">
+    <header>
+        <h1 class="p-name" style="">{{ .title }}</h1>
+        <div class="post-meta"{{ if eq .title `Welcome` }} style="visibility:hidden;"{{end}}>
+            <a class="p-author h-card" href="https://vonexplaino.com/">Colin Morris!</a>
+            <time class="dt-published" datetime="{{ $cdate }}">{{ dateFormat .created_date `2 January 2006` }}</time>
+            {{ if ne $cdate $udate }}(&Delta; <time class="dt-updated"
+                datetime="{{ $udate }}">{{ dateFormat .updated_date `2 January 2006` }}</time>){{ end }}
+            <p class="tags">{{ range $tag := .tags }}<a href="/blog/{{tag_link $tag}}-1.html" class="p-category" rel="tag">{{$tag}}</a>{{ end }}</p>
+        </div>
+    </header>
+    <div>
+        <section class="e-content">
+            {{ html .content }}
+        </section>
+        <hr style="clear:both;">
+    </div>
+</article>
+{{end}}
+{{ define "extraheaders"}}{{end}}

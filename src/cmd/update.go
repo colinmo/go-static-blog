@@ -30,9 +30,9 @@ import (
 	"strings"
 	"time"
 
+	"html/template"
+
 	"github.com/spf13/cobra"
-	"github.com/tyler-sommer/stick"
-	"github.com/tyler-sommer/stick/twig"
 )
 
 var formatStringDMonthYear = "2 January 2006"
@@ -226,15 +226,19 @@ func deleteAndRegenerate(
 }
 
 func createTagPageSnippetForTag(tag string, tagsForString []FrontMatter) ([]byte, error) {
-	var twigTags map[string]stick.Value
+	var templateTags map[string]interface{}
 	var relatedTags map[string][]struct {
 		Link  string
 		Title string
 	}
 	var err error
-
 	tDir := ConfigData.TemplateDir
-	env := twig.New(stick.NewFilesystemLoader(tDir))
+
+	templ := template.Must(
+		template.ParseFiles(
+			tDir+"base.html",
+			tDir+"tag-related-tags.html.twig",
+		))
 	relatedTags = map[string][]struct {
 		Link  string
 		Title string
@@ -255,13 +259,19 @@ func createTagPageSnippetForTag(tag string, tagsForString []FrontMatter) ([]byte
 			}
 		}
 	}
-	twigTags = map[string]stick.Value{}
-	twigTags["related_tags"] = relatedTags
 	buf := bytes.NewBufferString("")
-	err = env.Execute(
-		"tag-related-tags.html.twig",
+
+	templateTags = map[string]interface{}{}
+	templateTags["related_tags"] = relatedTags
+	if err := templ.ExecuteTemplate(
 		buf,
-		twigTags)
+		"base",
+		templateTags,
+	); err != nil {
+		fmt.Printf("Couldn't write the file\n")
+		log.Fatal(err)
+	}
+
 	return buf.Bytes(), err
 }
 
@@ -607,7 +617,7 @@ func createPageAndRSSForTags(tags map[string][]FrontMatter) {
 	}
 }
 
-func TwigifyPage(
+func TemplatifyPage(
 	feed *[]FrontMatter,
 	fileStrings []string,
 	fileInts []int,
@@ -629,44 +639,58 @@ func TwigifyPage(
 		chunkSize = len(*feed)
 		lastPage = true
 	}
+	d, _ := os.Getwd()
+	tDir := filepath.Join(d, "templates")
+	if len(ConfigData.TemplateDir) > 0 {
+		tDir = ConfigData.TemplateDir
+	}
+	templ := template.Must(
+		template.ParseFiles(
+			tDir+"base.html",
+			tDir+"list.html.twig",
+		))
+	templ.Funcs(template.FuncMap{
+		"tag_link":   filterTagLink,
+		"defaultFor": defaultFor,
+		"dateFormat": dateFormat,
+		"html":       rawHTML,
+	})
+	buf := bytes.NewBufferString("")
 	posts := (*feed)[0:chunkSize]
-	twigTags := toTwigListVariables(posts, title, page)
-	tDir := ConfigData.TemplateDir
-	env := twig.New(stick.NewFilesystemLoader(tDir))
-	env.Filters["tag_link"] = filterTagLink
+	templateTags := toTemplateListVariables(posts, title, page)
 
-	twigTags["base_url"] = ConfigData.BaseURL
-	twigTags["link_prefix"], _ = url.JoinPath(ConfigData.BaseURL, filenamePrefix+"-")
-	twigTags["last_page"] = pageCount
-	twigTags["next_page"] = page + 1
-	twigTags["prev_page"] = page - 1
-	twigTags["first_page_start"] = firstPageStart
-	twigTags["first_page_end"] = firstPageEnd
-	twigTags["last_page_start"] = lastPageStart
-	twigTags["last_page_end"] = lastPageEnd
+	templateTags["base_url"] = ConfigData.BaseURL
+	templateTags["link_prefix"], _ = url.JoinPath(ConfigData.BaseURL, filenamePrefix+"-")
+	templateTags["last_page"] = pageCount
+	templateTags["next_page"] = page + 1
+	templateTags["prev_page"] = page - 1
+	templateTags["first_page_start"] = firstPageStart
+	templateTags["first_page_end"] = firstPageEnd
+	templateTags["last_page_start"] = lastPageStart
+	templateTags["last_page_end"] = lastPageEnd
 	if page > 1 {
-		twigTags["prev_page_start"] = prevPageStart.Format(formatStringDMonthYear)
-		twigTags["prev_page_end"] = prevPageEnd.Format(formatStringDMonthYear)
+		templateTags["prev_page_start"] = prevPageStart.Format(formatStringDMonthYear)
+		templateTags["prev_page_end"] = prevPageEnd.Format(formatStringDMonthYear)
 	}
 	*prevPageStart = posts[0].CreatedDate
 	*prevPageEnd = posts[chunkSize-1].CreatedDate
 	*feed = (*feed)[chunkSize:]
 	if !lastPage {
 		feedLen := len(*feed)
-		twigTags["next_page_start"] = (*feed)[0].CreatedDate.Format(formatStringDMonthYear)
+		templateTags["next_page_start"] = (*feed)[0].CreatedDate.Format(formatStringDMonthYear)
 		if feedLen < chunkSize {
-			twigTags["next_page_end"] = (*feed)[feedLen-1].CreatedDate.Format(formatStringDMonthYear)
+			templateTags["next_page_end"] = (*feed)[feedLen-1].CreatedDate.Format(formatStringDMonthYear)
 			chunkSize = feedLen
 		} else {
-			twigTags["next_page_end"] = (*feed)[chunkSize-1].CreatedDate.Format(formatStringDMonthYear)
+			templateTags["next_page_end"] = (*feed)[chunkSize-1].CreatedDate.Format(formatStringDMonthYear)
 		}
 	}
 
-	buf := bytes.NewBufferString("")
-	if err := env.Execute(
-		"list.html.twig",
+	if err := templ.ExecuteTemplate(
 		buf,
-		twigTags); err != nil {
+		"base",
+		templateTags,
+	); err != nil {
 		log.Fatal(err)
 	}
 	err := os.WriteFile(fmt.Sprintf("%s%s-%d.html", ConfigData.BaseDir, filenamePrefix, page), buf.Bytes(), 0777)
@@ -701,7 +725,7 @@ func WriteListHTML(feed []FrontMatter, filenamePrefix string, title string) erro
 		if len(feed) == 0 {
 			break
 		}
-		err := TwigifyPage(
+		err := TemplatifyPage(
 			&feed,
 			[]string{
 				filenamePrefix,
@@ -731,13 +755,25 @@ func WriteListHTML(feed []FrontMatter, filenamePrefix string, title string) erro
 
 func WriteLatestPost(entry FrontMatter) error {
 	tDir := ConfigData.TemplateDir
-	env := twig.New(stick.NewFilesystemLoader(tDir))
-	env.Filters["tag_link"] = filterTagLink
+
+	templ := template.Must(
+		template.ParseFiles(
+			tDir+"base.html",
+			tDir+"latest-article.html.twig",
+		))
+	templ.Funcs(template.FuncMap{
+		"tag_link":   filterTagLink,
+		"defaultFor": defaultFor,
+		"dateFormat": dateFormat,
+		"html":       rawHTML,
+	})
 	buf := bytes.NewBufferString("")
-	if err := env.Execute(
-		"latest-article.html.twig",
+	if err := templ.ExecuteTemplate(
 		buf,
-		toTwigVariables(&entry, "")); err != nil {
+		"base",
+		toTemplateVariables(&entry, ""),
+	); err != nil {
+		fmt.Printf("Couldn't write the file\n")
 		log.Fatal(err)
 	}
 

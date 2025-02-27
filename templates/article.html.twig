@@ -1,5 +1,4 @@
-{% extends "base.html.twig" %}
-{% block title %}{{ title }}{% endblock %}
+{{define "body"}}
 {% block content %}{% set cdate = created_date|date('c') %}{% set udate = updated_date|date('c') %}
     <article class="h-entry" data-article-id="{{ id }}">
         <header>
@@ -46,4 +45,4 @@
         </div>
     </article>
 {% endblock %}
-
+{{end}}
