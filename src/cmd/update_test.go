@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/cucumber/godog"
+	testdataloader "github.com/peteole/testdata-loader"
 )
 
 func TestGetTagsFromPost(t *testing.T) {
@@ -220,11 +221,11 @@ func TestWriteLatestPost(t *testing.T) {
 
 func TestUpdateFullRegenerate(t *testing.T) {
 	// Bad config
-	ConfigData.BaseDir = `c:\Laboratory\Temp\B`
-	ConfigData.RepositoryDir = `c:\Laboratory\Temp\A`
+	ConfigData.BaseDir = testdataloader.GetBasePath() + "/../statictest/B"
+	ConfigData.RepositoryDir = testdataloader.GetBasePath() + "/../statictest/A"
 	ConfigData.BaseURL = `https://vonexplaino.com/`
-	ConfigData.TemplateDir = `c:/users/relap/dropbox\swap\golang\vonblog\templates\`
-	gitCommand = `C:\Users\relap\Dropbox\swap\golang\vonblog\features\tests\update\scripts\empty.bat`
+	ConfigData.TemplateDir = testdataloader.GetBasePath() + "/../templates/"
+	gitCommand = testdataloader.GetBasePath() + "/../templates/features/tests/update/scripts/empty.bat"
 	_, _, _, _, _, err := updateFullRegenerate()
 	if err == nil {
 		t.Fatalf("Didn't detect bad directory")

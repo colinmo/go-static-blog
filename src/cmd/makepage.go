@@ -307,6 +307,8 @@ func parseString(body string, filename string) (string, FrontMatter, error) {
 			"defaultFor": defaultFor,
 			"dateFormat": dateFormat,
 			"html":       rawHTML,
+			"lower":      strings.ToLower,
+			"replace":    strings.Replace,
 		}).ParseFiles(
 			tDir+"base.html",
 			tDir+strings.ToLower(articleType)+".html",

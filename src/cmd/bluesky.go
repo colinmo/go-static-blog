@@ -120,7 +120,7 @@ func makeBlueskyPost(frontmatter *FrontMatter) (string, []facetStruct) {
 	if len(frontmatter.Tags) > 0 {
 		toSyndicate = toSyndicate + "\n#" + strings.Join(frontmatter.Tags, " #")
 	}
-	return toSyndicate, facets
+	return strings.Trim(toSyndicate, " \n\r"), facets
 }
 
 func postToBluesky(message string, facets []facetStruct, createdAt time.Time) (string, error) {
