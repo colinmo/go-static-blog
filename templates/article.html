@@ -1,0 +1,48 @@
+{{define "body"}}
+{{ $cdate := dateFormat .created_date `2006-01-02T15:04:05-07:00` -}}
+{{ $udate := dateFormat .updated_date `2006-01-02T15:04:05-07:00` -}}
+    <article class="h-entry" data-article-id="{{ .id }}">
+        <header>
+            <h1 class="p-name"><a href="{{ html .link }}" class="u-url">{{ if ne .type "reply"}}{{ .title }}{{end}}</a></h1>
+            <div class="post-meta">
+                <time class="dt-published" datetime="{{ html $cdate }}">{{ dateFormat .created_date `2 January 2006, 3:04 pm MST` }}</time>
+                {{ if ne $cdate $udate }}(&Delta; <time class="dt-updated" datetime="{{ html $udate }}">{{ if eq (dateFormat .created_date `20060102`) (dateFormat .updated_date `20060102`) }}{{ dateFormat .updated_date `h:i a` }}{{ else }}{{ .updated_date|dateFormat `2 January 2006, 3:04 pm MST` }}{{end}}</time>){{end}}
+		{{ if .tags }}
+                <p class="tags">{{ range $tag := .tags }}<a href="/blog/{{ $tag|tag_link }}-1.html" class="p-category" rel="tag">{{ $tag|lower }}</a>{{end}}</p>
+		{{ end }}
+            </div>
+        </header>
+        <div>
+            <section class="e-content">
+            {{ html .content }}
+            </section>
+            <div class="post-meta">
+                <a rel="author" class="p-author h-card" href="https://vonexplaino.com/"><img src="/theme/images/favicon/favicon.svg" class="u-photo" />Colin Morris</a>
+                {{ if .inreplyto }}<p> In reply to <a href="{{ .inreplyto }}" class="u-in-reply-to">{{ .inreplyto }}</a></p>{{end}}
+                {{ if .repostof }}<p> A repost of <a href="{{ .repostof }}" class="u-repost-of">{{ .repostof }}</a></p>{{end}}
+                {{ if .likeof }}<p> A like of <a href="{{ .likeof }}" class="u-like-of">{{ .likeof }}</a></p>{{end}}
+                {{ if .favoriteof }}<p> A favourite of <a href="{{ .favoriteof }}" class="u-favorite-of">{{ .favoriteof }}</a></p>{{end}}
+                {{ if .bookmarkof }}<p> A bookmark of <a href="{{ .bookmarkof }}" class="u-bookmark-of">{{ .bookmarkof }}</a></p>{{end}}
+                {{ template "syndication" .syndicationlinks }}                
+            </div>
+            <hr style="clear:both;">
+            <p>New sharing option: <a href="https://shareopenly.org/share/?url={{ .link }}{{ if .synopsdef }}&text={{ .synopsdef }}{{ end }}">ShareOpenly</a></p>
+            <p>Or just like it: <open-heart href="https://corazon.sploot.com?id={{ .link }}" emoji="❤️">❤️</open-heart></p>
+                <!-- load webcomponent -->
+                <script src="https://unpkg.com/open-heart-element" type="module"></script>
+                <!-- when the webcomponent loads, fetch the current counts for that page -->
+                <script>
+                window.customElements.whenDefined('open-heart').then(() => {
+                for (const oh of document.querySelectorAll('open-heart')) {
+                oh.getCount()
+                }
+                });
+                // refresh component after click
+                window.addEventListener('open-heart', e => {
+                e && e.target && e.target.getCount && e.target.getCount()
+                })
+                </script>
+        </div>
+    </article>
+{{end}}
+{{define "extraheaders" }}{{end}}

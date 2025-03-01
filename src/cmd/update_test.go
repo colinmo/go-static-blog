@@ -14,7 +14,7 @@ import (
 )
 
 func TestGetTagsFromPost(t *testing.T) {
-	testroot := "c:/users/relap/dropbox/swap/golang/vonblog/features/tests/update/tags/"
+	testroot := filepath.Clean(testdataloader.GetBasePath() + `/../features/tests/update/tags/`)
 	type testexpect struct {
 		filename string
 		expected map[string][]FrontMatter
@@ -29,7 +29,7 @@ func TestGetTagsFromPost(t *testing.T) {
 	} {
 		ConfigData.RepositoryDir = testroot
 		ConfigData.BaseURL = "https://vonexplaino.com/blog/"
-		ConfigData.TemplateDir = "c:/users/relap/dropbox/swap/golang/vonblog/templates/"
+		ConfigData.TemplateDir = filepath.Clean(testdataloader.GetBasePath() + `/../templates/`)
 		var tags map[string][]FrontMatter
 		tags, _, _ = getTagsFromPost(thing.filename, tags)
 
@@ -67,7 +67,7 @@ func TestGetTagsFromPost(t *testing.T) {
 }
 
 func TestGetTargetFilenameFromPost(t *testing.T) {
-	testroot := "c:/users/relap/dropbox/swap/golang/vonblog/features/tests/update/tags/"
+	testroot := filepath.Clean(testdataloader.GetBasePath() + `/../features/tests/update/tags/`)
 	type testexpect struct {
 		filename string
 		expected string
@@ -80,7 +80,7 @@ func TestGetTargetFilenameFromPost(t *testing.T) {
 	} {
 		ConfigData.RepositoryDir = testroot
 		ConfigData.BaseURL = "https://vonexplaino.com/blog/"
-		ConfigData.TemplateDir = "c:/users/relap/dropbox/swap/golang/vonblog/templates/"
+		ConfigData.TemplateDir = filepath.Clean(testdataloader.GetBasePath() + `/../templates/`)
 		filename, _ := getTargetFilenameFromPost(thing.filename, make(map[string]struct{}))
 
 		_, ok := filename[thing.expected]
@@ -96,11 +96,11 @@ func TestGetTargetFilenameFromPost(t *testing.T) {
 }
 
 func TestCreatePageAndRSSForTags(t *testing.T) {
-	testroot := "c:/users/relap/dropbox/swap/golang/vonblog/features/tests/update/rss/"
+	testroot := filepath.Clean(testdataloader.GetBasePath() + `/../features/tests/update/rss/`)
 	ConfigData.RepositoryDir = testroot
 	ConfigData.BaseURL = "https://vonexplaino.com/blog/"
-	ConfigData.BaseDir = testroot + "rundir/"
-	ConfigData.TemplateDir = testroot + "../../../../templates/"
+	ConfigData.BaseDir = filepath.Join(testroot, "rundir/")
+	ConfigData.TemplateDir = filepath.Clean(filepath.Join(testroot, "../../../../templates/"))
 	ConfigData.PerPage = 20
 	type testexpect struct {
 		scenariodir   string
@@ -135,23 +135,23 @@ func TestCreatePageAndRSSForTags(t *testing.T) {
 }
 
 func TestPopulateAllGitFiles(t *testing.T) {
-	a, b := PopulateAllGitFiles("c:/users/relap/dropbox/swap/golang/vonblog/features/tests/gits/")
+	a, b := PopulateAllGitFiles(filepath.Clean(testdataloader.GetBasePath() + `/../features/tests/gits/`))
 	if b != nil {
 		t.Fatalf("Failed to run populate all git files %v\n", b)
 	}
 	if len(a.Added) != 4 {
 		t.Fatalf("Didn't get the expected list of files %v\n", a)
 	}
-	if a.Added[0] != `posts\testfile1.md` {
-		t.Fatalf("Didn't find the first file [%v]\n", a.Added[0])
+	if a.Added[0] != filepath.Join(`posts`, `testfile1.md`) {
+		t.Fatalf("Didn't find the first file [%v][%v]\n", a.Added[0], filepath.Join(`posts`, `testfile1.md`))
 	}
-	if a.Added[3] != `posts\testfile4.md` {
+	if a.Added[3] != filepath.Join(`posts`, `testfile4.md`) {
 		t.Fatalf("Didn't find the last file %v\n", a.Added[3])
 	}
 }
 
 func TestEmbeddedMarkdownInHtml(t *testing.T) {
-	testroot := "c:/users/relap/dropbox/swap/golang/vonblog/features/tests/make_page/embed-md/"
+	testroot := filepath.Clean(testdataloader.GetBasePath() + `/../features/tests/make_page/embed-md/`)
 	type testexpect struct {
 		filename string
 		expected string
@@ -163,8 +163,8 @@ func TestEmbeddedMarkdownInHtml(t *testing.T) {
 		ConfigData.RepositoryDir = testroot
 		ConfigData.BaseURL = "https://vonexplaino.com/blog/"
 		ConfigData.BaseDir = testroot + "rundir/"
-		ConfigData.TemplateDir = "c:/users/relap/dropbox/swap/golang/vonblog/templates/"
-		html, _, err := parseFile(testroot + thing.filename)
+		ConfigData.TemplateDir = filepath.Clean(testdataloader.GetBasePath() + `/../templates`)
+		html, _, err := parseFile(filepath.Join(testroot, thing.filename))
 
 		// if !reflect.DeepEqual(tags, thing.expected) {
 		if err != nil {
@@ -178,7 +178,7 @@ func TestEmbeddedMarkdownInHtml(t *testing.T) {
 				"Didn't even make a single HTML file\n",
 			)
 		}
-		txt, err := os.ReadFile(testroot + thing.expected)
+		txt, err := os.ReadFile(filepath.Join(testroot, thing.expected))
 		if err != nil {
 			t.Fatalf("Failed to parse the expected file\n")
 		}
@@ -191,19 +191,20 @@ func TestEmbeddedMarkdownInHtml(t *testing.T) {
 		text2 = re.ReplaceAllString(text2, " ")
 
 		if text2 != html {
-			os.WriteFile(testroot+thing.fail, []byte(html), 0777)
-			fmt.Printf("Look in %s\n", testroot+thing.fail)
+			os.WriteFile(filepath.Join(testroot, thing.fail), []byte(html), 0777)
+			fmt.Printf("Look in %s\n", filepath.Join(testroot, thing.fail))
+			fmt.Printf("Look in %s\n", filepath.Join(testroot, thing.expected))
 			t.Fatalf(
 				"Files didn't match %s\n",
-				testroot+thing.fail,
+				filepath.Join(testroot, thing.fail),
 			)
 		}
 	}
 }
 
 func TestWriteLatestPost(t *testing.T) {
-	ConfigData.TemplateDir = `c:/users/relap/dropbox\swap\golang\vonblog\templates\`
-	ConfigData.BaseDir = `c:/users/relap/dropbox\swap\golang\vonblog\features\tests\update\latest\`
+	ConfigData.TemplateDir = filepath.Clean(testdataloader.GetBasePath() + `/../templates/`)
+	ConfigData.BaseDir = filepath.Clean(testdataloader.GetBasePath() + `/../features/tests/update/latest/`)
 	testTime, _ := time.Parse("2006-01-02 15:04:05", "2021-12-30 19:00:23")
 	entry := FrontMatter{
 		ID:          "noogienoogie",
@@ -221,20 +222,20 @@ func TestWriteLatestPost(t *testing.T) {
 
 func TestUpdateFullRegenerate(t *testing.T) {
 	// Bad config
-	ConfigData.BaseDir = testdataloader.GetBasePath() + "/../statictest/B"
-	ConfigData.RepositoryDir = testdataloader.GetBasePath() + "/../statictest/A"
+	ConfigData.BaseDir = filepath.Clean(testdataloader.GetBasePath() + "/../statictest/B")
+	ConfigData.RepositoryDir = filepath.Clean(testdataloader.GetBasePath() + "/../statictest/A")
 	ConfigData.BaseURL = `https://vonexplaino.com/`
-	ConfigData.TemplateDir = testdataloader.GetBasePath() + "/../templates/"
-	gitCommand = testdataloader.GetBasePath() + "/../templates/features/tests/update/scripts/empty.bat"
+	ConfigData.TemplateDir = filepath.Clean(testdataloader.GetBasePath() + "/../templates/")
+	gitCommand = filepath.Clean(testdataloader.GetBasePath() + "/../templates/features/tests/update/scripts/empty.bat")
 	_, _, _, _, _, err := updateFullRegenerate()
 	if err == nil {
 		t.Fatalf("Didn't detect bad directory")
 	}
 	//
-	ConfigData.BaseDir = `c:/users/relap/dropbox\swap\golang\vonblog\features\tests\update\fullregenbase\`
-	ConfigData.RepositoryDir = `c:/users/relap/dropbox\swap\golang\vonblog\features\tests\update\fullregenrep\`
+	ConfigData.BaseDir = filepath.Clean(testdataloader.GetBasePath() + `/../features/tests/update/fullregenbase/`)
+	ConfigData.RepositoryDir = filepath.Clean(testdataloader.GetBasePath() + `/../features/tests/update/fullregenrep/`)
 	// Empty Repo
-	gitCommand = `c:/users/relap/dropbox\swap\golang\vonblog\features\tests\update\scripts\empty.bat`
+	gitCommand = filepath.Clean(testdataloader.GetBasePath() + `/../features/tests/update/scripts/empty.bat`)
 	allPosts, tags, postsById, filesToDelete, changes, err := updateFullRegenerate()
 	if len(allPosts.Channel.Items) != 0 {
 		t.Fatalf("How did that happen?")
@@ -270,7 +271,7 @@ func TestUpdateFullRegenerate(t *testing.T) {
 		t.Fatalf("How did that happen?")
 	}
 	// Repo has stuff
-	gitCommand = `c:/users/relap/dropbox\swap\golang\vonblog\features\tests\update\scripts\fill.bat`
+	gitCommand = filepath.Clean(testdataloader.GetBasePath() + `/../features/tests/update/scripts/fill.bat`)
 	allPosts, tags, postsById, filesToDelete, changes, err = updateFullRegenerate()
 	if err != nil {
 		t.Fatalf("Regenerate failed %v\n", err)
@@ -325,8 +326,8 @@ func TestUpdateFullRegenerate(t *testing.T) {
 //}
 
 func TestUpdateChangedRegenerateNoChange(t *testing.T) {
-	ConfigData.BaseDir = `c:/users/relap/dropbox\swap\golang\vonblog\features\tests\update\changed-no\`
-	gitCommand = `c:/users/relap/dropbox\swap\golang\vonblog\features\tests\update\scripts\changed-nochanges.bat`
+	ConfigData.BaseDir = filepath.Clean(testdataloader.GetBasePath() + `/../features/tests/update/changed-no/`)
+	gitCommand = filepath.Clean(testdataloader.GetBasePath() + `/../features/tests/update/scripts/changed-nochanges.bat`)
 
 	allPosts, tags, postsById, filesToDelete, changes, err := updateChangedRegenerate()
 	if err != nil {
@@ -353,10 +354,10 @@ func TestUpdateChangedRegenerateNoChange(t *testing.T) {
 
 func TestUpdateChangedRegenerateDeleted(t *testing.T) {
 	// Deleted
-	ConfigData.BaseDir = `c:/users/relap/dropbox/swap/golang/vonblog/features/tests/update/deleted/`
-	ConfigData.RepositoryDir = `c:/users/relap/dropbox/swap/golang/vonblog/features/tests/update/deleted/`
-	gitCommand = `c:/users/relap/dropbox/swap/golang/vonblog/features/tests/update/scripts/changed-deleted.bat`
-	ConfigData.TemplateDir = `c:/users/relap/dropbox\swap\golang\vonblog\templates\`
+	ConfigData.BaseDir = filepath.Clean(testdataloader.GetBasePath() + `/../features/tests/update/deleted/`)
+	ConfigData.RepositoryDir = filepath.Clean(testdataloader.GetBasePath() + `/../features/tests/update/deleted/`)
+	gitCommand = filepath.Clean(testdataloader.GetBasePath() + `/../features/tests/update/scripts/changed-deleted.bat`)
+	ConfigData.TemplateDir = filepath.Clean(testdataloader.GetBasePath() + `/../templates/`)
 
 	allPosts, tags, postsById, filesToDelete, changes, err := updateChangedRegenerate()
 	if err != nil {
@@ -382,10 +383,10 @@ func TestUpdateChangedRegenerateDeleted(t *testing.T) {
 
 func TestUpdateChangedRegenerateAdded(t *testing.T) {
 	// Added
-	ConfigData.BaseDir = `c:/users/relap/dropbox\swap\golang\vonblog\features\tests\update\changed\`
-	ConfigData.RepositoryDir = `c:/users/relap/dropbox\swap\golang\vonblog\features\tests\update\changed-repo\`
-	ConfigData.TemplateDir = `c:/users/relap/dropbox\swap\golang\vonblog\templates\`
-	gitCommand = `c:/users/relap/dropbox\swap\golang\vonblog\features\tests\update\scripts\changed-added.bat`
+	ConfigData.BaseDir = filepath.Clean(testdataloader.GetBasePath() + `/../features/tests/update/changed/`)
+	ConfigData.RepositoryDir = filepath.Clean(testdataloader.GetBasePath() + `/../features/tests/update/changed-repo/`)
+	ConfigData.TemplateDir = filepath.Clean(testdataloader.GetBasePath() + `/../templates/`)
+	gitCommand = filepath.Clean(testdataloader.GetBasePath() + `/../features/tests/update/scripts/changed-added.bat`)
 
 	allPosts, tags, postsById, filesToDelete, changes, err := updateChangedRegenerate()
 	if err != nil {
@@ -448,7 +449,7 @@ func TestMastodonCrosspost(t *testing.T) {
 */
 
 func TestUpdateLocalFileWithMastodonLink(t *testing.T) {
-	ConfigData.RepositoryDir = `c:/users/relap/dropbox\swap\golang\vonblog\features\tests\update\mstdn\`
+	ConfigData.RepositoryDir = filepath.Clean(testdataloader.GetBasePath() + `/../features/tests/update/mstdn/`)
 	fullname := "steve.md"
 	os.WriteFile(filepath.Join(ConfigData.RepositoryDir, fullname), []byte("---\nTitle: bob\nSyndication:\n  Mastodon: XPOST\n---\nWell"), 0777)
 	setMastodonLink(fullname, "thisisatestlink")

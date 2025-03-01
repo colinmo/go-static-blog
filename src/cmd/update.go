@@ -361,7 +361,7 @@ func getTargetFilenameFromPost(postName string, files map[string]struct{}) (map[
 		files = make(map[string]struct{})
 	}
 	if postName[len(postName)-3:] == ".md" {
-		_, frontmatter, err := parseFile(ConfigData.RepositoryDir + postName)
+		_, frontmatter, err := parseFile(filepath.Join(ConfigData.RepositoryDir, postName))
 		if err == nil {
 			files[frontmatter.RelativeLink] = struct{}{}
 			link = frontmatter.Link
@@ -639,25 +639,14 @@ func TemplatifyPage(
 		chunkSize = len(*feed)
 		lastPage = true
 	}
-	d, _ := os.Getwd()
-	tDir := filepath.Join(d, "templates")
-	if len(ConfigData.TemplateDir) > 0 {
-		tDir = ConfigData.TemplateDir
+	if templ == nil {
+		SetupTemplate()
 	}
-	templ := template.Must(
-		template.ParseFiles(
-			tDir+"base.html",
-			tDir+"list.html.twig",
-		))
-	templ.Funcs(template.FuncMap{
-		"tag_link":   filterTagLink,
-		"defaultFor": defaultFor,
-		"dateFormat": dateFormat,
-		"html":       rawHTML,
-	})
 	buf := bytes.NewBufferString("")
 	posts := (*feed)[0:chunkSize]
 	templateTags := toTemplateListVariables(posts, title, page)
+	templateTags["created_date"] = time.Now()
+	templateTags["updated_date"] = time.Now()
 
 	templateTags["base_url"] = ConfigData.BaseURL
 	templateTags["link_prefix"], _ = url.JoinPath(ConfigData.BaseURL, filenamePrefix+"-")
@@ -754,19 +743,9 @@ func WriteListHTML(feed []FrontMatter, filenamePrefix string, title string) erro
 }
 
 func WriteLatestPost(entry FrontMatter) error {
-	tDir := ConfigData.TemplateDir
-
-	templ := template.Must(
-		template.ParseFiles(
-			tDir+"base.html",
-			tDir+"latest-article.html.twig",
-		))
-	templ.Funcs(template.FuncMap{
-		"tag_link":   filterTagLink,
-		"defaultFor": defaultFor,
-		"dateFormat": dateFormat,
-		"html":       rawHTML,
-	})
+	if templ == nil {
+		SetupTemplate()
+	}
 	buf := bytes.NewBufferString("")
 	if err := templ.ExecuteTemplate(
 		buf,
@@ -811,7 +790,7 @@ func ClearDir(dir string) error {
 
 func PopulateAllGitFiles(dir string) (GitDiffs, error) {
 	var foundDiffs GitDiffs
-	dirlength := len(dir)
+	dirlength := len(dir) + 1
 	err := filepath.Walk(filepath.Join(dir, "media"),
 		func(path string, info os.FileInfo, err error) error {
 			if err != nil {
@@ -828,7 +807,7 @@ func PopulateAllGitFiles(dir string) (GitDiffs, error) {
 	}
 
 	var foundDiffs2 GitDiffs
-	dirlength = len(dir)
+	dirlength = len(dir) + 1
 	err = filepath.Walk(filepath.Join(dir, "posts"),
 		func(path string, info os.FileInfo, err error) error {
 			if err != nil {

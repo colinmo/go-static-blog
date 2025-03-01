@@ -2,7 +2,10 @@ package cmd
 
 import (
 	"os"
+	"path/filepath"
 	"testing"
+
+	testdataloader "github.com/peteole/testdata-loader"
 )
 
 func TestMoodSetup(t *testing.T) {
@@ -35,7 +38,7 @@ func TestReadMoods(t *testing.T) {
 		t.Errorf("failed nonexistent file %v\n", err)
 	}
 
-	MoodOptions.Filename = `C:\Users\relap\Dropbox\swap\golang\vonblog\features\tests\moods\basemood.yaml`
+	MoodOptions.Filename = filepath.Clean(testdataloader.GetBasePath() + `/../features/tests/moods/basemood.yaml`)
 	err = doReadMoods()
 	if err != nil {
 		t.Errorf("bad read %v", err)
@@ -46,7 +49,7 @@ func TestReadMoods(t *testing.T) {
 }
 
 func TestWriteMoods(t *testing.T) {
-	MoodOptions.Filename = `C:\Users\relap\Dropbox\swap\golang\vonblog\features\tests\moods\newmood.yaml`
+	MoodOptions.Filename = filepath.Clean(testdataloader.GetBasePath() + `/../features/tests/moods/newmood.yaml`)
 	MoodOptions.Text = "OK"
 	MoodOptions.Score = 3
 	MoodOptions.Date = "20230102"

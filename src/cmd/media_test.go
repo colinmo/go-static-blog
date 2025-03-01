@@ -4,7 +4,10 @@ import (
 	"errors"
 	"net/http"
 	"os"
+	"path/filepath"
 	"testing"
+
+	testdataloader "github.com/peteole/testdata-loader"
 )
 
 func TestDefaults(t *testing.T) {
@@ -87,36 +90,36 @@ func TestGetThumbnailFilename(t *testing.T) {
 
 func TestMakeThumbnail(t *testing.T) {
 	ThumbnailOptions.Extension = "-thumb.jpg"
-	ConfigData.BaseDir = `c:/users/relap/dropbox\swap\golang\vonblog\features\tests\thumbnail\`
+	ConfigData.BaseDir = filepath.Clean(testdataloader.GetBasePath() + `/../features/tests/thumbnail/`)
 	ThumbnailOptions.Width = 100
 	ThumbnailOptions.Height = 100
 	ThumbnailOptions.Type = "jpeg"
 	ThumbnailOptions.Regenerate = true
-	err := makeThumbnail(`c:/users/relap/dropbox\swap\golang\vonblog\features\tests\thumbnail\LogVisualiser.png`)
+	err := makeThumbnail(testdataloader.GetBasePath() + `/../features/tests/thumbnail/LogVisualiser.png`)
 	if err != nil {
 		t.Fatalf("Ded %v\n", err)
 	}
 
-	err = makeThumbnail(`c:/users/relap/dropbox\swap\golang\vonblog\features\tests\rss\rss1_out.xml`)
+	err = makeThumbnail(testdataloader.GetBasePath() + `/../features/tests/rss/rss1_out.xml`)
 	if err == nil {
 		t.Fatalf("Created a thumbnail where I shoudln't")
 	}
 
 	ThumbnailOptions.Type = "gif"
 	ThumbnailOptions.Extension = "-thumb.gif"
-	err = makeThumbnail(ConfigData.BaseDir + `LogVisualiser.png`)
+	err = makeThumbnail(filepath.Join(ConfigData.BaseDir, `LogVisualiser.png`))
 	if err != nil {
 		t.Fatalf("Ded %v\n", err)
 	}
 	ThumbnailOptions.Type = "png"
 	ThumbnailOptions.Extension = "-thumb.png"
-	err = makeThumbnail(ConfigData.BaseDir + `LogVisualiser.png`)
+	err = makeThumbnail(filepath.Join(ConfigData.BaseDir, `LogVisualiser.png`))
 	if err != nil {
 		t.Fatalf("Ded %v\n", err)
 	}
 	ThumbnailOptions.Type = "txt"
 	ThumbnailOptions.Extension = "-thumb.txt"
-	err = makeThumbnail(ConfigData.BaseDir + `LogVisualiser.png`)
+	err = makeThumbnail(filepath.Join(ConfigData.BaseDir, `LogVisualiser.png`))
 	if err == nil {
 		t.Fatalf("Created a thumbnail where I shoudln't")
 	}
@@ -124,13 +127,13 @@ func TestMakeThumbnail(t *testing.T) {
 
 func TestLetsGoThumbnailSingle(t *testing.T) {
 	ThumbnailOptions.Extension = "-thumb.jpg"
-	ConfigData.BaseDir = `c:/users/relap/dropbox\swap\golang\vonblog\features\tests\thumbnail\`
+	ConfigData.BaseDir = filepath.Clean(testdataloader.GetBasePath() + `/../features/tests/thumbnail/`)
 	ThumbnailOptions.Width = 100
 	ThumbnailOptions.Height = 100
 	ThumbnailOptions.Type = "jpeg"
 	ThumbnailOptions.Regenerate = false
-	os.Remove(`c:/users/relap/dropbox\swap\golang\vonblog\features\tests\thumbnail\LogVisualiser-thumb.jpg`)
-	ThumbnailOptions.Filename = `c:/users/relap/dropbox\swap\golang\vonblog\features\tests\thumbnail\LogVisualiser.png`
+	os.Remove(testdataloader.GetBasePath() + `/../features/tests/thumbnail/LogVisualiser-thumb.jpg`)
+	ThumbnailOptions.Filename = filepath.Clean(testdataloader.GetBasePath() + `/../features/tests/thumbnail/LogVisualiser.png`)
 	err := letsGoThumbnail()
 	if err != nil {
 		t.Fatalf("Ded %v\n", err)
@@ -139,15 +142,15 @@ func TestLetsGoThumbnailSingle(t *testing.T) {
 }
 
 func TestDetectImage(t *testing.T) {
-	contents, err := os.Open(`c:/users/relap/dropbox\swap\golang\vonblog\features\tests\thumbnail\LogVisualiser.png`)
+	contents, err := os.Open(testdataloader.GetBasePath() + `/../features/tests/thumbnail/LogVisualiser.png`)
 	if err != nil {
-		t.Fatalf("Could not process file %s\n%v\n", `c:/users/relap/dropbox\swap\golang\vonblog\features\tests\thumbnail\LogVisualiser.png`, err)
+		t.Fatalf("Could not process file %s\n%v\n", testdataloader.GetBasePath()+`/../features/tests/thumbnail/LogVisualiser.png`, err)
 	}
 	defer contents.Close()
 	body := make([]byte, 512)
 	_, err = contents.Read(body)
 	if err != nil {
-		t.Fatalf("Cound not read file %s\n", `c:/users/relap/dropbox/swap/golang/vonblog/features/tests/thumbnail/LogVisualiser.png`)
+		t.Fatalf("Cound not read file %s\n", testdataloader.GetBasePath()+`/../features/tests/thumbnail/LogVisualiser.png`)
 	}
 	fileType := http.DetectContentType(body)
 	if fileType != "image/png" {
@@ -156,69 +159,69 @@ func TestDetectImage(t *testing.T) {
 }
 
 func TestWebp2(t *testing.T) {
-	ConfigData.BaseDir = `c:/users/relap/Dropbox/swap/golang/vonblog/features/tests/thumbnail/`
-	i, e := readImage(ConfigData.BaseDir + `code-of-the-coder-cover.webp`)
+	ConfigData.BaseDir = filepath.Clean(testdataloader.GetBasePath() + `/../features/tests/thumbnail/`)
+	i, e := readImage(filepath.Join(ConfigData.BaseDir, `code-of-the-coder-cover.webp`))
 	if e != nil {
 		t.Fatalf("Failed to run %s\n", e)
 	}
 	if i == nil {
 		t.Fatalf("i failed\n")
 	}
-	writeImage(i, ConfigData.BaseDir+`code-of-the-coder-cover2.webp`)
+	writeImage(i, filepath.Join(ConfigData.BaseDir, `code-of-the-coder-cover2.webp`))
 }
 
 func TestRecursiveThumbnail(t *testing.T) {
-	ConfigData.BaseDir = `c:/users/relap/Dropbox/swap/golang/vonblog/features/tests/thumbnail/`
+	ConfigData.BaseDir = filepath.Clean(testdataloader.GetBasePath() + `/../features/tests/thumbnail/`)
 	ThumbnailOptions.Extension = "-thumb.jpg"
 	ThumbnailOptions.Width = 100
 	ThumbnailOptions.Height = 100
 	ThumbnailOptions.Type = "jpeg"
 	ThumbnailOptions.Regenerate = true
 	ThumbnailOptions.Filename = ``
-	os.Remove(ConfigData.BaseDir + `media/code-of-the-coder-cover-thumb.jpg`)
-	os.Remove(ConfigData.BaseDir + `media/LogVisualiser-thumb.jpg`)
-	os.Remove(ConfigData.BaseDir + `media/x/LogVisualiser-thumb.jpg`)
-	os.Remove(ConfigData.BaseDir + `media/x/LogVisualiser copy-thumb.jpg`)
-	os.Remove(ConfigData.BaseDir + `media/x/y/LogVisualiser-thumb.jpg`)
+	os.Remove(filepath.Join(ConfigData.BaseDir, `media/code-of-the-coder-cover-thumb.jpg`))
+	os.Remove(filepath.Join(ConfigData.BaseDir, `media/LogVisualiser-thumb.jpg`))
+	os.Remove(filepath.Join(ConfigData.BaseDir, `media/x/LogVisualiser-thumb.jpg`))
+	os.Remove(filepath.Join(ConfigData.BaseDir, `media/x/LogVisualiser copy-thumb.jpg`))
+	os.Remove(filepath.Join(ConfigData.BaseDir, `media/x/y/LogVisualiser-thumb.jpg`))
 	letsGoThumbnail()
-	if fileExists(ConfigData.BaseDir+`media/LogVisualiser-thumb.jpg`) != nil {
+	if fileExists(filepath.Join(ConfigData.BaseDir, `media/LogVisualiser-thumb.jpg`)) != nil {
 		t.Fatalf("File %s does not exist\n", ConfigData.BaseDir+`LogVisualiser-thumb.jpg`)
 	}
-	if fileExists(ConfigData.BaseDir+`media/x/LogVisualiser-thumb.jpg`) != nil {
+	if fileExists(filepath.Join(ConfigData.BaseDir, `media/x/LogVisualiser-thumb.jpg`)) != nil {
 		t.Fatalf("File %s does not exist\n", ConfigData.BaseDir+`x\LogVisualiser-thumb.jpg`)
 	}
-	if fileExists(ConfigData.BaseDir+`media/x/LogVisualiser copy-thumb.jpg`) != nil {
+	if fileExists(filepath.Join(ConfigData.BaseDir, `media/x/LogVisualiser copy-thumb.jpg`)) != nil {
 		t.Fatalf("File %s does not exist\n", ConfigData.BaseDir+`x\LogVisualiser copy-thumb.jpg`)
 	}
-	if fileExists(ConfigData.BaseDir+`media/x/y/LogVisualiser-thumb.jpg`) != nil {
+	if fileExists(filepath.Join(ConfigData.BaseDir, `media/x/y/LogVisualiser-thumb.jpg`)) != nil {
 		t.Fatalf("File %s does not exist\n", ConfigData.BaseDir+`y\LogVisualiser-thumb.jpg`)
 	}
-	if fileExists(ConfigData.BaseDir+`media/code-of-the-coder-cover-thumb.jpg`) != nil {
+	if fileExists(filepath.Join(ConfigData.BaseDir, `media/code-of-the-coder-cover-thumb.jpg`)) != nil {
 		t.Fatalf("File %s does not exist\n", ConfigData.BaseDir+`code-of-the-coder-cover-thumb-thumb.jpg`)
 	}
 	letsGoThumbnail()
-	if fileExists(ConfigData.BaseDir+`media/LogVisualiser-thumb.jpg`) != nil {
+	if fileExists(filepath.Join(ConfigData.BaseDir, `media/LogVisualiser-thumb.jpg`)) != nil {
 		t.Fatalf("File %s does not exist\n", ConfigData.BaseDir+`LogVisualiser-thumb.jpg`)
 	}
-	if fileExists(ConfigData.BaseDir+`media/x/LogVisualiser-thumb.jpg`) != nil {
+	if fileExists(filepath.Join(ConfigData.BaseDir, `media/x/LogVisualiser-thumb.jpg`)) != nil {
 		t.Fatalf("File %s does not exist\n", ConfigData.BaseDir+`x\LogVisualiser-thumb.jpg`)
 	}
-	if fileExists(ConfigData.BaseDir+`media/x/LogVisualiser copy-thumb.jpg`) != nil {
+	if fileExists(filepath.Join(ConfigData.BaseDir, `media/x/LogVisualiser copy-thumb.jpg`)) != nil {
 		t.Fatalf("File %s does not exist\n", ConfigData.BaseDir+`x\LogVisualiser copy-thumb.jpg`)
 	}
-	if fileExists(ConfigData.BaseDir+`media/x/y/LogVisualiser-thumb.jpg`) != nil {
+	if fileExists(filepath.Join(ConfigData.BaseDir, `media/x/y/LogVisualiser-thumb.jpg`)) != nil {
 		t.Fatalf("File %s does not exist\n", ConfigData.BaseDir+`y\LogVisualiser-thumb.jpg`)
 	}
-	if fileExists(ConfigData.BaseDir+`media/LogVisualiser-thumb-thumb.jpg`) == nil {
+	if fileExists(filepath.Join(ConfigData.BaseDir, `media/LogVisualiser-thumb-thumb.jpg`)) == nil {
 		t.Fatalf("File %s exist\n", ConfigData.BaseDir+`LogVisualiser-thumb-thumb.jpg`)
 	}
-	if fileExists(ConfigData.BaseDir+`media/x/LogVisualiser-thumb-thumb.jpg`) == nil {
+	if fileExists(filepath.Join(ConfigData.BaseDir, `media/x/LogVisualiser-thumb-thumb.jpg`)) == nil {
 		t.Fatalf("File %s exist\n", ConfigData.BaseDir+`x\LogVisualiser-thumb-thumb.jpg`)
 	}
-	if fileExists(ConfigData.BaseDir+`media/x/LogVisualiser copy-thumb-thumb.jpg`) == nil {
+	if fileExists(filepath.Join(ConfigData.BaseDir, `media/x/LogVisualiser copy-thumb-thumb.jpg`)) == nil {
 		t.Fatalf("File %s exist\n", ConfigData.BaseDir+`x\LogVisualiser copy-thumb-thumb.jpg`)
 	}
-	if fileExists(ConfigData.BaseDir+`media/x/y/LogVisualiser-thumb-thumb.jpg`) == nil {
+	if fileExists(filepath.Join(ConfigData.BaseDir, `media/x/y/LogVisualiser-thumb-thumb.jpg`)) == nil {
 		t.Fatalf("File %s exist\n", ConfigData.BaseDir+`y\LogVisualiser-thumb-thumb.jpg`)
 	}
 }

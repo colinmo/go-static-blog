@@ -1,0 +1,106 @@
+{{define "title"}}{{.Title}}{{end -}}
+{{define "extraheaders" -}}
+<style>
+    /** RATINGS **/
+    .rating .star:before {
+        content: "☆";
+    }
+    
+    .rating.star-0-5 .star:nth-child(1):before {
+        content: "½";
+    }
+    
+    .rating[class*=star-1] .star:nth-child(1):before,
+    .rating[class*=star-2] .star:nth-child(1):before,
+    .rating[class*=star-3] .star:nth-child(1):before,
+    .rating[class*=star-4] .star:nth-child(1):before,
+    .rating[class*=star-5] .star:nth-child(1):before {
+        content: "★";
+    }
+    
+    .rating.star-1-5 .star:nth-child(2):before {
+        content: "½";
+    }
+    
+    .rating[class*=star-2] .star:nth-child(2):before,
+    .rating[class*=star-3] .star:nth-child(2):before,
+    .rating[class*=star-4] .star:nth-child(2):before,
+    .rating[class*=star-5] .star:nth-child(2):before {
+        content: "★";
+    }
+    
+    .rating.star-2-5 .star:nth-child(3):before {
+        content: "½";
+    }
+    
+    .rating[class*=star-3] .star:nth-child(3):before,
+    .rating[class*=star-4] .star:nth-child(3):before,
+    .rating[class*=star-5] .star:nth-child(3):before {
+        content: "★";
+    }
+    
+    .rating.star-3-5 .star:nth-child(4):before {
+        content: "½";
+    }
+    
+    .rating[class*=star-4] .star:nth-child(4):before,
+    .rating[class*=star-5] .star:nth-child(4):before {
+        content: "★";
+    }
+    
+    .rating.star-4-5 .star:nth-child(5):before {
+        content: "½";
+    }
+    
+    .rating[class*=star-5] .star:nth-child(5):before {
+        content: "★";
+    }
+</style>
+{{end}}
+{{define "body"}}
+{{- $c := "2006-01-02T15:04:05-07:00" -}}
+{{- $longdate := `2 January 2006  3:04 pm MST` -}}
+    <article class="h-entry h-review" data-info="{{ toJson . }}" data-tags="{{ toJson .tags }}" data-article-id="{{ .id }}">
+        <header>
+            <h1 class="p-name" style=""><a href="{{ .link }}" class="u-url">{{ if ne .type "reply" }}{{ .title }}{{end}}</a></h1>
+            <div class="post-meta">
+                <time class="dt-published" datetime="{{ html (dateFormat .created_date $c) }}">{{ dateFormat .created_date $longdate }}</time>
+                {{- if ne .Created .Updated }}(&Delta; <time class="dt-updated" datetime="{{ dateFormat .updated_date $c }}">{{ dateFormat .updated_date $longdate }}</time>){{end}}
+                <p class="tags">{{ range $tag := .tags }}<a href="/blog/{{$tag|tag_link}}-1.html" class="p-category">{{ $tag }}</a> {{ end -}}</p>
+                {{ if .Metadata -}}
+                {{ if index .Metadata `in-reply-to` -}}
+                <p> In reply to <a href="{{ index .metadata `in-reply-to` }}" class="u-in-reply-to h-cite">{{ index .metadata `in-reply-to` }}</a></p>
+                {{ end -}}
+                {{ if index .metadata `repost-of` -}}
+                <p> A repost of <a href="{{ index .metadata `repost-of` }}" class="u-repost-of h-cite">{{ index .metadata `repost-of` }}</a></p>
+                {{ end -}}
+                {{ template "syndication" (index .metadata `syndication_links`) -}}
+                {{ end -}}
+            </div>
+        </header>
+        <div>
+            <div class="rating star-{{ replace (printf `%0.0f` .item.Rating) `.` `-` -1 }}">
+                <span class="star"></span>
+                <span class="star"></span>
+                <span class="star"></span>
+                <span class="star"></span>
+                <span class="star"></span>
+                (<span class="p-rating">{{ .item.Rating }}</span> / 5)
+            </div>
+            <div class="item">
+                {{- $itemType := .item.Type|defaultFor `item`}}
+                {{- if eq $itemType `item` }}
+                {{- template `h-item.html` .item }}
+                {{- else if eq $itemType `event` }}
+                {{- template `h-event.html` .item }}
+                {{- else if eq $itemType `product` }}
+                {{- template `h-product.html` .item }}
+                {{- end -}}
+            </div>
+            <section class="e-content review-type">
+            {{ html .content }}
+            </section>
+            <hr style="clear:both;">
+        </div>
+    </article>
+{{end}}

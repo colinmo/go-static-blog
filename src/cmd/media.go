@@ -26,6 +26,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"slices"
 	"strings"
 
 	"github.com/nfnt/resize"
@@ -102,9 +103,9 @@ func canMakeThumbnailFor(filename string) bool {
 		return false
 	}
 	fileType := http.DetectContentType(body)
-	return isElementExists(strings.ToLower(ext), []string{".jpg", ".jpeg", ".gif", ".png", ".webp"}) &&
+	return slices.Contains([]string{".jpg", ".jpeg", ".gif", ".png", ".webp"}, strings.ToLower(ext)) &&
 		(len(filename) < len(ThumbnailOptions.Extension) || filename[len(filename)-len(ThumbnailOptions.Extension):] != ThumbnailOptions.Extension) &&
-		isElementExists(fileType, []string{"image/jpeg", "image/gif", "image/png", "image/webp"})
+		slices.Contains([]string{"image/jpeg", "image/gif", "image/png", "image/webp"}, fileType)
 }
 
 func recursiveMediaThumbnailer(directory string) int {

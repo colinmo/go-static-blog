@@ -1,0 +1,10 @@
+{{ define "syndication" }}
+<p class="syndication-links">
+{{- if or (or .Mastodon .Twitter) .Bluesky -}}
+    Syndication:
+    {{- if .Mastodon }}[<a rel="syndication" href="{{ html .Mastodon}}" class="u-syndication">Mastodon</a>]{{end -}}
+    {{- if .Twitter}}[<a rel="syndication" href="{{ html .Twitter }}" class="u-syndication">Twitter</a>]{{ end -}}
+    {{- if .Bluesky }}[<a rel="syndication" href="{{ html .Bluesky}}" class="u-syndication">Bluesky</a>]{{ end -}}
+{{- end -}}
+</p>
+{{end}}

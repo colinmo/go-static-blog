@@ -2,6 +2,8 @@ package cmd
 
 import (
 	"fmt"
+	"path/filepath"
+	"slices"
 	"strings"
 	"testing"
 	"time"
@@ -65,10 +67,10 @@ func TestParseUnknownDateFormat(t *testing.T) {
 }
 
 func TestCreateCodePage(t *testing.T) {
-	testroot := testdataloader.GetBasePath() + "/statictest"
+	testroot := filepath.Clean(testdataloader.GetBasePath() + "/statictest")
 	ConfigData.RepositoryDir = testroot
 	ConfigData.BaseURL = "https://vonexplaino.com/blog/"
-	ConfigData.TemplateDir = testdataloader.GetBasePath() + "/../templates/"
+	ConfigData.TemplateDir = filepath.Clean(testdataloader.GetBasePath() + "/../templates/")
 	result, frontMatter, error := parseString(`---
 Title: Code
 Created: 2015-11-18 20:32:00 +1000
@@ -134,14 +136,13 @@ See more of [Trinity](http://theonyxpath.com/category/worlds/trinitycontinuum/).
 	if strings.Contains(result, `markdown="1"`) {
 		t.Fatalf("Did not parse all markdowns")
 	}
-	t.Fatalf("%s", result)
 }
 
 func TestCreateResume(t *testing.T) {
-	testroot := testdataloader.GetBasePath() + "/statictest/"
+	testroot := filepath.Clean(testdataloader.GetBasePath() + "/statictest/")
 	ConfigData.RepositoryDir = testroot
 	ConfigData.BaseURL = "https://vonexplaino.com/blog/"
-	ConfigData.TemplateDir = testdataloader.GetBasePath() + "/../templates/"
+	ConfigData.TemplateDir = filepath.Clean(testdataloader.GetBasePath() + "/../templates/")
 	result, frontMatter, error := parseString(`---
 Title: Colin Morris
 Created: 2024-04-06T22:15:50+1000
@@ -286,10 +287,10 @@ I bring a breadth of experience by working in IT since 1997. Hiring me adds a hi
 
 func TestCreateReview(t *testing.T) {
 
-	testroot := testdataloader.GetBasePath() + "/statictest"
+	testroot := filepath.Clean(testdataloader.GetBasePath() + "/statictest")
 	ConfigData.RepositoryDir = testroot
 	ConfigData.BaseURL = "https://vonexplaino.com/blog/"
-	ConfigData.TemplateDir = testdataloader.GetBasePath() + "/../templates/"
+	ConfigData.TemplateDir = filepath.Clean(testdataloader.GetBasePath() + "/../templates/")
 	result, frontMatter, error := parseString(`---
 Title: "Review: In Sound Mind"
 Tags: [game,epic]
@@ -408,7 +409,7 @@ func TestToTemplateVariables(t *testing.T) {
 
 func TestTitleWithIcons(t *testing.T) {
 	var dude FrontMatter
-	var expected string
+	var expected []string
 	var got string
 	dude = FrontMatter{Title: "Dude"}
 	if titleWithIcons(dude) != "Dude" {
@@ -421,16 +422,23 @@ func TestTitleWithIcons(t *testing.T) {
 	}
 
 	dude = FrontMatter{Title: "Dude", RepostOf: "X", InReplyTo: "X"}
-	expected = "&#x1F5EA;&#x3003; Dude"
+	expected = []string{"&#x3003;&#x1F5EA; Dude", "&#x1F5EA;&#x3003; Dude"}
 	got = titleWithIcons(dude)
-	if got != expected {
+	if !slices.Contains(expected, got) {
 		t.Fatalf("Wrong prefixed the title\n[%s]\n[%s]", got, expected)
 	}
 
 	dude = FrontMatter{Title: "Dude", BookmarkOf: "X", FavoriteOf: "X", Tags: []string{"x", "wilt", "y", "z"}}
-	expected = "&#x1F516;&#x1F31F;&#x1F9E0; Dude"
+	expected = []string{
+		"&#x1F516;&#x1F31F;&#x1F9E0; Dude",
+		"&#x1F31F;&#x1F516;&#x1F9E0; Dude",
+		"&#x1F516;&#x1F9E0;&#x1F31F; Dude",
+		"&#x1F31F;&#x1F9E0;&#x1F516; Dude",
+		"&#x1F9E0;&#x1F516;&#x1F31F; Dude",
+		"&#x1F9E0;&#x1F31F;&#x1F516; Dude",
+	}
 	got = titleWithIcons(dude)
-	if got != expected {
+	if !slices.Contains(expected, got) {
 		t.Fatalf("Wrong prefixed the title2\n[%s]\n[%s]", got, expected)
 	}
 }

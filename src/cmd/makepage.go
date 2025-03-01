@@ -18,6 +18,7 @@ package cmd
 import (
 	"bufio"
 	"bytes"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"log"
@@ -215,6 +216,14 @@ func rawHTML(value interface{}) template.HTML {
 	return template.HTML(fmt.Sprint(value))
 }
 
+func toJSON(value interface{}) string {
+	result, err := json.Marshal(value)
+	if err != nil {
+		return ""
+	}
+	return string(result)
+}
+
 func getFirstWords(text string, lineWidth int) string {
 	re := regexp.MustCompile(`<p>((.|\r|\n)*?)</p>`)
 	texts := re.FindSubmatch([]byte(text))
@@ -253,6 +262,31 @@ func parseFile(filename string) (string, FrontMatter, error) {
 		return html2, frontMatter, err
 	}
 	return parseString(string(txt), filename)
+}
+
+var templ *template.Template
+
+func SetupTemplate() string {
+	d, _ := os.Getwd()
+	tDir := filepath.Join(d, "templates")
+	if len(ConfigData.TemplateDir) > 0 {
+		tDir = ConfigData.TemplateDir
+	}
+	templ = template.Must(
+		template.Must(
+			template.New("base").
+				Funcs(template.FuncMap{
+					"tag_link":   filterTagLink,
+					"defaultFor": defaultFor,
+					"dateFormat": dateFormat,
+					"toJson":     toJSON,
+					"html":       rawHTML,
+					"lower":      strings.ToLower,
+					"replace":    strings.Replace,
+				}).
+				ParseGlob(filepath.Join(tDir, "h/*.html"))).
+			ParseFiles(filepath.Join(tDir, "base.html"), filepath.Join(tDir, "syndication.html")))
+	return tDir
 }
 
 // parseString parses the passed string and returns the html conversion and yaml frontmatter
@@ -295,24 +329,8 @@ func parseString(body string, filename string) (string, FrontMatter, error) {
 	}
 
 	// Run HTML into Template
-	articleType := fmt.Sprintf("%v", frontMatter.Type)
-	d, _ := os.Getwd()
-	tDir := filepath.Join(d, "templates")
-	if len(ConfigData.TemplateDir) > 0 {
-		tDir = ConfigData.TemplateDir
-	}
-	templ := template.Must(
-		template.New("base").Funcs(template.FuncMap{
-			"tag_link":   filterTagLink,
-			"defaultFor": defaultFor,
-			"dateFormat": dateFormat,
-			"html":       rawHTML,
-			"lower":      strings.ToLower,
-			"replace":    strings.Replace,
-		}).ParseFiles(
-			tDir+"base.html",
-			tDir+strings.ToLower(articleType)+".html",
-		))
+	tDir := SetupTemplate()
+	templ.ParseFiles(filepath.Join(tDir, strings.ToLower(frontMatter.Type)+".html"))
 	buf := bytes.NewBufferString("")
 
 	if err := templ.ExecuteTemplate(
@@ -811,8 +829,8 @@ func toTemplateListVariables(frontMatters []FrontMatter, title string, page int)
 			"repostof":         mep.RepostOf,
 			"likeof":           mep.LikeOf,
 			"relativelink":     mep.RelativeLink,
-			"createddate":      mep.CreatedDate,
-			"updateddate":      mep.UpdatedDate,
+			"created_date":     mep.CreatedDate,
+			"updated_date":     mep.UpdatedDate,
 			"item":             mep.Item,
 		})
 	}

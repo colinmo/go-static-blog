@@ -1,0 +1,8 @@
+<div class="h-product">
+    <h1 class="p-name"><a class="u-url" href="{{ .url }}">{{ .name }}</a></h1>
+    {{ if .photo }}<img class="u-photo" src="{{ .photo }}" alt="" />{{end}}
+    <div class="e-description">
+        {{ html .description }}
+    </div>
+    {{ if .brand }}<p>from <a class="p-brand" href="{{ .brand }}">{{.brand}}</a></p>{{end}}
+</div>
