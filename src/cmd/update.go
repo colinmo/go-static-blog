@@ -265,7 +265,7 @@ func createTagPageSnippetForTag(tag string, tagsForString []FrontMatter) ([]byte
 	templateTags["related_tags"] = relatedTags
 	if err := templ.ExecuteTemplate(
 		buf,
-		"base",
+		"tag-related-tags",
 		templateTags,
 	); err != nil {
 		fmt.Printf("Couldn't write the file\n")

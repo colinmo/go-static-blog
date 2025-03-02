@@ -5,11 +5,8 @@
         <header>
             <h1 class="p-name"><a href="{{ html .link }}" class="u-url">{{ if ne .type "reply"}}{{ .title }}{{end}}</a></h1>
             <div class="post-meta">
-                <time class="dt-published" datetime="{{ html $cdate }}">{{ dateFormat .created_date `2 January 2006, 3:04 pm MST` }}</time>
-                {{ if ne $cdate $udate }}(&Delta; <time class="dt-updated" datetime="{{ html $udate }}">{{ if eq (dateFormat .created_date `20060102`) (dateFormat .updated_date `20060102`) }}{{ dateFormat .updated_date `h:i a` }}{{ else }}{{ .updated_date|dateFormat `2 January 2006, 3:04 pm MST` }}{{end}}</time>){{end}}
-		{{ if .tags }}
-                <p class="tags">{{ range $tag := .tags }}<a href="/blog/{{ $tag|tag_link }}-1.html" class="p-category" rel="tag">{{ $tag|lower }}</a>{{end}}</p>
-		{{ end }}
+                {{ template "dt-published" . }}
+                {{ template "tagslist" .}}
             </div>
         </header>
         <div>

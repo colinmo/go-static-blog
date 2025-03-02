@@ -13,16 +13,15 @@
         <webMaster>professor@vonexplaino.com (Professor von Explaino)</webMaster>
         <ttl>3600</ttl>
         <atom:link href="https://vonexplaino.com/blog/rss.xml" rel="self" type="application/rss+xml"></atom:link>
-        
         <item>
-            <title>Building a Docker container for Puppeteer testing</title>
-            <description>A Docker container to run your Puppeteer tests in</description>
-            <pubDate>Tue, 14 Dec 2021 19:46:13 +1000</pubDate>
-            <guid>https://vonexplaino.com/blog/posts/article/2021/12/building-a-docker-container-for-puppeteer-testing.html</guid>
-            <rssTags:subject>code</rssTags:subject>
-            <rssTags:subject>testing</rssTags:subject>
-            <rssTags:subject>puppeteer</rssTags:subject>
-            <rssTags:subject>docker</rssTags:subject>
+            <title>Capitalism the invasive species</title>
+            <description>Capitalism has invaded the web-ecosystem, what can we learn from invasive species?</description>
+            <pubDate>Sun, 03 Mar 2024 18:32:36 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/post.html</guid>
+            <rssTags:subject>comedy</rssTags:subject>
+            <rssTags:subject>indieweb</rssTags:subject>
+            <rssTags:subject>ai</rssTags:subject>
+            <rssTags:subject>llm</rssTags:subject>
         </item>
     </channel>
 </rss>

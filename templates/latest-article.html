@@ -1,0 +1,6 @@
+{{ define "body" }}
+    <article class="h-entry">
+        <h3 style="margin: 0px;"><a style="text-decoration: underscore;" href="{{ .link }}" class="p-name u-url u-uid">{{ .title }}</a></h3>
+        <p class="p-summary">[{{ dateFormat .created_date `2006-01-02`}}] {{ html .synopsis }}</p>
+    </article>
+{{ end }}

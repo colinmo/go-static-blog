@@ -1,0 +1,12 @@
+{{ define "tag-related-tags" }}
+{{ range related_tags }}
+{{ if gt (len related_tags) 0 }}
+{{ range $index, $value := related_tags }}
+{{ if len $value > 2 }}
+<details><summary>{{ $index }}</summary>
+    <ul>{{ range $value }}<li><a href="{{.Link}}">{{.Title}}</a></li>{{end}}</ul>
+</details>
+{{end}}
+{{end}}
+{{end}}
+{{end}}

@@ -286,7 +286,7 @@ func TestUpdateFullRegenerateFull(t *testing.T) {
 	ConfigData.BaseURL = `https://vonexplaino.com/`
 	ConfigData.TemplateDir = filepath.Clean(testdataloader.GetBasePath() + "/../templates/")
 	ConfigData.TempDir = `/tmp/`
-	gitCommand = filepath.Clean(testdataloader.GetBasePath() + `/../features/tests/update/scripts/fill.bat`)
+	gitCommand = filepath.Clean(testdataloader.GetBasePath() + `/../features/tests/update/scripts/fill.sh`)
 	allPosts, tags, postsById, filesToDelete, changes, err := updateFullRegenerate()
 	if err != nil {
 		t.Fatalf("Regenerate failed %v\n", err)
@@ -371,7 +371,7 @@ func TestUpdateChangedRegenerateDeleted(t *testing.T) {
 	// Deleted
 	ConfigData.BaseDir = filepath.Clean(testdataloader.GetBasePath() + `/../features/tests/update/deleted/`)
 	ConfigData.RepositoryDir = filepath.Clean(testdataloader.GetBasePath() + `/../features/tests/update/deleted/`)
-	gitCommand = filepath.Clean(testdataloader.GetBasePath() + `/../features/tests/update/scripts/changed-deleted.bat`)
+	gitCommand = filepath.Clean(testdataloader.GetBasePath() + `/../features/tests/update/scripts/changed-deleted.sh`)
 	ConfigData.TemplateDir = filepath.Clean(testdataloader.GetBasePath() + `/../templates/`)
 
 	allPosts, tags, postsById, filesToDelete, changes, err := updateChangedRegenerate()
@@ -389,7 +389,7 @@ func TestUpdateChangedRegenerateDeleted(t *testing.T) {
 		t.Fatalf("Posts by id had something in it [%d]", len(postsById))
 	}
 	if len(filesToDelete) != 1 {
-		t.Fatalf("Where's the delete?")
+		t.Fatalf("Where's the delete? %d", len(filesToDelete))
 	}
 	if len(changes.Added) > 0 {
 		t.Fatalf("Changes added had things")
@@ -401,7 +401,7 @@ func TestUpdateChangedRegenerateAdded(t *testing.T) {
 	ConfigData.BaseDir = filepath.Clean(testdataloader.GetBasePath() + `/../features/tests/update/changed/`)
 	ConfigData.RepositoryDir = filepath.Clean(testdataloader.GetBasePath() + `/../features/tests/update/changed-repo/`)
 	ConfigData.TemplateDir = filepath.Clean(testdataloader.GetBasePath() + `/../templates/`)
-	gitCommand = filepath.Clean(testdataloader.GetBasePath() + `/../features/tests/update/scripts/changed-added.bat`)
+	gitCommand = filepath.Clean(testdataloader.GetBasePath() + `/../features/tests/update/scripts/changed-added.sh`)
 
 	allPosts, tags, postsById, filesToDelete, changes, err := updateChangedRegenerate()
 	if err != nil {
