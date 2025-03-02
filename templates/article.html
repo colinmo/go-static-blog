@@ -1,9 +1,10 @@
-{{define "body"}}
+{{define "article"}}
+{{ template "head" .}}
 {{ $cdate := dateFormat .created_date `2006-01-02T15:04:05-07:00` -}}
 {{ $udate := dateFormat .updated_date `2006-01-02T15:04:05-07:00` -}}
     <article class="h-entry" data-article-id="{{ .id }}">
         <header>
-            <h1 class="p-name"><a href="{{ html .link }}" class="u-url">{{ if ne .type "reply"}}{{ .title }}{{end}}</a></h1>
+            <h1 class="p-name"><a href="{{ html .link }}" class="u-url">{{ if ne .type "reply"}}{{ html .title }}{{end}}</a></h1>
             <div class="post-meta">
                 {{ template "dt-published" . }}
                 {{ template "tagslist" .}}
@@ -41,5 +42,5 @@
                 </script>
         </div>
     </article>
+{{ template "foot" .}}    
 {{end}}
-{{define "extraheaders" }}{{end}}

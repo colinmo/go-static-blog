@@ -272,20 +272,40 @@ func SetupTemplate() string {
 	if len(ConfigData.TemplateDir) > 0 {
 		tDir = ConfigData.TemplateDir
 	}
-	templ = template.Must(
-		template.Must(
-			template.New("base").
-				Funcs(template.FuncMap{
-					"tag_link":   filterTagLink,
-					"defaultFor": defaultFor,
-					"dateFormat": dateFormat,
-					"toJson":     toJSON,
-					"html":       rawHTML,
-					"lower":      strings.ToLower,
-					"replace":    strings.Replace,
-				}).
-				ParseGlob(filepath.Join(tDir, "h/*.html"))).
-			ParseFiles(filepath.Join(tDir, "base.html"), filepath.Join(tDir, "syndication.html")))
+	if templ == nil {
+		templ = template.Must(
+			template.Must(
+				template.New("base").
+					Funcs(template.FuncMap{
+						"tag_link":   filterTagLink,
+						"defaultFor": defaultFor,
+						"dateFormat": dateFormat,
+						"toJson":     toJSON,
+						"html":       rawHTML,
+						"lower":      strings.ToLower,
+						"replace":    strings.Replace,
+						"map": func(pairs ...any) (map[string]any, error) {
+							if len(pairs)%2 != 0 {
+								return nil, errors.New("misaligned map")
+							}
+
+							m := make(map[string]any, len(pairs)/2)
+
+							for i := 0; i < len(pairs); i += 2 {
+								key, ok := pairs[i].(string)
+
+								if !ok {
+									return nil, fmt.Errorf("cannot use type %T as map key", pairs[i])
+								}
+								m[key] = pairs[i+1]
+							}
+							return m, nil
+						},
+					}).
+					ParseGlob(filepath.Join(tDir, "h/*.html")),
+			).ParseGlob(filepath.Join(tDir, "*.html")),
+		)
+	}
 	return tDir
 }
 
@@ -329,16 +349,14 @@ func parseString(body string, filename string) (string, FrontMatter, error) {
 	}
 
 	// Run HTML into Template
-	tDir := SetupTemplate()
-	templ.ParseFiles(filepath.Join(tDir, strings.ToLower(frontMatter.Type)+".html"))
 	buf := bytes.NewBufferString("")
 
 	if err := templ.ExecuteTemplate(
 		buf,
-		"base",
+		strings.ToLower(frontMatter.Type),
 		toTemplateVariables(&frontMatter, html2),
 	); err != nil {
-		fmt.Printf("Couldn't write the file\n")
+		fmt.Printf("Couldn't write the file2\n")
 		log.Fatal(err)
 	}
 

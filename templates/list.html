@@ -1,56 +1,55 @@
-{{ define "title"}}{{.title}}{{ end}}
-{{ define "extraheaders"}}
-{{ if gt .page 1 }}
-<link rel="prev" href="{{ .link_prefix }}{{ .prev_page }}.html">{{end}}
-{{ if lt .page .last_page }}
-<link rel="next" href="{{ .link_prefix }}{{ .next_page }}.html">{{ end}}
-{{end}}
-{{define "body" }}
+{{ define "list" }}
+{{ template "head" . }}
 {{- $date_template := "X\nto\nY" -}}
 {{- $date_format := "2 January 2006" -}}
 {{- $longdate := `2 January 2006 3:04 pm MST` -}}
 <div class="h-feed">
-    <h1 style="padding-top: 0; margin-top: 0; text-align: center;" class="p-name">{{ replace (defaultFor .title "Blog
-        posts") `Professor von Explaino's Journal`:`` }}</h1>
-    {{ range $index, $value := list }}
+    <h1 style="padding-top: 0; margin-top: 0; text-align: center;" class="p-name">{{ replace (defaultFor .title `Blog posts`) `Professor von Explaino's Journal` `` -1 }}</h1>
+    {{ range $index, $value := .list }}
     <article class="h-entry">
         <h2><a href="{{ $value.link }}" class="p-name u-url u-uid">{{ html $value.title }}</a></h2>
         <div class="summary">
             <p class="p-summary">{{ html $value.synopsis }}</p>
         </div>
-        <time class="date-show dt-published" datetime="{{ dateFormat $value.createddate $longdate }}">
-            <span class="day-of-month">{{ dateFormat $value.createddate `2` }}</span>
-            <span class="month">{{ dateFormat $value.createddate `January` }}</span>
-            <span class="year">{{ dateFormat $value.createddate `2006` }}</span>
+        <time class="date-show dt-published" datetime="{{ dateFormat $value.created_date $longdate }}">
+            <span class="day-of-month">{{ dateFormat $value.created_date `2` }}</span>
+            <span class="month">{{ dateFormat $value.created_date `January` }}</span>
+            <span class="year">{{ dateFormat $value.created_date `2006` }}</span>
         </time>
-        <p class="tags">{{ range $tag := $value.tags }}<a href="{{ .base_url }}{{$tag|tag_link}}-1.html"
-                class="p-category" rel="tag">{{ $tag }}</a>{{ end }}</p>
+        {{ template "tagslist" . }}
     </article>
     {{ end }}
     <nav class="pagination">
-        {{ if gt page 1 }}
-        <a href="{{ html .link_prefix }}1.html" title="{{ .first_page_start }} to {{ .first_page_end }}" {{ if eq page 2
-            }} class="previous" rel="prev" {{ end }}>1</a> {{ if gt page 3 }} ... {{ end }}
-        {{ if gt prev_page 1 }}
+        {{ if gt .page 1 }}
+        <a href="{{ html .link_prefix }}1.html" title="{{ .first_page_start }} to {{ .first_page_end }}" {{ if eq .page 2
+            }} class="previous" rel="prev" {{ end }}>1</a> {{ if gt .page 3 }} ... {{ end }}
+        {{ if gt .prev_page 1 }}
         <a href="{{ html .link_prefix }}{{ .prev_page }}.html" title="{{ .prev_page_start }} to {{ .prev_page_end }}"
             class="previous" rel="prev">{{ .prev_page }}</a>
         {{ end }}
         {{else}}
         <span>1</span>
         {{end}}
-        {{ if and (gt page 1) (lt page last_page) }}<span>{{ .page }}</span>{{end}}
-        {{ if gt last_page 1 }}
-        {{ if lt page last_page }}
-        {{ if lt next_page last_page }}
+        {{ if and (gt .page 1) (lt .page .last_page) }}<span>{{ .page }}</span>{{end}}
+        {{ if gt .last_page 1 }}
+        {{ if lt .page .last_page }}
+        {{ if lt .next_page .last_page }}
         <a href="{{ html .link_prefix }}{{ .next_page }}.html" title="{{ .next_page_start }} to {{ .next_page_end }}"
-            class="next" rel="next">{{ .next_page }}</a> {{ if gt (sub lastpage next_page) 1 }} ... {{ end }}
+            class="next" rel="next">{{ .next_page }}</a> {{ if lt .next_page .last_page }} ... {{ end }}
         {{ end }}
         <a href="{{ html .link_prefix }}{{ .last_page }}.html" title="{{ .last_page_start }} to {{ .last_page_end }}" {{
-            if eq last_page next_page}} class="next" rel="next" {{ end }}>{{ .last_page }}</a>
+            if eq .last_page .next_page}} class="next" rel="next" {{ end }}>{{ .last_page }}</a>
         {{ else }}
         <span>{{ .last_page }}</span>
         {{ end }}
         {{ end }}
     </nav>
 </div>
+{{ template "foot" . }}
 {{ end }}
+{{ define "extraheaders"}}
+{{ if gt .page 1 }}
+<link rel="prev" href="{{ .link_prefix }}{{ .prev_page }}.html">{{end}}
+{{ if lt .page .last_page }}
+<link rel="next" href="{{ .link_prefix }}{{ .next_page }}.html">{{ end}}
+{{end}}

@@ -30,8 +30,6 @@ import (
 	"strings"
 	"time"
 
-	"html/template"
-
 	"github.com/spf13/cobra"
 )
 
@@ -109,8 +107,8 @@ func clearOtherPaths(inDir, notThisOne string) {
 func replaceDirectory(tempDir, blogDir string) {
 	var err error
 	err = os.Remove(blogDir)
-	if err != nil {
-		log.Fatalf("Could not remove dir %v for linking to %v\n", blogDir, tempDir)
+	if err != nil && (len(err.Error()) <= 25 || err.Error()[len(err.Error())-25:] != `no such file or directory`) {
+		log.Fatalf("Could not remove dir %v for linking to %v\n%v", blogDir, tempDir, err.Error())
 	}
 	err = os.Symlink(tempDir, blogDir)
 	if err != nil {
@@ -232,13 +230,7 @@ func createTagPageSnippetForTag(tag string, tagsForString []FrontMatter) ([]byte
 		Title string
 	}
 	var err error
-	tDir := ConfigData.TemplateDir
 
-	templ := template.Must(
-		template.ParseFiles(
-			tDir+"base.html",
-			tDir+"tag-related-tags.html.twig",
-		))
 	relatedTags = map[string][]struct {
 		Link  string
 		Title string
@@ -268,7 +260,7 @@ func createTagPageSnippetForTag(tag string, tagsForString []FrontMatter) ([]byte
 		"tag-related-tags",
 		templateTags,
 	); err != nil {
-		fmt.Printf("Couldn't write the file\n")
+		fmt.Printf("Couldn't write the file3\n")
 		log.Fatal(err)
 	}
 
@@ -288,6 +280,8 @@ var updateCmd = &cobra.Command{
 		var tags map[string][]FrontMatter
 		var filesToDelete map[string]struct{}
 		var postsById map[string]Item
+
+		SetupTemplate()
 
 		if FullRegenerate {
 			allPosts, tags, postsById, filesToDelete, changes, err = updateFullRegenerate()
@@ -639,9 +633,6 @@ func TemplatifyPage(
 		chunkSize = len(*feed)
 		lastPage = true
 	}
-	if templ == nil {
-		SetupTemplate()
-	}
 	buf := bytes.NewBufferString("")
 	posts := (*feed)[0:chunkSize]
 	templateTags := toTemplateListVariables(posts, title, page)
@@ -677,13 +668,12 @@ func TemplatifyPage(
 
 	if err := templ.ExecuteTemplate(
 		buf,
-		"base",
+		"list",
 		templateTags,
 	); err != nil {
 		log.Fatal(err)
 	}
-	err := os.WriteFile(fmt.Sprintf("%s%s-%d.html", ConfigData.BaseDir, filenamePrefix, page), buf.Bytes(), 0777)
-	return err
+	return os.WriteFile(fmt.Sprintf("%s-%d.html", filepath.Join(ConfigData.BaseDir, filenamePrefix), page), buf.Bytes(), 0777)
 }
 
 func WriteListHTML(feed []FrontMatter, filenamePrefix string, title string) error {
@@ -743,16 +733,13 @@ func WriteListHTML(feed []FrontMatter, filenamePrefix string, title string) erro
 }
 
 func WriteLatestPost(entry FrontMatter) error {
-	if templ == nil {
-		SetupTemplate()
-	}
 	buf := bytes.NewBufferString("")
 	if err := templ.ExecuteTemplate(
 		buf,
-		"base",
+		"latest-article",
 		toTemplateVariables(&entry, ""),
 	); err != nil {
-		fmt.Printf("Couldn't write the file\n")
+		fmt.Printf("Couldn't write the file1\n")
 		log.Fatal(err)
 	}
 
@@ -790,7 +777,7 @@ func ClearDir(dir string) error {
 
 func PopulateAllGitFiles(dir string) (GitDiffs, error) {
 	var foundDiffs GitDiffs
-	dirlength := len(dir) + 1
+	dirlength := len(dir)
 	err := filepath.Walk(filepath.Join(dir, "media"),
 		func(path string, info os.FileInfo, err error) error {
 			if err != nil {
@@ -807,7 +794,7 @@ func PopulateAllGitFiles(dir string) (GitDiffs, error) {
 	}
 
 	var foundDiffs2 GitDiffs
-	dirlength = len(dir) + 1
+	dirlength = len(dir)
 	err = filepath.Walk(filepath.Join(dir, "posts"),
 		func(path string, info os.FileInfo, err error) error {
 			if err != nil {
