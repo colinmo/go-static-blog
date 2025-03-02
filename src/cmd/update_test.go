@@ -220,22 +220,26 @@ func TestWriteLatestPost(t *testing.T) {
 	}
 }
 
-func TestUpdateFullRegenerate(t *testing.T) {
+func TestUpdateFullRegenerateBad(t *testing.T) {
 	// Bad config
 	ConfigData.BaseDir = filepath.Clean(testdataloader.GetBasePath() + "/../statictest/B")
 	ConfigData.RepositoryDir = filepath.Clean(testdataloader.GetBasePath() + "/../statictest/A")
 	ConfigData.BaseURL = `https://vonexplaino.com/`
 	ConfigData.TemplateDir = filepath.Clean(testdataloader.GetBasePath() + "/../templates/")
-	gitCommand = filepath.Clean(testdataloader.GetBasePath() + "/../templates/features/tests/update/scripts/empty.bat")
+	gitCommand = filepath.Clean(testdataloader.GetBasePath() + "/../templates/features/tests/update/scripts/empty.sh")
 	_, _, _, _, _, err := updateFullRegenerate()
 	if err == nil {
 		t.Fatalf("Didn't detect bad directory")
 	}
+}
+func TestUpdateFullRegenerateEmpty(t *testing.T) {
 	//
 	ConfigData.BaseDir = filepath.Clean(testdataloader.GetBasePath() + `/../features/tests/update/fullregenbase/`)
 	ConfigData.RepositoryDir = filepath.Clean(testdataloader.GetBasePath() + `/../features/tests/update/fullregenrep/`)
+	ConfigData.BaseURL = `https://vonexplaino.com/`
+	ConfigData.TemplateDir = filepath.Clean(testdataloader.GetBasePath() + "/../templates/")
 	// Empty Repo
-	gitCommand = filepath.Clean(testdataloader.GetBasePath() + `/../features/tests/update/scripts/empty.bat`)
+	gitCommand = filepath.Clean(testdataloader.GetBasePath() + `/../features/tests/update/scripts/empty.sh`)
 	allPosts, tags, postsById, filesToDelete, changes, err := updateFullRegenerate()
 	if len(allPosts.Channel.Items) != 0 {
 		t.Fatalf("How did that happen?")
@@ -270,9 +274,17 @@ func TestUpdateFullRegenerate(t *testing.T) {
 	if err != nil {
 		t.Fatalf("How did that happen?")
 	}
+
+}
+func TestUpdateFullRegenerateFull(t *testing.T) {
 	// Repo has stuff
+	//
+	ConfigData.BaseDir = filepath.Clean(testdataloader.GetBasePath() + `/../features/tests/update/fullregenbase/`)
+	ConfigData.RepositoryDir = filepath.Clean(testdataloader.GetBasePath() + `/../features/tests/update/fullregenrep/`)
+	ConfigData.BaseURL = `https://vonexplaino.com/`
+	ConfigData.TemplateDir = filepath.Clean(testdataloader.GetBasePath() + "/../templates/")
 	gitCommand = filepath.Clean(testdataloader.GetBasePath() + `/../features/tests/update/scripts/fill.bat`)
-	allPosts, tags, postsById, filesToDelete, changes, err = updateFullRegenerate()
+	allPosts, tags, postsById, filesToDelete, changes, err := updateFullRegenerate()
 	if err != nil {
 		t.Fatalf("Regenerate failed %v\n", err)
 	}
