@@ -3,7 +3,6 @@ vonblog.exe
 .scannerwork
 .vscode
 docker
-features
 js/indieweb.js
 src/github.com
 theme
@@ -19,3 +18,6 @@ mastodon-client.txt
 testvars.go
 vendor
 src/cmd/2025*
+features/tests/blogstats
+features/tests/output
+features/tests/output-full

@@ -1,0 +1,1 @@
+gitenv: GIT_SSH_COMMAND=ssh -i /home/relapse/blog-bitbucket/bitbucket

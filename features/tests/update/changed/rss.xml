@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<rss version="2.0"
+    xmlns:atom="http://www.w3.org/2005/Atom"
+    xmlns:rssTags="http://purl.org/dc/elements/1.1/">
+    <channel>
+        <title>Professor von Explaino&#39;s Blog</title>
+        <link>https://vonexplaino.com/blog/</link>
+        <description>Code, steampunk, general nonsense</description>
+        <language>en-AU</language>
+        <copyright>Creative Commons 3.0 with Attribution</copyright>
+        <lastBuildDate>Mon, 04 Mar 2024 20:22:51 +1100</lastBuildDate>
+        <generator>Ridiculous Go Homebrew</generator>
+        <webMaster>professor@vonexplaino.com (Professor von Explaino)</webMaster>
+        <ttl>3600</ttl>
+        <atom:link href="https://vonexplaino.com/blog/rss.xml" rel="self" type="application/rss+xml"></atom:link>
+        <item>
+            <title>Building a Docker container for Puppeteer testing</title>
+            <description>A Docker container to run your Puppeteer tests in</description>
+            <pubDate>Tue, 14 Dec 2021 19:46:13 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2021/12/building-a-docker-container-for-puppeteer-testing.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>testing</rssTags:subject>
+            <rssTags:subject>puppeteer</rssTags:subject>
+            <rssTags:subject>docker</rssTags:subject>
+        </item>
+    </channel>
+</rss>
