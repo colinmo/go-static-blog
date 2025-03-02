@@ -238,6 +238,8 @@ func TestUpdateFullRegenerateEmpty(t *testing.T) {
 	ConfigData.RepositoryDir = filepath.Clean(testdataloader.GetBasePath() + `/../features/tests/update/fullregenrep/`)
 	ConfigData.BaseURL = `https://vonexplaino.com/`
 	ConfigData.TemplateDir = filepath.Clean(testdataloader.GetBasePath() + "/../templates/")
+	ConfigData.TempDir = `/tmp/`
+	Silent = false
 	// Empty Repo
 	gitCommand = filepath.Clean(testdataloader.GetBasePath() + `/../features/tests/update/scripts/empty.sh`)
 	allPosts, tags, postsById, filesToDelete, changes, err := updateFullRegenerate()
@@ -272,7 +274,7 @@ func TestUpdateFullRegenerateEmpty(t *testing.T) {
 		t.Fatalf("How did that happen?")
 	}
 	if err != nil {
-		t.Fatalf("How did that happen?")
+		t.Fatalf("How did that happen? %s", err)
 	}
 
 }
@@ -283,6 +285,7 @@ func TestUpdateFullRegenerateFull(t *testing.T) {
 	ConfigData.RepositoryDir = filepath.Clean(testdataloader.GetBasePath() + `/../features/tests/update/fullregenrep/`)
 	ConfigData.BaseURL = `https://vonexplaino.com/`
 	ConfigData.TemplateDir = filepath.Clean(testdataloader.GetBasePath() + "/../templates/")
+	ConfigData.TempDir = `/tmp/`
 	gitCommand = filepath.Clean(testdataloader.GetBasePath() + `/../features/tests/update/scripts/fill.bat`)
 	allPosts, tags, postsById, filesToDelete, changes, err := updateFullRegenerate()
 	if err != nil {

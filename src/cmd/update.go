@@ -108,11 +108,11 @@ func clearOtherPaths(inDir, notThisOne string) {
 
 func replaceDirectory(tempDir, blogDir string) {
 	var err error
-	err = os.Remove(filepath.Dir(blogDir))
+	err = os.Remove(blogDir)
 	if err != nil {
-		log.Fatalf("Could not remove dir %v\n", filepath.Dir(blogDir))
+		log.Fatalf("Could not remove dir %v for linking to %v\n", blogDir, tempDir)
 	}
-	err = os.Symlink(tempDir, filepath.Dir(blogDir))
+	err = os.Symlink(tempDir, blogDir)
 	if err != nil {
 		log.Fatalf("one: %s\n", err)
 	}

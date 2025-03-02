@@ -3,7 +3,7 @@ vonblog.exe
 .scannerwork
 .vscode
 docker
-features/tests
+features
 js/indieweb.js
 src/github.com
 theme
