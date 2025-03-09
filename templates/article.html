@@ -24,7 +24,7 @@
                 {{ template "syndication" .syndicationlinks }}                
             </div>
             <hr style="clear:both;">
-            <p><a href="https://shareopenly.org/share/?url={{ .link }} &text={{ .summary }}">ShareOpenly</a>, or just like it: <open-heart href="https://corazon.sploot.com?id={{ .link }}" emoji="❤️">❤️</open-heart></p>
+            <p><a href="https://shareopenly.org/share/?url={{ .link }}&text={{ .summary }}">ShareOpenly</a>, or just like it: <open-heart href="https://corazon.sploot.com?id={{ .link }}" emoji="❤️">❤️</open-heart></p>
             <script src="https://unpkg.com/open-heart-element" type="module"></script>
             <script>
             window.customElements.whenDefined('open-heart').then(() => {

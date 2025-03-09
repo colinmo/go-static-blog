@@ -7,12 +7,12 @@ This is a command line tool to integrate a git repository with a blog template s
 * [ ] Script to convert Golang test output to Sonarqube
 * [ ] Pull out HTML access component so it can be passed through as a parameter for mocking/ testing
 * [ ] Refactoring the codebase (buzzwords)
-* [ ] More unit tests for resiliance
+* [x] More unit tests for resiliance
 * [ ] Change the code-window image holders so they look less pillowy
 * [ ] Add a Webmention extension
   * [ ] Verifies incoming webmentions
   * [ ] Saves it to a .js file specific to the file ID
-* [ ] Fix RSS feeds to not include drafts
+* [x] Fix RSS feeds to not include drafts
 
 ## Build
 
