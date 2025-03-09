@@ -106,6 +106,7 @@ func clearOtherPaths(inDir, notThisOne string) {
 
 func replaceDirectory(tempDir, blogDir string) {
 	var err error
+	blogDir = filepath.Clean(blogDir)
 	err = os.Remove(blogDir)
 	if err != nil && (len(err.Error()) <= 25 || err.Error()[len(err.Error())-25:] != `no such file or directory`) {
 		log.Fatalf("Could not remove dir %v for linking to %v\n%v", blogDir, tempDir, err.Error())

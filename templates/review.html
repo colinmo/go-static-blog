@@ -1,5 +1,7 @@
 {{define "title"}}{{.Title}}{{end -}}
-{{define "extraheaders" -}}
+{{define "review"}}
+{{ template "head" .}}
+
 <style>
     /** RATINGS **/
     .rating .star:before {
@@ -56,18 +58,14 @@
         content: "★";
     }
 </style>
-{{end}}
-{{define "review"}}
-{{ template "head" .}}
 {{- $c := "2006-01-02T15:04:05-07:00" -}}
 {{- $longdate := `2 January 2006  3:04 pm MST` -}}
     <article class="h-entry h-review" data-info="{{ toJson . }}" data-tags="{{ toJson .tags }}" data-article-id="{{ .id }}">
         <header>
-            <h1 class="p-name" style=""><a href="{{ .link }}" class="u-url">{{ if ne .type "reply" }}{{ .title }}{{end}}</a></h1>
+            <h1 class="p-name"><a href="{{ .link }}" class="u-url">{{ if ne .type "reply" }}{{ .title }}{{end}}</a></h1>
             <div class="post-meta">
-                <time class="dt-published" datetime="{{ html (dateFormat .created_date $c) }}">{{ dateFormat .created_date $longdate }}</time>
-                {{- if ne .Created .Updated }}(&Delta; <time class="dt-updated" datetime="{{ dateFormat .updated_date $c }}">{{ dateFormat .updated_date $longdate }}</time>){{end}}
-                <p class="tags">{{ range $tag := .tags }}<a href="/blog/{{$tag|tag_link}}-1.html" class="p-category">{{ $tag }}</a> {{ end -}}</p>
+                {{ template "dt-published" . }}
+                {{ template "tagslist" .}}
                 {{ if .Metadata -}}
                 {{ if index .Metadata `in-reply-to` -}}
                 <p> In reply to <a href="{{ index .metadata `in-reply-to` }}" class="u-in-reply-to h-cite">{{ index .metadata `in-reply-to` }}</a></p>
@@ -81,12 +79,7 @@
         </header>
         <div>
             <div class="rating star-{{ replace (printf `%0.0f` .item.Rating) `.` `-` -1 }}">
-                <span class="star"></span>
-                <span class="star"></span>
-                <span class="star"></span>
-                <span class="star"></span>
-                <span class="star"></span>
-                (<span class="p-rating">{{ .item.Rating }}</span> / 5)
+                <span class="star"></span><span class="star"></span><span class="star"></span><span class="star"></span><span class="star"></span> (<span class="p-rating">{{ .item.Rating }}</span> / 5)
             </div>
             <div class="item">
                 {{- $itemType := .item.Type|defaultFor `item`}}
@@ -102,6 +95,18 @@
             {{ html .content }}
             </section>
             <hr style="clear:both;">
+            <p><a href="https://shareopenly.org/share/?url={{ .link }}&text={{ .summary }}">ShareOpenly</a>, or just like it: <open-heart href="https://corazon.sploot.com?id={{ .link }}" emoji="❤️">❤️</open-heart></p>
+            <script src="https://unpkg.com/open-heart-element" type="module"></script>
+            <script>
+            window.customElements.whenDefined('open-heart').then(() => {
+                for (const oh of document.querySelectorAll('open-heart')) {
+                    oh.getCount()
+                }
+            })
+            window.addEventListener('open-heart', e => {
+                e && e.target && e.target.getCount && e.target.getCount()
+            })
+            </script>
         </div>
     </article>
     {{ template "foot" . }}

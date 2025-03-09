@@ -23,7 +23,7 @@ build-linux-mac:
 	cd src && env GOOS=linux GOARCH=amd64 go build -ldflags "-w -s" -o ../bin/vonblog
 
 build-linux-linux: 
-	cd src && GO_ENABLED=0 go build -ldflags "-w -s" -o ../bin/vonblog
+	cd src && CGO_ENABLED=0 go build -ldflags "-w -s" -o ../bin/vonblog
 
 sonar: test
 	cd c:/users/relap/dropbox\swap\golang\vonblog && docker run --rm -v c:/users/relap/dropbox\swap\golang\vonblog:/usr/src sonarsource/sonar-scanner-cli
