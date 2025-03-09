@@ -78,7 +78,7 @@
             </div>
         </header>
         <div>
-            <div class="rating star-{{ replace (printf `%0.0f` .item.Rating) `.` `-` -1 }}">
+            <div class="rating star-{{ replace (printf `%.1f` .item.Rating) `.` `-` -1 }}">
                 <span class="star"></span><span class="star"></span><span class="star"></span><span class="star"></span><span class="star"></span> (<span class="p-rating">{{ .item.Rating }}</span> / 5)
             </div>
             <div class="item">

@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"log"
 	"path/filepath"
 	"slices"
 	"strings"
@@ -143,6 +144,7 @@ func TestCreateResume(t *testing.T) {
 	ConfigData.RepositoryDir = testroot
 	ConfigData.BaseURL = "https://vonexplaino.com/blog/"
 	ConfigData.TemplateDir = filepath.Clean(testdataloader.GetBasePath() + "/../templates/")
+	SetupTemplate()
 	result, frontMatter, error := parseString(`---
 Title: Colin Morris
 Created: 2024-04-06T22:15:50+1000
@@ -291,6 +293,7 @@ func TestCreateReview(t *testing.T) {
 	ConfigData.RepositoryDir = testroot
 	ConfigData.BaseURL = "https://vonexplaino.com/blog/"
 	ConfigData.TemplateDir = filepath.Clean(testdataloader.GetBasePath() + "/../templates/")
+	SetupTemplate()
 	result, frontMatter, error := parseString(`---
 Title: "Review: In Sound Mind"
 Tags: [game,epic]
@@ -304,7 +307,7 @@ Item:
     image: /blog/media/2022/04/in-sound-mind.webp
     name: In Sound Mind
     type: item
-    rating: 5
+    rating: 3.5
 ---
 In Sound Mind was one of the weekly free games earlier this year. Most of these games I pick up, play for a bit, get a smile, get bored, and get on with things. In Sound Mind's gameplay, steady reveal, tape-based psychology gimick and the "GOTY 10/10" acheivement had me hooked. Very little in the way of shooty times, really; and the stealth statistic seemed entirely pointless - but the game, atmosphere, and sheer mind-squirreliness was enthralling.
 
@@ -327,6 +330,7 @@ You can pet the cat.
 	if frontMatter.Item.Name == "" {
 		t.Fatalf("Failed to get name")
 	}
+	log.Fatal(result)
 }
 
 func TestTextToSlug(t *testing.T) {
