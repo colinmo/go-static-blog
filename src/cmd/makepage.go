@@ -103,7 +103,7 @@ func init() {
 			extension.Footnote,
 			meta.New(meta.WithStoresInDocument()),
 			highlighting.NewHighlighting(
-				highlighting.WithStyle("borland"),
+				highlighting.WithStyle("bw"),
 				highlighting.WithFormatOptions(
 					html2.WithLineNumbers(true),
 				),
