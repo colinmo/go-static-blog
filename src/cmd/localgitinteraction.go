@@ -93,6 +93,7 @@ func ProcessGitDiffs(resultsStr string) GitDiffs {
 func GitRunDiff() GitDiffs {
 	runGitCommand(gitCommand, []string{"fetch", "origin", "master"})
 	result, _ := runGitCommand(gitCommand, []string{"diff", "--name-status", "HEAD...FETCH_HEAD"})
+	fmt.Printf("Result %v\n", result)
 	return ProcessGitDiffs(result)
 }
 

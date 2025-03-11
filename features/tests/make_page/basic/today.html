@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<!--[if IE 8]>         <html class="no-js lt-ie9" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width" />
+  <meta name="author" content="Colin Morris">
+  <title>MySQL Learnings |  Professor von Explaino</title>
+  <link rel="pingback" href="https://webmention.io/vonexplaino.com/xmlrpc" />
+  <link rel="webmention" href="https://webmention.io/vonexplaino.com/webmention" />
+  <link href="https://vonexplaino.com/blog/style/blog.css" rel="stylesheet" />
+
+  <link rel="alternate" type="application/rss+xml" title="Professor von Explaino's Journal RSS Feed" href="https://vonexplaino.com/blog/rss.xml" />
+
+  <!-- IE Fix for HTML5 Tags -->
+  <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+<link rel="apple-touch-icon" sizes="57x57" href="/theme/images/favicon/apple-icon-57x57.png">
+<link rel="apple-touch-icon" sizes="60x60" href="/theme/images/favicon/apple-icon-60x60.png">
+<link rel="apple-touch-icon" sizes="72x72" href="/theme/images/favicon/apple-icon-72x72.png">
+<link rel="apple-touch-icon" sizes="76x76" href="/theme/images/favicon/apple-icon-76x76.png">
+<link rel="apple-touch-icon" sizes="114x114" href="/theme/images/favicon/apple-icon-114x114.png">
+<link rel="apple-touch-icon" sizes="120x120" href="/theme/images/favicon/apple-icon-120x120.png">
+<link rel="apple-touch-icon" sizes="144x144" href="/theme/images/favicon/apple-icon-144x144.png">
+<link rel="apple-touch-icon" sizes="152x152" href="/theme/images/favicon/apple-icon-152x152.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/theme/images/favicon/apple-icon-180x180.png">
+<link rel="icon" type="image/png" sizes="192x192" href="/theme/images/favicon/android-icon-192x192.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/theme/images/favicon/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="96x96" href="/theme/images/favicon/favicon-96x96.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/theme/images/favicon/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="msapplication-TileColor" content="#ffffff" />
+<meta name="msapplication-TileImage" content="/theme/images/favicon/ms-icon-144x144.png" />
+<meta name="theme-color" content="#ffffff" />
+<meta name="description" content="Upskilling my MySQL because I need a 6Gig database in my life created in Golang" />
+<meta property="og:image" content="https://vonexplaino.com/blog/media/2021/03/mysql-logo.svg" />
+<meta property="og:site_name" content="Professor von Explaino" />
+<meta property="og:title" content="MySQL Learnings" />
+<meta property="og:url" content="https://vonexplaino.com/blog/posts/article/2021/03/mysql-learnings.html" />
+<meta property="og:type" content="article" />
+<meta property="og:description" content="Upskilling my MySQL because I need a 6Gig database in my life created in Golang" />
+<meta property="og:image" content="https://vonexplaino.com/blog/media/2021/03/mysql-logo.svg" />
+<meta property="og:image:url" content="https://vonexplaino.com/blog/media/2021/03/mysql-logo.svg" />
+<meta property="og:image:secure_url" content="https://vonexplaino.com/blog/media/2021/03/mysql-logo.svg" />
+<meta property="article:published_time" content="2021-03-31T17:11:15+10:00" />
+<meta property="article:modified_time" content="2021-03-31T17:11:15+10:00" />
+<meta property="og:updated_time" content="2021-03-31T17:11:15+10:00" />
+<meta property="article:section" content="Blog" />
+
+<meta itemprop="name" content="MySQL Learnings" />
+<meta itemprop="headline" content="MySQL Learnings" />
+<meta itemprop="description" content="Upskilling my MySQL because I need a 6Gig database in my life created in Golang" />
+<meta itemprop="image" content="https://vonexplaino.com/blog/media/2021/03/mysql-logo.svg" />
+<meta itemprop="datePublished" content="2021-03-31T17:11:15+10:00" />
+<meta itemprop="dateModified" content="2021-03-31T17:11:15+10:00" />
+<meta itemprop="author" content="Colin Morris/ Professor von Explaino" />
+
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:creator" content="@vonexplaino" />
+<meta name="twitter:site" content="@vonexplaino" />
+<script type="text/javascript" src="https://ff.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=2GTjTivk2GSrocjpNyDIC4SrjLXJCANw05X23af5baL0zfcYbdhjTXpINXKK0M7gitVlWdJsHiN7zWlbGsUEgXDAngYsSx7wPmdZwaK1g4Gu_xsDB9yyTiWkk18qnFn_" charset="UTF-8"></script></head>
+<body class="container">
+    <!-- Actual template -->
+    <main id="professor-paper" class="panel">
+        <img src="/theme/images/top-left.png" style="position:absolute;top:-4px;left:-4px;z-index:2;pointer-events:none;" alt=""/>
+        <img src="/theme/images/top-right.png" style="position:absolute;top:-4px;right:-4px;z-index:2;pointer-events:none;" alt=""/>
+        <img src="/theme/images/bottom-left.png" style="position:absolute;bottom:-4px;left:-4px;z-index:2;pointer-events:none;" alt=""/>
+        <img src="/theme/images/bottom-right.png" style="position:absolute;bottom:-4px;right:-4px;z-index:2;pointer-events:none;" alt=""/>
+            <article class="h-entry" data-info="{&quot;title&quot;:&quot;MySQL Learnings&quot;,&quot;tags&quot;:[&quot;code&quot;,&quot;mysql&quot;],&quot;create_date&quot;:1617174675,&quot;update_date&quot;:1617174675,&quot;author&quot;:&quot;Professor von Explaino&quot;,&quot;synopsis&quot;:&quot;Upskilling my MySQL because I need a 6Gig database in my life created in Golang&quot;,&quot;id&quot;:&quot;posts\/article\/2021\/03\/mysql-learnings.md&quot;,&quot;syndication_links&quot;:[],&quot;feature_image&quot;:&quot;https:\/\/vonexplaino.com\/blog\/media\/2021\/03\/mysql-logo.svg&quot;,&quot;created&quot;:&quot;Wed, 31 Mar 2021 17:11:15 +1000&quot;,&quot;updated&quot;:&quot;Wed, 31 Mar 2021 17:11:15 +1000&quot;}" data-tags="[&quot;code&quot;,&quot;mysql&quot;]" data-article-id="posts/article/2021/03/mysql-learnings.md">
+        <header>
+            <h1 class="p-name"><a href="https://vonexplaino.com/blog/posts/article/2021/03/mysql-learnings.html" class="u-url">MySQL Learnings</a></h1>
+            <section class="post-meta">
+                <time class="dt-published" datetime="2021-03-31T17:11:15+10:00">31 Mar 2021, 05:11 pm AEST</time>
+                                <p class="tags"><a href="/blog/tag/code-1.html" class="p-category">code</a> <a href="/blog/tag/mysql-1.html" class="p-category">mysql</a> </p>
+
+            </section>
+        </header>
+        <div>
+            <section class="e-content">
+            <h2>Batching inserts</h2>
+
+<ul>
+<li><a href="https://stackoverflow.com/questions/12486436/how-do-i-batch-sql-statements-with-package-database-sql#25192138">How do I batch sql statements with package database/sql</a></li>
+</ul>
+
+<p>Seriously, this one weird trick reduced insert time by a <em>tonne</em>. I really have to benchmark this at some point as it's a lifesaver.</p>
+
+<h2>Explain/ Execution Plans</h2>
+
+<ul>
+<li><a href="https://dev.mysql.com/doc/refman/8.0/en/execution-plan-information.html">8.8 Understanding the Query Execution Plan</a></li>
+</ul>
+
+<p>Speaking of poor performing queries...</p>
+
+<h2>Running MySQL in the background</h2>
+
+<ul>
+<li><a href="https://stackoverflow.com/questions/56198880/stored-procedure-execution-in-background">Stored procedure execution in background?</a></li>
+<li><a href="https://www.mysqltutorial.org/mysql-stored-procedure-tutorial.aspx">Stored procedures</a></li>
+</ul>
+
+<p>With a 6Gig database there's a lot of things I need to kick off in the background for long run while the GoCode does other things. Building function+logic into a Procedure sounds sensible, and then when Go's prepped some databases calling a once-off-background procedure run makes sense.</p>
+
+<pre><code class="sql">CREATE EVENT run_info_now
+ON SCHEDULE AT CURRENT_TIMESTAMP
+DO CALL simbakda_sensus.info;
+</code></pre>
+
+<h2>Cursors</h2>
+
+<ul>
+<li><a href="https://www.mysqltutorial.org/mysql-cursor/">MySQL Cursor</a></li>
+</ul>
+
+<p>Good MySQL cursor refresher.</p>
+
+<h2>Triggers</h2>
+
+<p>... and how to disable them. Short version, you can't. Long version, make a variable and do it yourself.</p>
+
+<ul>
+<li><a href="https://stackoverflow.com/questions/13598155/how-to-disable-triggers-in-mysql">How to disable triggers in MySQL?</a></li>
+</ul>
+
+            </section>
+            <section class="post-meta">
+                <a class="p-author h-card" href="https://vonexplaino.com/">Professor von Explaino</a>
+                                                                                                <p class="syndication-links"></p>            </section>
+            <hr style="clear:both;" />
+                    </div>
+    </article>
+    </main>
+    <section id="header">
+        <nav>
+            <a href="/">Home</a><wbr><a href="https://vonexplaino.com/blog">Blog</a><wbr><a href="https://vonexplaino.com/blog/posts/page/steampunk.html">Steampunk</a><wbr><a href="https://vonexplaino.com/blog/posts/page/code.html">Code</a><wbr><a href="https://vonexplaino.com/blog/posts/resume/resume-of-colin-morris.html">Resume</a>
+        </nav>
+    </section>
+  <!-- IE Fix for HTML5 Tags -->
+  <!--[if gt IE 8]>
+    <script src="/assets/javascripts/custom.modernizr.js"></script>
+    <![endif]-->
+    <script src="https://vonexplaino.com/blog/js/blog.js" defer></script>
+    <link rel="stylesheet"
+      href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/styles/default.min.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+    <style>
+    .hljs{display:block;overflow-x:auto;padding:.5em;background:#23241f}.hljs,.hljs-tag,.hljs-subst{color:#f8f8f2}.hljs-strong,.hljs-emphasis{color:#a8a8a2}.hljs-bullet,.hljs-quote,.hljs-number,.hljs-regexp,.hljs-literal,.hljs-link{color:#ae81ff}.hljs-code,.hljs-title,.hljs-section,.hljs-selector-class{color:#a6e22e}.hljs-strong{font-weight:bold}.hljs-emphasis{font-style:italic}.hljs-keyword,.hljs-selector-tag,.hljs-name,.hljs-attr{color:#f92672}.hljs-symbol,.hljs-attribute{color:#66d9ef}.hljs-params,.hljs-class .hljs-title{color:#f8f8f2}.hljs-string,.hljs-type,.hljs-built_in,.hljs-builtin-name,.hljs-selector-id,.hljs-selector-attr,.hljs-selector-pseudo,.hljs-addition,.hljs-variable,.hljs-template-variable{color:#e6db74}.hljs-comment,.hljs-deletion,.hljs-meta{color:#75715e}
+    </style>
+</body>
+</html>

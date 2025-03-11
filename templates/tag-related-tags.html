@@ -1,0 +1,14 @@
+{{- define "tag-related-tags" -}}
+{{- range $index, $value := . -}}
+{{- if gt (len .) 0 -}}
+{{- range $index, $value := . -}}
+{{- if gt (len $value) 2 -}}
+<details>
+    <summary>{{ $index }}</summary>
+    <ul>{{ range $value }}<li><a href="{{.Link}}">{{.Title}}</a></li>{{end}}</ul>
+</details>
+{{- end -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}

@@ -1,0 +1,2116 @@
+<?xml version="1.0"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:rssTags="http://purl.org/dc/elements/1.1/">
+    <channel>
+        <title>Professor von Explaino</title>
+        <link>https://vonexplaino.com/blog/</link>
+        <description>Steampunk, PHP coding, Brisbane</description>
+        <language>en-au</language>
+        <copyright>Creative Commons 3.0 with Attribution</copyright>
+        <lastBuildDate>Wed, 22 Dec 2021 20:05:48 +1100</lastBuildDate>
+        <generator>Ridiculous Go Homebrew</generator>
+        <webMaster>professor@vonexplaino.com (Colin Morris)</webMaster>
+        <ttl>40</ttl>
+        <atom:link href="https://vonexplaino.com/blog/rss.xml" rel="self" type="application/rss+xml"></atom:link>
+        <item>
+            <title>Bookmark: Scaling the Practice of Architecture, Conversationally</title>
+            <description>A great way of retooling some aspects of architecture decisionising</description>
+            <pubDate>Thu, 16 Dec 2021 12:34:04 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/indieweb/2021/12/bookmark-scaling-the-practice-of-architecture-conversationally.html</guid>
+            <rssTags:subject>architecture</rssTags:subject>
+        </item>
+        <item>
+            <title>Building a Docker container for Puppeteer testing</title>
+            <description>A Docker container to run your Puppeteer tests in</description>
+            <pubDate>Tue, 14 Dec 2021 19:46:13 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2021/12/building-a-docker-container-for-puppeteer-testing.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>testing</rssTags:subject>
+            <rssTags:subject>puppeteer</rssTags:subject>
+            <rssTags:subject>docker</rssTags:subject>
+        </item>
+        <item>
+            <title>Spiderverse2</title>
+            <description>First trailer for Across the Spider-Verse (Part One)</description>
+            <pubDate>Sun, 05 Dec 2021 11:21:42 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2021/12/spiderverse2.html</guid>
+            <rssTags:subject>comics</rssTags:subject>
+            <rssTags:subject>spiderman</rssTags:subject>
+            <rssTags:subject>spiderman-2099</rssTags:subject>
+            <rssTags:subject>2099</rssTags:subject>
+        </item>
+        <item>
+            <title>Bookmark: Showdownjs - A markdown to HTML converter</title>
+            <description>Nice little markdown library</description>
+            <pubDate>Sun, 28 Nov 2021 14:03:24 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2021/11/bookmark-showdownjs-a-markdown-to-html-converter.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>javascript</rssTags:subject>
+            <rssTags:subject>markdown</rssTags:subject>
+        </item>
+        <item>
+            <title>Bookmark of: jq</title>
+            <description>jq is like sed for JSON data</description>
+            <pubDate>Tue, 23 Nov 2021 16:45:25 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2021/11/bookmark-of-jq.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>graphapi</rssTags:subject>
+            <rssTags:subject>commonbook</rssTags:subject>
+        </item>
+        <item>
+            <title>GraphAPI Basics Intro</title>
+            <description>Summary of a GraphAPI quick-presentation I did at work</description>
+            <pubDate>Fri, 12 Nov 2021 11:58:29 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2021/11/graphapi-basics-intro.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>work</rssTags:subject>
+            <rssTags:subject>graphapi</rssTags:subject>
+        </item>
+        <item>
+            <title>Like: Make a personal changelog</title>
+            <description>Using the changelog type of file log format for personal changes</description>
+            <pubDate>Wed, 27 Oct 2021 13:32:38 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/indieweb/2021/10/like-make-a-personal-changelog.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>personal</rssTags:subject>
+        </item>
+        <item>
+            <title>Like: My first attempt at computational line art!</title>
+            <description>This and the subsequent AxiDraw outputs are very cool. Must resist more gadgets!</description>
+            <pubDate>Thu, 21 Oct 2021 18:36:23 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/indieweb/2021/10/like-my-first-attempt-at-computational-line-art-.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>physical</rssTags:subject>
+            <rssTags:subject>art</rssTags:subject>
+            <rssTags:subject>axidraw</rssTags:subject>
+        </item>
+        <item>
+            <title>Parallel Go command line program to read GraphQL and process private team members</title>
+            <description>Working out a not-slow way of getting private Microsoft Team channel membership</description>
+            <pubDate>Wed, 13 Oct 2021 16:32:30 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2021/10/parallel-go-command-line-program-to-read-graphql-and-process-private-team-members.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>golang</rssTags:subject>
+            <rssTags:subject>graphql</rssTags:subject>
+            <rssTags:subject>microsoft teams</rssTags:subject>
+            <rssTags:subject>parallel programming</rssTags:subject>
+        </item>
+        <item>
+            <title>Like: https://ronjeffries.com/articles/020-dung/-v022f/d-229/</title>
+            <description>The latest in his series on coding a hex-map-game thing in great detail, but the quote at the start...</description>
+            <pubDate>Tue, 28 Sep 2021 21:48:07 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/indieweb/2021/09/like-https-ronjeffries.com-articles-020-dung-v022f-d-229-.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+        </item>
+        <item>
+            <title>WILT: Golang systray and fyne</title>
+            <description>How to create a systray app in Golang that can pop up fyne windows</description>
+            <pubDate>Wed, 15 Sep 2021 06:46:52 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2021/09/wilt-golang-systray-and-fyne.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>golang</rssTags:subject>
+        </item>
+        <item>
+            <title>Python Django learnings</title>
+            <description>Some learnings on moving an app into Django. Database, date, all sorts.</description>
+            <pubDate>Thu, 12 Aug 2021 15:42:40 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2021/08/python-django-learnings.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>python</rssTags:subject>
+            <rssTags:subject>django</rssTags:subject>
+            <rssTags:subject>common-book</rssTags:subject>
+        </item>
+        <item>
+            <title>One of my favourite things to do - IndieWeb</title>
+            <description>I really enjoy the indieweb has brought back webrings.</description>
+            <pubDate>Tue, 10 Aug 2021 19:31:47 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2021/08/one-of-my-favourite-things-to-do-indieweb.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>indieweb</rssTags:subject>
+        </item>
+        <item>
+            <title>WILT: Behat, Mink and ShadowDom</title>
+            <description>When using the shadow-dom, note your testing framework</description>
+            <pubDate>Sun, 30 May 2021 21:54:43 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2021/05/wilt-behat-mink-and-shadowdom.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>testing</rssTags:subject>
+        </item>
+        <item>
+            <title>More Go Playing</title>
+            <description>Doing some more Go+Fyne experimenting. Golang or Go Home.</description>
+            <pubDate>Sun, 11 Apr 2021 19:24:08 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2021/04/more-go-playing.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>go</rssTags:subject>
+            <rssTags:subject>apache</rssTags:subject>
+            <rssTags:subject>logs</rssTags:subject>
+            <rssTags:subject>fyne</rssTags:subject>
+            <rssTags:subject>mysql</rssTags:subject>
+        </item>
+        <item>
+            <title>Bookmark: Golang parallel mysql</title>
+            <description>Working on my parallel understanding with go and sharing mysql connections</description>
+            <pubDate>Tue, 06 Apr 2021 08:35:08 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/indieweb/2021/04/bookmark-golang-parallel-mysql.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>mysql</rssTags:subject>
+            <rssTags:subject>golang</rssTags:subject>
+        </item>
+        <item>
+            <title>MySQL Learnings</title>
+            <description>Upskilling my MySQL because I need a 6Gig database in my life created in Golang</description>
+            <pubDate>Wed, 31 Mar 2021 17:11:15 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2021/03/mysql-learnings.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>mysql</rssTags:subject>
+        </item>
+        <item>
+            <title>Like: BDD – An introduction to feature files</title>
+            <description>Including acceptance criteria in a feature</description>
+            <pubDate>Wed, 31 Mar 2021 12:01:27 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/indieweb/2021/03/like-bdd-an-introduction-to-feature-files.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>bdd</rssTags:subject>
+            <rssTags:subject>gherkin</rssTags:subject>
+        </item>
+        <item>
+            <title>WILT: Fast image cropping</title>
+            <description>How to crop images fast with imagick</description>
+            <pubDate>Mon, 22 Mar 2021 14:30:00 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2021/03/wilt-fast-image-cropping.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>imagemagick</rssTags:subject>
+            <rssTags:subject>mermaid</rssTags:subject>
+            <rssTags:subject>pandoc</rssTags:subject>
+        </item>
+        <item>
+            <title>Working with PHPUnit</title>
+            <description>Got to spend time with PHPUnit for extended classes w&#39; curl interactions</description>
+            <pubDate>Fri, 12 Mar 2021 20:19:45 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2021/03/working-with-phpunit.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>php</rssTags:subject>
+            <rssTags:subject>testing</rssTags:subject>
+        </item>
+        <item>
+            <title>Go GUI Helpers</title>
+            <description>Finding Go a good tool for making quick helpers</description>
+            <pubDate>Thu, 04 Mar 2021 21:34:35 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2021/03/go-gui-helpers.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>go</rssTags:subject>
+            <rssTags:subject>pandoc</rssTags:subject>
+            <rssTags:subject>markdown</rssTags:subject>
+            <rssTags:subject>fyne</rssTags:subject>
+        </item>
+        <item>
+            <title>Maritime Museum visit</title>
+            <description>Dad and I visited the Brisbane Maritime museum. Not closed as the rumour had said</description>
+            <pubDate>Sun, 28 Feb 2021 17:26:45 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2021/02/maritime-museum-visit.html</guid>
+            <rssTags:subject>steampunk</rssTags:subject>
+        </item>
+        <item>
+            <title>Bookmark: Survive The Deep End: PHP Security</title>
+            <description>Good, practical security advice for PHP developers</description>
+            <pubDate>Wed, 17 Feb 2021 14:27:04 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/indieweb/2021/02/bookmark-survive-the-deep-end-php-security.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>library</rssTags:subject>
+        </item>
+        <item>
+            <title>Sincere Blogging · roytang.net</title>
+            <description>Sincere blogging. What a cool phrase.</description>
+            <pubDate>Tue, 16 Feb 2021 19:31:26 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/indieweb/2021/02/sincere-blogging-roytang.net.html</guid>
+            <rssTags:subject>colin</rssTags:subject>
+        </item>
+        <item>
+            <title>Brownie for Valentine&#39;s day</title>
+            <description>Baked a couple of brownies today</description>
+            <pubDate>Sun, 14 Feb 2021 12:56:55 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2021/02/brownie-for-valentine-s-day.html</guid>
+            <rssTags:subject>colin</rssTags:subject>
+        </item>
+        <item>
+            <title>Happy Chinese New Year&#39;s Eve</title>
+            <description>Feasting</description>
+            <pubDate>Thu, 11 Feb 2021 20:28:42 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2021/02/happy-chinese-new-year-s-eve.html</guid>
+            <rssTags:subject>colin</rssTags:subject>
+        </item>
+        <item>
+            <title>Like: Interesting chat on The Innovation Community (Video)</title>
+            <description>Kate Carruthers is Chief Data &amp;amp; Insights Officer for UNSW Sydney, chatting on The Innovation Community podcast</description>
+            <pubDate>Wed, 03 Feb 2021 16:29:27 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/indieweb/2021/02/like-interesting-chat-on-the-innovation-community-video-.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>data</rssTags:subject>
+        </item>
+        <item>
+            <title>Enjoying lockdown</title>
+            <description>Lockdown again, but much less than other places</description>
+            <pubDate>Sun, 10 Jan 2021 19:42:57 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2021/01/enjoying-lockdown.html</guid>
+            <rssTags:subject>Colin</rssTags:subject>
+        </item>
+        <item>
+            <title>Bookmark: Systray library for go</title>
+            <description>Go systray library</description>
+            <pubDate>Thu, 07 Jan 2021 10:20:15 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/indieweb/2021/01/bookmark-systray-library-for-go.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>library</rssTags:subject>
+        </item>
+        <item>
+            <title>Like: https://alis.me/x/over-react/</title>
+            <description>Alis says so much about Scott&amp;#039;s &amp;quot;Modern web dev...&amp;quot; tweet much better than I could.</description>
+            <pubDate>Wed, 06 Jan 2021 08:25:07 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/indieweb/2021/01/like-https-alis.me-x-over-react-.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>php</rssTags:subject>
+            <rssTags:subject>evangelism</rssTags:subject>
+        </item>
+        <item>
+            <title>Bookmark: Hexagonal Grids</title>
+            <description>Ooo delicious mathematics</description>
+            <pubDate>Mon, 04 Jan 2021 10:11:06 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/indieweb/2021/01/bookmark-hexagonal-grids.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>library</rssTags:subject>
+        </item>
+        <item>
+            <title>Chartist.js data from table</title>
+            <description>Chatting with a friend, a quick example of using a table as an input to Chartist.js</description>
+            <pubDate>Thu, 31 Dec 2020 07:55:53 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2020/12/chartist.js-data-from-table.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>javascript</rssTags:subject>
+            <rssTags:subject>indieweb</rssTags:subject>
+        </item>
+        <item>
+            <title>Media in Review</title>
+            <description>Looking at my media purchases for the year</description>
+            <pubDate>Fri, 25 Dec 2020 18:47:59 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2020/12/media-in-review.html</guid>
+            <rssTags:subject>colin</rssTags:subject>
+        </item>
+        <item>
+            <title>Like: The Apps I Use - George Nance</title>
+            <description>I love reading what other developers use. Obsidian looks _great_</description>
+            <pubDate>Thu, 24 Dec 2020 21:36:41 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/indieweb/2020/12/like-the-apps-i-use-george-nance.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>library</rssTags:subject>
+        </item>
+        <item>
+            <title>Behold the IndieWeb</title>
+            <description>This could be why I find it exciting</description>
+            <pubDate>Thu, 24 Dec 2020 11:20:09 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2020/12/behold-the-indieweb.html</guid>
+            <rssTags:subject>colin</rssTags:subject>
+        </item>
+        <item>
+            <title>Bookmark: What can you put in a CSS variable</title>
+            <description>Lots of suggestions here. I want to see if I can use this for link displays in a css style footnote</description>
+            <pubDate>Sun, 13 Dec 2020 07:56:38 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/indieweb/2020/12/bookmark-what-can-you-put-in-a-css-variable.html</guid>
+            <rssTags:subject>Code</rssTags:subject>
+            <rssTags:subject>css</rssTags:subject>
+        </item>
+        <item>
+            <title>Like: Grow the IndieWeb with Webmentions</title>
+            <description>More good indie web content</description>
+            <pubDate>Thu, 10 Dec 2020 21:26:02 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/indieweb/2020/12/like-grow-the-indieweb-with-webmentions.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>library</rssTags:subject>
+        </item>
+        <item>
+            <title>Slight redesign of home page</title>
+            <description>A little home page redesign is fun</description>
+            <pubDate>Sat, 05 Dec 2020 13:21:57 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2020/12/slight-redesign-of-home-page.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>colin</rssTags:subject>
+        </item>
+        <item>
+            <title>Bookmark: Good video on GitLab and CI/CD</title>
+            <description>I wish I&amp;#039;d seen this a while ago. A good writeup of practical GitLab + CI/CD.</description>
+            <pubDate>Tue, 24 Nov 2020 11:28:23 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/indieweb/2020/11/bookmark-good-video-on-gitlab-and-ci-cd.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>gitlab</rssTags:subject>
+            <rssTags:subject>continuous-integration</rssTags:subject>
+            <rssTags:subject>continuous-deployment</rssTags:subject>
+        </item>
+        <item>
+            <title>WILT: MySQL as a separate service in a PHP app container</title>
+            <description>Another quick one. Was struggling to get a mysql service up and running alongside a PHP container for a quick migrate/ translate thing. Way to do this is to use the docker host `host.docker.internal` </description>
+            <pubDate>Mon, 23 Nov 2020 13:11:22 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2020/11/wilt-mysql-as-a-separate-service-in-a-php-app-container.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>mysql</rssTags:subject>
+            <rssTags:subject>docker</rssTags:subject>
+            <rssTags:subject>php</rssTags:subject>
+        </item>
+        <item>
+            <title>WILT: Docker + artifactory authentication</title>
+            <description>Finally got local auth stored to pull down cached docker images from artifactory</description>
+            <pubDate>Mon, 23 Nov 2020 10:04:01 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2020/11/wilt-docker-artifactory-authentication.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>docker</rssTags:subject>
+            <rssTags:subject>artifactory</rssTags:subject>
+        </item>
+        <item>
+            <title>Brew file</title>
+            <description>Storing my current brewfile and thinking</description>
+            <pubDate>Mon, 23 Nov 2020 08:01:39 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2020/11/brew-file.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>brew</rssTags:subject>
+        </item>
+        <item>
+            <title>Bookmark: The Essential Project</title>
+            <description>Trying to get an own-use Architecture repository with Essential Project</description>
+            <pubDate>Fri, 20 Nov 2020 07:14:26 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/indieweb/2020/11/bookmark-the-essential-project.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>architecture</rssTags:subject>
+        </item>
+        <item>
+            <title>Bookmark:  Enterprise and Solution Architect training and certificates</title>
+            <description>Some good thoughts on Enterprise/ Solution architecture</description>
+            <pubDate>Mon, 16 Nov 2020 13:53:55 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/indieweb/2020/11/bookmark-enterprise-and-solution-architect-training-and-certificates.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>architecture</rssTags:subject>
+        </item>
+        <item>
+            <title>Nice things</title>
+            <description>Sometimes there are nice things</description>
+            <pubDate>Fri, 06 Nov 2020 15:34:16 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2020/11/nice-things.html</guid>
+            <rssTags:subject>colin</rssTags:subject>
+            <rssTags:subject>code</rssTags:subject>
+        </item>
+        <item>
+            <title>Bookmark: The lifecycle of an idea</title>
+            <description>Small thoughts on pivotal idea moments</description>
+            <pubDate>Thu, 05 Nov 2020 10:58:11 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2020/11/bookmark-the-lifecycle-of-an-idea.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>library</rssTags:subject>
+        </item>
+        <item>
+            <title>WILT: Regex for Cross Site</title>
+            <description>Regex suggestions for cross-site-request didn&amp;#039;t work, made one that did.</description>
+            <pubDate>Wed, 04 Nov 2020 08:07:30 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2020/11/wilt-regex-for-cross-site.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>regular-expression</rssTags:subject>
+        </item>
+        <item>
+            <title>Finished: Indivisible</title>
+            <description>A game with a great theme, wonderful music, fun gameplay, frustrating navigation</description>
+            <pubDate>Sun, 01 Nov 2020 10:06:48 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/review/2020/11/finished-indivisible.html</guid>
+            <rssTags:subject>colin</rssTags:subject>
+        </item>
+        <item>
+            <title>Bookmark: The Forever Project from Here Dragons Abound</title>
+            <description>Musing on &amp;quot;Forever Project&amp;quot; from the brain behind Here Dragons Abound and the auto map generator</description>
+            <pubDate>Wed, 28 Oct 2020 15:08:36 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2020/10/bookmark-the-forever-project-from-here-dragons-abound.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>colin</rssTags:subject>
+        </item>
+        <item>
+            <title>Read: Dark Emu</title>
+            <description>Well researched, well written, should be part of the Australian syllabus</description>
+            <pubDate>Sun, 25 Oct 2020 20:06:48 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/review/2020/10/read-dark-emu.html</guid>
+            <rssTags:subject>colin</rssTags:subject>
+        </item>
+        <item>
+            <title>Like: Excavating my former homepages - petermolnar.net</title>
+            <description>&amp;gt; My conclusions are simple: your homepage is called that for a reason. It&amp;#039;s a poster, a gallery, a window to you, out for anyone to visit, to see. It&amp;#039;s not a social media profile. It&amp;#039;s not a resume. </description>
+            <pubDate>Thu, 22 Oct 2020 20:06:48 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/indieweb/2020/10/like-excavating-my-former-homepages-petermolnar.net.html</guid>
+        </item>
+        <item>
+            <title>WILT: Brew Leaves</title>
+            <description>How to get your installed apps, so you can rebuild</description>
+            <pubDate>Tue, 20 Oct 2020 15:12:47 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2020/10/wilt-brew-leaves.html</guid>
+            <rssTags:subject>coding</rssTags:subject>
+        </item>
+        <item>
+            <title>Clean Slate PC</title>
+            <description>Reimaged work machine. How to recover?</description>
+            <pubDate>Sat, 17 Oct 2020 08:13:00 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2020/10/clean-slate-pc.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>setup</rssTags:subject>
+            <rssTags:subject>brew</rssTags:subject>
+        </item>
+        <item>
+            <title>The Eubangi Coconut</title>
+            <description>It&#39;s an old joke. It&#39;s a bad joke. But it&#39;s my joke.</description>
+            <pubDate>Tue, 13 Oct 2020 17:13:00 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2020/10/the-eubangi-coconut.html</guid>
+            <rssTags:subject>colin</rssTags:subject>
+            <rssTags:subject>puns</rssTags:subject>
+            <rssTags:subject>comedy</rssTags:subject>
+        </item>
+        <item>
+            <title>Returning to Cyberpulp</title>
+            <description>Returning to a sillier game</description>
+            <pubDate>Fri, 02 Oct 2020 23:13:00 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2020/10/returning-to-cyberpulp.html</guid>
+            <rssTags:subject>rpg</rssTags:subject>
+        </item>
+        <item>
+            <title>spatie/async: Easily run code asynchronously</title>
+            <description>To look at : easy parallelism in PHP</description>
+            <pubDate>Wed, 30 Sep 2020 15:09:45 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/indieweb/2020/09/spatie-async-easily-run-code-asynchronously.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>php</rssTags:subject>
+        </item>
+        <item>
+            <title>WILT: Visual Studio Code search/ replace case with regex</title>
+            <description>You can use flags in replace (e.g \U$1 to UpperCase the found flag)</description>
+            <pubDate>Fri, 25 Sep 2020 08:54:08 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2020/09/wilt-visual-studio-code-search-replace-case-with-regex.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>common-book</rssTags:subject>
+        </item>
+        <item>
+            <title>Dont Compare Averages</title>
+            <description>Some good charts and explanations of why to use them</description>
+            <pubDate>Fri, 25 Sep 2020 08:23:06 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/indieweb/2020/09/dont-compare-averages.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>library</rssTags:subject>
+        </item>
+        <item>
+            <title>How to integrate Cypress and Cucumber in your development flow in just a few weeks. | by Jordi | Medium</title>
+            <description>Cucumber+Cypress testing together</description>
+            <pubDate>Tue, 22 Sep 2020 16:09:24 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2020/09/how-to-integrate-cypress-and-cucumber-in-your-development-flow-in-just-a-few-weeks.-by-jordi-medium.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>testing</rssTags:subject>
+            <rssTags:subject>cucumber</rssTags:subject>
+        </item>
+        <item>
+            <title>The Social Web - BiteofanApple</title>
+            <description>Pine.Blog looks super interesting, going in the direction I feel the IndiSocial web should be going in. Neat.</description>
+            <pubDate>Tue, 22 Sep 2020 12:25:20 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2020/09/the-social-web-biteofanapple.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>indieweb</rssTags:subject>
+        </item>
+        <item>
+            <title>Like: The Right Number</title>
+            <description>A like of The Right Number</description>
+            <pubDate>Thu, 03 Sep 2020 11:47:21 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/indieweb/2020/09/like-the-right-number.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>library</rssTags:subject>
+        </item>
+        <item>
+            <title>WILT: Sharepoint Graph API</title>
+            <description>Learnings on Sharepoint Graph API</description>
+            <pubDate>Sat, 15 Aug 2020 18:29:48 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2020/08/wilt-sharepoint-graph-api.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>common-book</rssTags:subject>
+            <rssTags:subject>graph-api</rssTags:subject>
+            <rssTags:subject>sharepoint</rssTags:subject>
+        </item>
+        <item>
+            <title>Roleplaying Sliderverse</title>
+            <description>Picturing the various Roleplaying games as if they were an inconnected universe of systems</description>
+            <pubDate>Sat, 15 Aug 2020 10:37:06 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2020/08/roleplaying-sliderverse.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>rpg</rssTags:subject>
+        </item>
+        <item>
+            <title>Found by lost friends</title>
+            <description>Old Gamer Groups never die, they just have to save up for ressurection</description>
+            <pubDate>Wed, 12 Aug 2020 19:54:36 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2020/08/found-by-lost-friends.html</guid>
+            <rssTags:subject>rpg</rssTags:subject>
+            <rssTags:subject>colin</rssTags:subject>
+        </item>
+        <item>
+            <title>WILT: MS SQL Server on Docker (Linux) for PHP</title>
+            <description>Finally got MS SQL working on a docker+Php image</description>
+            <pubDate>Fri, 07 Aug 2020 13:13:10 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2020/08/wilt-ms-sql-server-on-docker-linux-for-php.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>docker</rssTags:subject>
+        </item>
+        <item>
+            <title>New Blog Tool</title>
+            <description>New blog tool, now with test cases</description>
+            <pubDate>Wed, 05 Aug 2020 20:20:00 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2020/08/new-blog-tool.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+        </item>
+        <item>
+            <title>RPGs and Statistics</title>
+            <description>Looking into how the die roll methods change chances of success/ failure</description>
+            <pubDate>Thu, 09 Jul 2020 22:14:00 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2020/07/rpgs-and-statistics.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>php</rssTags:subject>
+            <rssTags:subject>rpg</rssTags:subject>
+        </item>
+        <item>
+            <title>Dream Journal-ish</title>
+            <description>Dream crossed Dead By Daylight, Girl Genius, Sailor Moon and Werewolf: the Apocalypse. It was glorious</description>
+            <pubDate>Sat, 20 Jun 2020 08:15:22 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2020/06/dream-journal-ish.html</guid>
+            <rssTags:subject>colin</rssTags:subject>
+        </item>
+        <item>
+            <title>WILT: Pandoc with wkhtmltopdf</title>
+            <description>Finding more fun with Pandoc</description>
+            <pubDate>Fri, 19 Jun 2020 21:15:53 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2020/06/wilt-pandoc-with-wkhtmltopdf.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>pandoc</rssTags:subject>
+        </item>
+        <item>
+            <title>WILT: Visual Studio Code default task permissions</title>
+            <description>What to do if task editing suddenly gets permission stroppy.</description>
+            <pubDate>Thu, 18 Jun 2020 15:24:52 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2020/06/wilt-visual-studio-code-default-task-permissions.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>visual-studio-code</rssTags:subject>
+        </item>
+        <item>
+            <title>Plaidophile: Advice to young web developers</title>
+            <description>Good advice here</description>
+            <pubDate>Tue, 16 Jun 2020 07:28:59 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2020/06/plaidophile-advice-to-young-web-developers.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>library</rssTags:subject>
+        </item>
+        <item>
+            <title>The Ray Tracer Challenge - Now in Go ch. 6-8</title>
+            <description>Yup. Chapters got as hard as I remember</description>
+            <pubDate>Tue, 09 Jun 2020 22:12:19 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2020/06/the-ray-tracer-challenge-now-in-go-ch.-6-8.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>raytracer</rssTags:subject>
+            <rssTags:subject>go</rssTags:subject>
+        </item>
+        <item>
+            <title>Like: https://marcus.io/blog/making-rss-more-visible-again-with-slash-feeds</title>
+            <description>.</description>
+            <pubDate>Thu, 04 Jun 2020 18:27:49 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/indieweb/2020/06/like-https-marcus.io-blog-making-rss-more-visible-again-with-slash-feeds.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>library</rssTags:subject>
+        </item>
+        <item>
+            <title>The Ray Tracer Challenge - Now in Go</title>
+            <description>Chapter 1-5 in Go, the Raytracer Challenge</description>
+            <pubDate>Mon, 01 Jun 2020 19:30:58 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2020/06/the-ray-tracer-challenge-now-in-go.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>php</rssTags:subject>
+            <rssTags:subject>raytracer</rssTags:subject>
+        </item>
+        <item>
+            <title>Wellington Point</title>
+            <description>Took a break from coding, family trip to Wellington Point</description>
+            <pubDate>Sun, 31 May 2020 21:00:14 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2020/05/wellington-point.html</guid>
+            <rssTags:subject>colin</rssTags:subject>
+        </item>
+        <item>
+            <title>WILT: Go and Objects</title>
+            <description>Back playing with the RayTracer challenge, moved to Go</description>
+            <pubDate>Sun, 31 May 2020 10:29:28 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2020/05/wilt-go-and-objects.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>raytracer</rssTags:subject>
+            <rssTags:subject>go</rssTags:subject>
+        </item>
+        <item>
+            <title>Last acting for Copperheart</title>
+            <description>Recorded the last lines for Copperheart Season 1</description>
+            <pubDate>Wed, 27 May 2020 19:14:51 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2020/05/last-acting-for-copperheart.html</guid>
+        </item>
+        <item>
+            <title>Breakfast pancakes</title>
+            <description>Mrs von Explaino was looking at a local restaraunt&#39;s pancakes. So I made some</description>
+            <pubDate>Sat, 23 May 2020 10:14:30 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2020/05/breakfast-pancakes.html</guid>
+            <rssTags:subject>colin</rssTags:subject>
+        </item>
+        <item>
+            <title>Please Provide RSS Feeds - Ali Reza Hayati</title>
+            <description>Agreed. Still haven&amp;#039;t found anything as convenient as RSS feeds. Twitter feeds and Facebook feeds I can&amp;#039;t really curate. I can add some things I want; but Twitter/ Facebook decides if I get to see the</description>
+            <pubDate>Fri, 22 May 2020 23:25:06 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/indieweb/2020/05/please-provide-rss-feeds-ali-reza-hayati.html</guid>
+        </item>
+        <item>
+            <title>Like: https://chrisbrakebill.com/1590019650921</title>
+            <description>I agree</description>
+            <pubDate>Fri, 22 May 2020 23:19:54 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/indieweb/2020/05/like-https-chrisbrakebill.com-1590019650921.html</guid>
+        </item>
+        <item>
+            <title>Gatecrashed IndieWeb East Coast meetup</title>
+            <description>I&amp;#039;m on the East Coast. Australian East Coast. </description>
+            <pubDate>Fri, 22 May 2020 11:47:37 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2020/05/gatecrashed-indieweb-east-coast-meetup.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>indieweb</rssTags:subject>
+        </item>
+        <item>
+            <title>WILT: Parameters in LDAP Filters</title>
+            <description>How to include parenthesis in LDAP parameters - escaping using \28 and \29</description>
+            <pubDate>Wed, 20 May 2020 12:16:34 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2020/05/wilt-parameters-in-ldap-filters.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>ldap</rssTags:subject>
+        </item>
+        <item>
+            <title>Gallery 2020 - MK IV</title>
+            <description>Argh! Unfortunate srcset discovery leads to roll-back and improvement</description>
+            <pubDate>Wed, 13 May 2020 08:48:35 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2020/05/gallery-2020-mk-iv.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>blog</rssTags:subject>
+            <rssTags:subject>gallery</rssTags:subject>
+            <rssTags:subject>css</rssTags:subject>
+        </item>
+        <item>
+            <title>Gallery 2020 - MK III</title>
+            <description>Some great advise from fluffy has reduced images and increased semanticness. Chuffed!</description>
+            <pubDate>Tue, 12 May 2020 18:47:35 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2020/05/gallery-2020-mk-iii.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>blog</rssTags:subject>
+            <rssTags:subject>gallery</rssTags:subject>
+            <rssTags:subject>css</rssTags:subject>
+        </item>
+        <item>
+            <title>Gallery 2020 - MK II</title>
+            <description>OK, found flaws with the previous gallery attempt. New gallery, looks cushioniner, still no JS</description>
+            <pubDate>Sun, 10 May 2020 22:05:05 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2020/05/gallery-2020-mk-ii.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>blog</rssTags:subject>
+            <rssTags:subject>gallery</rssTags:subject>
+            <rssTags:subject>css</rssTags:subject>
+        </item>
+        <item>
+            <title>Gears</title>
+            <description>Bartosz Ciechanowski describes how gears work</description>
+            <pubDate>Thu, 07 May 2020 07:40:56 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2020/05/gears.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>steampunk</rssTags:subject>
+        </item>
+        <item>
+            <title>Gallery 2020 - MK I</title>
+            <description>Working on redoing my post-image-gallery whatist to be pure CSS. An interesting experiment, help welcomed.</description>
+            <pubDate>Mon, 04 May 2020 22:19:35 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2020/05/gallery-2020-mk-i.html</guid>
+            <rssTags:subject>Colin</rssTags:subject>
+        </item>
+        <item>
+            <title>Scribbly Gum park inspires Scribbly Gum cake</title>
+            <description>Went to some sparsely populated parks this weekend. Also, Fools Mothers Day.</description>
+            <pubDate>Sun, 03 May 2020 18:33:02 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2020/05/scribbly-gum-park-inspires-scribbly-gum-cake.html</guid>
+            <rssTags:subject>Colin</rssTags:subject>
+        </item>
+        <item>
+            <title>WILT: Finding specific lines that do not contain words</title>
+            <description>How to use RegExp to find a string without specific words, now macroed into Visual Studio Code</description>
+            <pubDate>Thu, 30 Apr 2020 17:29:34 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2020/04/wilt-finding-specific-lines-that-do-not-contain-words.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>visual-studio-code</rssTags:subject>
+            <rssTags:subject>regexp</rssTags:subject>
+        </item>
+        <item>
+            <title>Jack and the GreenField</title>
+            <description>Jack in the Beanstalk meets the Internet Giants</description>
+            <pubDate>Tue, 28 Apr 2020 13:19:33 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2020/04/jack-and-the-greenfield.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>comedy</rssTags:subject>
+        </item>
+        <item>
+            <title>Parody: Covid Connection</title>
+            <description>Rainbow Connection, mushed into a Corona parody song</description>
+            <pubDate>Tue, 28 Apr 2020 08:19:55 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2020/04/parody-covid-connection.html</guid>
+            <rssTags:subject>comedy</rssTags:subject>
+        </item>
+        <item>
+            <title>Scratch an itch: Presence Blink</title>
+            <description>Now I am at home, I can revive my blink presence light</description>
+            <pubDate>Mon, 27 Apr 2020 16:22:45 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2020/04/scratch-an-itch-presence-blink.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>colin</rssTags:subject>
+        </item>
+        <item>
+            <title>Advise: Graphs and Information?</title>
+            <description>Playing with budgets and meaningful visualisations. Help wanted</description>
+            <pubDate>Sun, 26 Apr 2020 16:04:30 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2020/04/advise-graphs-and-information-.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>php</rssTags:subject>
+            <rssTags:subject>advise</rssTags:subject>
+        </item>
+        <item>
+            <title>Chakchouka</title>
+            <description>Trying to cook something new - Chakchouka</description>
+            <pubDate>Sat, 25 Apr 2020 08:30:54 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2020/04/chakchouka.html</guid>
+            <rssTags:subject>colin</rssTags:subject>
+        </item>
+        <item>
+            <title>8 Unbelievable Things You Never Knew About Tracking</title>
+            <description> The web, and big tech at large, is tracking our every move, habit, and facial expression. As developers who are also users, we both contribute to the surveillance system and are exploited by it...</description>
+            <pubDate>Fri, 24 Apr 2020 07:49:11 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2020/04/8-unbelievable-things-you-never-knew-about-tracking.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+        </item>
+        <item>
+            <title>WILT: Wix blog RSS link</title>
+            <description>Wix has an auto-RSS of a blog, for pages that lack that link</description>
+            <pubDate>Tue, 14 Apr 2020 10:24:35 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2020/04/wilt-wix-blog-rss-link.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>common-book</rssTags:subject>
+        </item>
+        <item>
+            <title>Fliers in the foyer. – alis.me</title>
+            <description>Reply: Fliers in the foyer.</description>
+            <pubDate>Sun, 12 Apr 2020 07:53:47 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2020/04/fliers-in-the-foyer.-alis.me.html</guid>
+        </item>
+        <item>
+            <title>The Cog is Dead - BAD GUY (Billie Eilish steampunk parody) - YouTube</title>
+            <description>This is such a earworm for me right now, and I hope it stays for a while</description>
+            <pubDate>Mon, 06 Apr 2020 20:38:00 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2020/04/the-cog-is-dead-bad-guy-billie-eilish-steampunk-parody-youtube.html</guid>
+            <rssTags:subject>steampunk</rssTags:subject>
+        </item>
+        <item>
+            <title>Welcome to STrEAMBALL! - Feline &amp; Strange</title>
+            <description>STrEAMBALL! A steampunk event turned virtual+livestreamed worldwide to cope with COVID-19. You can still watch it and support the artists</description>
+            <pubDate>Sun, 05 Apr 2020 21:34:15 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2020/04/welcome-to-streamball-feline-strange.html</guid>
+            <rssTags:subject>steampunk</rssTags:subject>
+            <rssTags:subject>music</rssTags:subject>
+        </item>
+        <item>
+            <title>Giving Discord gaming a go</title>
+            <description>Social distancing. NOT stopping gaming</description>
+            <pubDate>Fri, 03 Apr 2020 20:00:12 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2020/04/giving-discord-gaming-a-go.html</guid>
+            <rssTags:subject>colin</rssTags:subject>
+            <rssTags:subject>rpg</rssTags:subject>
+        </item>
+        <item>
+            <title>Zettelkasten to Jira</title>
+            <description>Got my Zettelkasten project/ operational tasks syncing with Jira for visibility. Nice</description>
+            <pubDate>Wed, 01 Apr 2020 20:48:46 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2020/04/zettelkasten-to-jira.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>common-book</rssTags:subject>
+        </item>
+        <item>
+            <title>IT Architecture Review: The Basics, The Approach, The Outcome</title>
+            <description>A good description of what architecture is, or should be. Old, but good.</description>
+            <pubDate>Mon, 30 Mar 2020 15:20:40 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/indieweb/2020/03/it-architecture-review-the-basics-the-approach-the-outcome.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>like</rssTags:subject>
+        </item>
+        <item>
+            <title>I am not a great handyman</title>
+            <description>My house is going to suffer during this quarantine</description>
+            <pubDate>Sat, 28 Mar 2020 12:28:45 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2020/03/i-am-not-a-great-handyman.html</guid>
+            <rssTags:subject>colin</rssTags:subject>
+        </item>
+        <item>
+            <title>Practicing Social Distance</title>
+            <description>Stay at home play days</description>
+            <pubDate>Sat, 21 Mar 2020 22:29:40 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2020/03/practicing-social-distance.html</guid>
+            <rssTags:subject>colin</rssTags:subject>
+        </item>
+        <item>
+            <title>Like: Allow Satan into your life: chmod 666 my_soul.txt. The permissions of the beast.</title>
+            <description>Like: Allow Satan into your life: chmod 666 my_soul.txt. The permissions of the beast.</description>
+            <pubDate>Sat, 21 Mar 2020 16:42:37 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2020/03/like-allow-satan-into-your-life-chmod-666-my-soul.txt.-the-permissions-of-the-beast..html</guid>
+        </item>
+        <item>
+            <title>Facial hair fun</title>
+            <description>It&amp;#039;s a siege/ quarantine moustache</description>
+            <pubDate>Wed, 18 Mar 2020 08:10:26 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2020/03/facial-hair-fun.html</guid>
+            <rssTags:subject>colin</rssTags:subject>
+        </item>
+        <item>
+            <title>Like: OMG I’m working remotely, now what?!</title>
+            <description>Very useful information given the Corona virus and everything</description>
+            <pubDate>Tue, 17 Mar 2020 22:42:26 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2020/03/like-omg-i-m-working-remotely-now-what-.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>corona</rssTags:subject>
+        </item>
+        <item>
+            <title>Like: Building a CSS-only image gallery (with fallbacks)</title>
+            <description>https://www.chenhuijing.com/blog/building-a-css-only-image-gallery/ - I&amp;#039;d been pondering this sort of thing using :focus and :before. This is much nicer. </description>
+            <pubDate>Tue, 17 Mar 2020 09:04:32 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2020/03/like-building-a-css-only-image-gallery-with-fallbacks-.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>library</rssTags:subject>
+        </item>
+        <item>
+            <title>Working on post interface</title>
+            <description>Trying to make a post-interface to my site without opening up a login interface</description>
+            <pubDate>Sun, 15 Mar 2020 17:27:44 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2020/03/working-on-post-interface.html</guid>
+            <rssTags:subject>colin</rssTags:subject>
+            <rssTags:subject>code</rssTags:subject>
+        </item>
+        <item>
+            <title>Markdown and yaml</title>
+            <description>Yaml is great as pre-matter AND embedded meaning</description>
+            <pubDate>Thu, 27 Feb 2020 13:40:00 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2020/02/markdown-and-yaml.html</guid>
+            <rssTags:subject>markdown</rssTags:subject>
+            <rssTags:subject>yaml</rssTags:subject>
+            <rssTags:subject>code</rssTags:subject>
+        </item>
+        <item>
+            <title>OData for Project Online</title>
+            <description>I would not have thought getting Project Online data via a published API would be this hard</description>
+            <pubDate>Fri, 21 Feb 2020 22:52:15 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2020/02/odata-for-project-online.html</guid>
+            <rssTags:subject>odata</rssTags:subject>
+            <rssTags:subject>api</rssTags:subject>
+            <rssTags:subject>rest</rssTags:subject>
+            <rssTags:subject>microsoft</rssTags:subject>
+            <rssTags:subject>project online</rssTags:subject>
+            <rssTags:subject>code</rssTags:subject>
+        </item>
+        <item>
+            <title>Digital groundskeeping</title>
+            <description>Looking at coding from a different viewpoint</description>
+            <pubDate>Fri, 14 Feb 2020 10:57:00 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2020/02/digital-groundskeeping.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>common-book</rssTags:subject>
+        </item>
+        <item>
+            <title>Git status</title>
+            <description>Finally I&#39;ve read how to get a proper git diff/ status</description>
+            <pubDate>Tue, 11 Feb 2020 18:52:15 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2020/02/git-status.html</guid>
+            <rssTags:subject>git</rssTags:subject>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>common-book</rssTags:subject>
+        </item>
+        <item>
+            <title>WILT: SVG for pie charts</title>
+            <description>What I Learned Today (WILT) in using SVG to make pie charts</description>
+            <pubDate>Fri, 31 Jan 2020 20:23:02 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2020/01/wilt-svg-for-pie-charts.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>php</rssTags:subject>
+            <rssTags:subject>composer</rssTags:subject>
+            <rssTags:subject>common-book</rssTags:subject>
+        </item>
+        <item>
+            <title>First holiday, Kondalilla National Park</title>
+            <description>Quick trip to Kondalilla National Park</description>
+            <pubDate>Sun, 26 Jan 2020 10:08:21 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2020/01/first-holiday-kondalilla-national-park.html</guid>
+            <rssTags:subject>colin</rssTags:subject>
+        </item>
+        <item>
+            <title>Zettelkasten</title>
+            <description>Zettelkasten: An interrelated note/ idea collating method</description>
+            <pubDate>Sun, 19 Jan 2020 16:25:27 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2020/01/zettelkasten.html</guid>
+            <rssTags:subject>colin</rssTags:subject>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>common-book</rssTags:subject>
+        </item>
+        <item>
+            <title>New cafe</title>
+            <description>Steampunk cafe at camping store</description>
+            <pubDate>Sun, 12 Jan 2020 17:36:55 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2020/01/new-cafe.html</guid>
+            <rssTags:subject>steampunk</rssTags:subject>
+        </item>
+        <item>
+            <title>Podcasts I like, now</title>
+            <description>Thought I&#39;d share the podcasts currently on subscription in my podcatcher</description>
+            <pubDate>Thu, 02 Jan 2020 21:44:18 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2020/01/podcasts-i-like-now.html</guid>
+            <rssTags:subject>colin</rssTags:subject>
+        </item>
+        <item>
+            <title>Docker Progresss 1/?</title>
+            <description>More forays into Docker-dom.</description>
+            <pubDate>Wed, 01 Jan 2020 16:41:35 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2020/01/docker-progresss-1-.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>php</rssTags:subject>
+            <rssTags:subject>docker</rssTags:subject>
+            <rssTags:subject>common-book</rssTags:subject>
+        </item>
+        <item>
+            <title>Re(rerererer)-starting Docker</title>
+            <description>Damnit, I have to try getting Docker working again</description>
+            <pubDate>Sun, 24 Nov 2019 00:00:00 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2019/11/re-rerererer-starting-docker.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>php</rssTags:subject>
+            <rssTags:subject>docker</rssTags:subject>
+            <rssTags:subject>common-book</rssTags:subject>
+        </item>
+        <item>
+            <title>Parody: What About Men</title>
+            <description>Sometimes the brain doesn&#39;t stop until you write a parody of What About Me.</description>
+            <pubDate>Thu, 14 Nov 2019 00:00:00 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2019/11/parody-what-about-men.html</guid>
+            <rssTags:subject>comedy</rssTags:subject>
+            <rssTags:subject>parody</rssTags:subject>
+        </item>
+        <item>
+            <title>Reply: You Choose</title>
+            <description>You Choose</description>
+            <pubDate>Wed, 30 Oct 2019 11:50:51 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2019/10/reply-you-choose.html</guid>
+        </item>
+        <item>
+            <title>Crows vs Possum</title>
+            <description>This morning&#39;s entertainment was Two Crows who took umbridge sharing a tree with a possum</description>
+            <pubDate>Sun, 20 Oct 2019 11:23:00 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2019/10/crows-vs-possum.html</guid>
+            <rssTags:subject>colin</rssTags:subject>
+        </item>
+        <item>
+            <title>Visit to Cobb &amp; Co, Toowoomba</title>
+            <description>Visit to the Cobb and Co Coach museum</description>
+            <pubDate>Mon, 07 Oct 2019 21:17:00 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2019/10/visit-to-cobb-co-toowoomba.html</guid>
+            <rssTags:subject>steampunk</rssTags:subject>
+        </item>
+        <item>
+            <title>Control</title>
+            <description>Fantastic premise. Interesting powers. Rubbish gamebalance</description>
+            <pubDate>Sat, 05 Oct 2019 16:00:00 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/review/2019/10/control.html</guid>
+            <rssTags:subject>review</rssTags:subject>
+            <rssTags:subject>game</rssTags:subject>
+        </item>
+        <item>
+            <title>Soundtouch for Podcasts without iTunes</title>
+            <description>Trying to get my SoundTouch to be useful for Podcasts, now I&#39;m not using iTunes</description>
+            <pubDate>Sat, 05 Oct 2019 14:24:00 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2019/10/soundtouch-for-podcasts-without-itunes.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>php</rssTags:subject>
+        </item>
+        <item>
+            <title>Gatekept</title>
+            <description>Alis Franklin says exactly what I would have liked to have said, but better.</description>
+            <pubDate>Sun, 29 Sep 2019 19:13:00 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2019/09/gatekept.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>commmon-book</rssTags:subject>
+        </item>
+        <item>
+            <title>Raytracer Challenge</title>
+            <description>Step by step, test driven development approach to Raytracing</description>
+            <pubDate>Sat, 28 Sep 2019 15:15:00 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/review/2019/09/raytracer-challenge.html</guid>
+            <rssTags:subject>review</rssTags:subject>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>raytracer</rssTags:subject>
+        </item>
+        <item>
+            <title>Ipswich trip</title>
+            <description>The family took a trip to Ipswich</description>
+            <pubDate>Thu, 26 Sep 2019 22:50:00 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2019/09/ipswich-trip.html</guid>
+            <rssTags:subject>colin</rssTags:subject>
+        </item>
+        <item>
+            <title>The Ray Tracer Challenge - review soon - part b</title>
+            <description>Still working on the book. Man it&#39;s gotten tough.</description>
+            <pubDate>Thu, 26 Sep 2019 10:50:00 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2019/09/the-ray-tracer-challenge-review-soon-part-b.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>php</rssTags:subject>
+            <rssTags:subject>rust</rssTags:subject>
+            <rssTags:subject>raytracer</rssTags:subject>
+        </item>
+        <item>
+            <title>Repost: Why we did a speed meet at our conference and why you should too! </title>
+            <description>Using &#39;speed dating&#39; style meeting to break the ice at conferences. https://llewellynfalco.blogspot.com/2017/03/why-we-did-speed-meet-at-our-conference.html</description>
+            <pubDate>Sat, 07 Sep 2019 12:54:00 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2019/09/repost-why-we-did-a-speed-meet-at-our-conference-and-why-you-should-too-.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>vault</rssTags:subject>
+        </item>
+        <item>
+            <title>The Ray Tracer Challenge - review soon</title>
+            <description>I&#39;m working through a book called the Ray Trace Challenge. Excellent for BDD. And someone used it to build a Ray Tracer in Excel. Madness.</description>
+            <pubDate>Wed, 04 Sep 2019 11:50:00 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2019/09/the-ray-tracer-challenge-review-soon.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>php</rssTags:subject>
+            <rssTags:subject>raytracer</rssTags:subject>
+        </item>
+        <item>
+            <title>Starfield progress display</title>
+            <description>A bit of fun. I had a process that took a while. Connected to a remote server, reverse-wrangled an auth based on React, then downloaded a JSON. All it did was say &amp;quot;X entries processed&amp;quot; when complete. So, to help my brain, I threw together a quick thing to create a starfield, with one star per entry...</description>
+            <pubDate>Mon, 26 Aug 2019 17:20:00 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2019/08/starfield-progress-display.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>silly</rssTags:subject>
+        </item>
+        <item>
+            <title>Feature images</title>
+            <description>Adjusting the site generator to add a feature image.</description>
+            <pubDate>Sun, 18 Aug 2019 17:20:00 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2019/08/feature-images.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>common-book</rssTags:subject>
+        </item>
+        <item>
+            <title>Three Consent Monkeys</title>
+            <description>Say no, See no, Hear no</description>
+            <pubDate>Sun, 14 Jul 2019 09:48:00 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2019/07/three-consent-monkeys.html</guid>
+            <rssTags:subject>life</rssTags:subject>
+        </item>
+        <item>
+            <title>Nixie Tubes</title>
+            <description>Trigerable nixie SVGs</description>
+            <pubDate>Sun, 23 Jun 2019 11:30:00 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2019/06/nixie-tubes.html</guid>
+            <rssTags:subject>steampulp</rssTags:subject>
+            <rssTags:subject>nixie</rssTags:subject>
+        </item>
+        <item>
+            <title>Days since last fatal error</title>
+            <description>In the spirit of &#34;days since last accident&#34;, I&#39;m now tracking code boo-boos.</description>
+            <pubDate>Wed, 19 Jun 2019 23:00:00 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2019/06/days-since-last-fatal-error.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>common-book</rssTags:subject>
+            <rssTags:subject>php</rssTags:subject>
+        </item>
+        <item>
+            <title>New designs</title>
+            <description>I&#39;ve made two new pendants on Shapeways</description>
+            <pubDate>Sat, 01 Jun 2019 10:00:00 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2019/06/new-designs.html</guid>
+            <rssTags:subject>steampulp</rssTags:subject>
+            <rssTags:subject>equality</rssTags:subject>
+        </item>
+        <item>
+            <title>Code of the Coder Poster in SVG</title>
+            <description>Finally working on making my poster. Using SVG. Because of course.</description>
+            <pubDate>Sun, 19 May 2019 23:37:41 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2019/05/code-of-the-coder-poster-in-svg.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>code-of-the-coder</rssTags:subject>
+        </item>
+        <item>
+            <title>Penny Dreadful</title>
+            <description>Penny Dreadful, originally a web serial, now released in eBook</description>
+            <pubDate>Wed, 08 May 2019 08:17:00 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/review/2019/05/penny-dreadful.html</guid>
+            <rssTags:subject>review</rssTags:subject>
+            <rssTags:subject>rpg</rssTags:subject>
+            <rssTags:subject>werewolf</rssTags:subject>
+        </item>
+        <item>
+            <title>May Playing</title>
+            <description>Toying around with my home page some more.</description>
+            <pubDate>Sat, 04 May 2019 22:17:00 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2019/05/may-playing.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>blog</rssTags:subject>
+        </item>
+        <item>
+            <title>Role-taking vs. Role-making</title>
+            <description>I like gaming, but some gaming doesn&#39;t feel like gaming. I try to gamely gameify games.</description>
+            <pubDate>Thu, 25 Apr 2019 09:20:53 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2019/04/role-taking-vs.-role-making.html</guid>
+            <rssTags:subject>rpg</rssTags:subject>
+        </item>
+        <item>
+            <title>Steampunk is dead, who told steampunk?</title>
+            <description>Nick Ottens, of The Gatehouse and Gatehouse Gazette, contends that steampunk is dead. My response follows.</description>
+            <pubDate>Fri, 19 Apr 2019 09:02:25 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2019/04/steampunk-is-dead-who-told-steampunk-.html</guid>
+            <rssTags:subject>steampunk</rssTags:subject>
+        </item>
+        <item>
+            <title>PowerBI/ PowerQuery</title>
+            <description>Leaping brain first into using PowerBI to create a graph, pivoting data and customising columns</description>
+            <pubDate>Mon, 18 Mar 2019 09:32:50 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2019/03/powerbi-powerquery.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>learning</rssTags:subject>
+            <rssTags:subject>sharepoint</rssTags:subject>
+            <rssTags:subject>powerbi</rssTags:subject>
+            <rssTags:subject>svg</rssTags:subject>
+            <rssTags:subject>powerapps</rssTags:subject>
+            <rssTags:subject>common-book</rssTags:subject>
+        </item>
+        <item>
+            <title>Graphs via SVG</title>
+            <description>Using an SVG file + JS to make embedded graphs</description>
+            <pubDate>Sun, 10 Mar 2019 10:04:00 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2019/03/graphs-via-svg.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>javascript</rssTags:subject>
+            <rssTags:subject>svg</rssTags:subject>
+        </item>
+        <item>
+            <title>In reply to Adactio, Marty&#39;s Mashup</title>
+            <description>Andy Clarke&#39;s book Hardboiled Web Design had detective novel asthetics and quotes. Does that count? Haven&#39;t seen inside his new Art Direction for the Web to see if it&#39;s more than just the cover.</description>
+            <pubDate>Tue, 26 Feb 2019 20:11:00 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2019/02/in-reply-to-adactio-marty-s-mashup.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>indieweb</rssTags:subject>
+        </item>
+        <item>
+            <title>More SVG stuff</title>
+            <description>Tiny Machine.</description>
+            <pubDate>Fri, 15 Feb 2019 17:14:00 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2019/02/more-svg-stuff.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>experimentation</rssTags:subject>
+        </item>
+        <item>
+            <title>Playing with SVG and Animations</title>
+            <description>Playing around with delighters for my web site. This time: SVG animations.</description>
+            <pubDate>Sat, 09 Feb 2019 21:14:00 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2019/02/playing-with-svg-and-animations.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>experimentation</rssTags:subject>
+        </item>
+        <item>
+            <title>Leo Moracchioli</title>
+            <description>Leo Moracchioli creates metal versions of songs.</description>
+            <pubDate>Fri, 11 Jan 2019 09:24:00 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/review/2019/01/leo-moracchioli.html</guid>
+            <rssTags:subject>review</rssTags:subject>
+            <rssTags:subject>somethingpunk</rssTags:subject>
+            <rssTags:subject>metal</rssTags:subject>
+        </item>
+        <item>
+            <title>Squash and a Squeeze</title>
+            <description>Latest installment of Nursery Rhymes for Upper Management: A Squash and a Squeeze</description>
+            <pubDate>Wed, 09 Jan 2019 17:22:00 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2019/01/squash-and-a-squeeze.html</guid>
+            <rssTags:subject>parody</rssTags:subject>
+            <rssTags:subject>comedy</rssTags:subject>
+            <rssTags:subject>management</rssTags:subject>
+            <rssTags:subject>code</rssTags:subject>
+        </item>
+        <item>
+            <title>Now pages</title>
+            <description>Thinking of joining the Now page movement</description>
+            <pubDate>Sun, 06 Jan 2019 10:42:00 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2019/01/now-pages.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>blog</rssTags:subject>
+        </item>
+        <item>
+            <title>Happy New Years, 2019</title>
+            <description>A happy new year to you</description>
+            <pubDate>Tue, 01 Jan 2019 21:51:00 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2019/01/happy-new-years-2019.html</guid>
+            <rssTags:subject>Colin</rssTags:subject>
+        </item>
+        <item>
+            <title>CodeStats</title>
+            <description>CodeStats, a good replacement for Codeivate</description>
+            <pubDate>Thu, 27 Dec 2018 20:28:00 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/review/2018/12/codestats.html</guid>
+            <rssTags:subject>review</rssTags:subject>
+            <rssTags:subject>code</rssTags:subject>
+        </item>
+        <item>
+            <title>Copperheart Trailer</title>
+            <description>YAY!</description>
+            <pubDate>Thu, 27 Dec 2018 15:38:00 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2018/12/copperheart-trailer.html</guid>
+            <rssTags:subject>clockwork looking glass</rssTags:subject>
+            <rssTags:subject>clockwork pandora</rssTags:subject>
+            <rssTags:subject>michael j rigg</rssTags:subject>
+            <rssTags:subject>steampunk</rssTags:subject>
+            <rssTags:subject>podcast</rssTags:subject>
+            <rssTags:subject>EDN6174</rssTags:subject>
+            <rssTags:subject>copperheart</rssTags:subject>
+            <rssTags:subject>steamrollers adventure podcast</rssTags:subject>
+        </item>
+        <item>
+            <title>Microformats tinkering</title>
+            <description>I have a strong like for Microformats.</description>
+            <pubDate>Mon, 24 Dec 2018 19:11:00 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2018/12/microformats-tinkering.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>microformats</rssTags:subject>
+            <rssTags:subject>common-book</rssTags:subject>
+        </item>
+        <item>
+            <title>Copperheart: a Rigg Stories Audiodrama</title>
+            <description>I have been waiting ages to be able to reveal this bit of exciting steampunk newsery. I&#39;m in a podcast! The credits page has been officially released as of today.</description>
+            <pubDate>Mon, 17 Dec 2018 05:39:00 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2018/12/copperheart-a-rigg-stories-audiodrama.html</guid>
+            <rssTags:subject>clockwork looking glass</rssTags:subject>
+            <rssTags:subject>clockwork pandora</rssTags:subject>
+            <rssTags:subject>michael j rigg</rssTags:subject>
+            <rssTags:subject>steampunk</rssTags:subject>
+            <rssTags:subject>podcast</rssTags:subject>
+            <rssTags:subject>EDN6174</rssTags:subject>
+            <rssTags:subject>copperheart</rssTags:subject>
+            <rssTags:subject>steamrollers adventure podcast</rssTags:subject>
+        </item>
+        <item>
+            <title>Post Tumblr</title>
+            <description>RSS/ Atom feeds already work great for sharing content. I’ve never stopped having an RSS reader and keep up with tonnes of blogs and comics that way. All my blogs have RSS feeds because syndication in this way is just easier, and reading things like comics/ big articles is better RSS fed than Tumblr fed...</description>
+            <pubDate>Sat, 08 Dec 2018 08:22:12 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2018/12/post-tumblr.html</guid>
+            <rssTags:subject>tumblr</rssTags:subject>
+            <rssTags:subject>rss</rssTags:subject>
+            <rssTags:subject>syndication</rssTags:subject>
+            <rssTags:subject>indieweb</rssTags:subject>
+        </item>
+        <item>
+            <title>Playing with Symfony4</title>
+            <description>I miss Silex.</description>
+            <pubDate>Thu, 29 Nov 2018 12:03:00 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2018/11/playing-with-symfony4.html</guid>
+            <rssTags:subject>Code</rssTags:subject>
+            <rssTags:subject>Silex</rssTags:subject>
+        </item>
+        <item>
+            <title>Code of the Coder</title>
+            <description>It&#39;s taken me a long time, but I&#39;ve finally finished and published my book</description>
+            <pubDate>Mon, 12 Nov 2018 13:05:00 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2018/11/code-of-the-coder.html</guid>
+            <rssTags:subject>book</rssTags:subject>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>comedy</rssTags:subject>
+        </item>
+        <item>
+            <title>Nearly there</title>
+            <description>I&#39;ve nearly got this working.</description>
+            <pubDate>Fri, 02 Nov 2018 19:22:34 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2018/11/nearly-there.html</guid>
+        </item>
+        <item>
+            <title>(Project) Turn-around</title>
+            <description>With apologies to Bonnie Tyler</description>
+            <pubDate>Fri, 26 Oct 2018 14:41:00 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2018/10/-project-turn-around.html</guid>
+            <rssTags:subject>Code</rssTags:subject>
+            <rssTags:subject>parody</rssTags:subject>
+            <rssTags:subject>comedy</rssTags:subject>
+        </item>
+        <item>
+            <title>BitBucket for Blogging?</title>
+            <description>So I&#39;ve been inspired by some super-smart tech people on my Twitter timeline to see if I can replace my blogging solution with something much simpler. A Static blog makes sense to me, why load the same dang thing from the database all the time when it changes rarely?</description>
+            <pubDate>Wed, 17 Oct 2018 00:00:00 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2018/10/bitbucket-for-blogging-.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>blog</rssTags:subject>
+        </item>
+        <item>
+            <title>Changing Ways</title>
+            <description>I’m a big fan of Werewolf the Apocalypse. The Onyx Path created W20 edition (2oth anniversary) was a masterpiece of modernization, taking a fatalistic &amp;quot;We&#39;re doomed, but we&#39;re going down fighting&amp;quot; and making it &amp;quot;We are mostly doomed, but if we don&#39;t give in there&#39;s a chance.&amp;quot; Giving the...</description>
+            <pubDate>Tue, 02 Oct 2018 08:00:00 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2018/10/changing-ways.html</guid>
+            <rssTags:subject>Not in my fandom</rssTags:subject>
+            <rssTags:subject>RPG</rssTags:subject>
+            <rssTags:subject>sexuality</rssTags:subject>
+            <rssTags:subject>spectrum</rssTags:subject>
+            <rssTags:subject>werewolf the apocalypse</rssTags:subject>
+        </item>
+        <item>
+            <title>Pandoc</title>
+            <description>I&#39;ve been experimenting with Pandoc, a tool for converting between document formats. At work I worked out how to convert from Markdown into Word for automating a number of imports. At home I&#39;ve started working on getting some cool Word templates for self-publishing of Tech and RPG books. It... works really...</description>
+            <pubDate>Thu, 06 Sep 2018 07:13:47 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2018/09/pandoc.html</guid>
+            <rssTags:subject>pandoc</rssTags:subject>
+            <rssTags:subject>self-publishing</rssTags:subject>
+            <rssTags:subject>Writing</rssTags:subject>
+        </item>
+        <item>
+            <title>Seven Seals of Software Review</title>
+            <description>I watched as the change representative opened the first of the seven seals. Then I saw one of the four living approvers mail in a text like thunder &amp;quot;System Architecture!&amp;quot; I looked, and there before me was a blank page! Its author held a red pen, and he was given a stamp, and he rode out like an...</description>
+            <pubDate>Mon, 11 Jun 2018 12:59:40 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2018/06/seven-seals-of-software-review.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>comedy</rssTags:subject>
+        </item>
+        <item>
+            <title>GURPS character generator revamped</title>
+            <description>The GURPS character generator code has had an entweakening, using some new lessons learned. It also has, after demand, a PDF output! Please feel free to toy, test and tell me what I&#39;ve done wrong.</description>
+            <pubDate>Tue, 06 Feb 2018 22:34:14 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2018/02/gurps-character-generator-revamped.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>php</rssTags:subject>
+            <rssTags:subject>javascript</rssTags:subject>
+            <rssTags:subject>rpg</rssTags:subject>
+        </item>
+        <item>
+            <title>Parody: Host in the Cloud</title>
+            <description>With apologies to all artists behind Send in the Clowns. A 10-minute-to-write parody.</description>
+            <pubDate>Mon, 29 Jan 2018 20:07:30 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2018/01/parody-host-in-the-cloud.html</guid>
+            <rssTags:subject>comedy</rssTags:subject>
+            <rssTags:subject>host in the cloud</rssTags:subject>
+            <rssTags:subject>parody</rssTags:subject>
+            <rssTags:subject>send in the clowns</rssTags:subject>
+        </item>
+        <item>
+            <title>Jageriser, wanna play?</title>
+            <description>I&#39;ve uploaded my Jageriser for people to play with. To use it, download Jagerise.zip and then:</description>
+            <pubDate>Thu, 25 Jan 2018 18:08:33 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2018/01/jageriser-wanna-play-.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>girlgenius</rssTags:subject>
+            <rssTags:subject>jaegermonsters</rssTags:subject>
+        </item>
+        <item>
+            <title>Jageriser revisited</title>
+            <description>So glad I&#39;ve got time for dumb fun again.</description>
+            <pubDate>Wed, 24 Jan 2018 23:07:53 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2018/01/jageriser-revisited.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>girlgenius</rssTags:subject>
+            <rssTags:subject>jaegermonsters</rssTags:subject>
+        </item>
+        <item>
+            <title>Updated Deck of Many Things</title>
+            <description>As part of the upgrade, I played a bit with simple Javascript/ CSS animations for the Deck of Many Things for D&amp;amp;D. Let me know if you like it?</description>
+            <pubDate>Sun, 21 Jan 2018 18:36:37 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2018/01/updated-deck-of-many-things.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>rpg</rssTags:subject>
+        </item>
+        <item>
+            <title>Updates</title>
+            <description>The book I&#39;m writing has advise in it for a coder. While I was writing it I found little bits of thought that I hadn&#39;t put into practice. So I put them into practice. I&#39;ve just updated my site from the ground up. Let me know if anything&#39;s busted.</description>
+            <pubDate>Sun, 21 Jan 2018 14:27:11 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2018/01/updates.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>colin</rssTags:subject>
+        </item>
+        <item>
+            <title>#AmWriting</title>
+            <description>I&#39;m getting started on one of my long-dormant projects. Writing a tongue-in-check resource book, using a slice of von Explaino&#39;s &amp;quot;Look At Things Through The Lens Of Something Else.&amp;quot; Participating in the Tech Misfits group on Facebook has helped me keep focus (thank you) and I&#39;ve finished a first-ish...</description>
+            <pubDate>Fri, 19 Jan 2018 12:40:53 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2018/01/-amwriting.html</guid>
+            <rssTags:subject>Code</rssTags:subject>
+            <rssTags:subject>professor von explaino</rssTags:subject>
+            <rssTags:subject>Writing</rssTags:subject>
+        </item>
+        <item>
+            <title>Let&#39;s take this outside</title>
+            <description>Forums. Tumblr. Twitter.</description>
+            <pubDate>Tue, 10 Oct 2017 19:32:00 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2017/10/let-s-take-this-outside.html</guid>
+            <rssTags:subject>Coding</rssTags:subject>
+            <rssTags:subject>Professor von Explaino</rssTags:subject>
+            <rssTags:subject>Steampulp</rssTags:subject>
+            <rssTags:subject>Steampunk</rssTags:subject>
+        </item>
+        <item>
+            <title>Patches/ Pins/ Other Accouterments</title>
+            <description>I&#39;ve collected a number of pins/ patches over the years. I&#39;d like to use them but I don&#39;t want to poke holes in all my clothes/ permanently affix patches to jackets I grow out of. What do you do with yours to bring them with you?</description>
+            <pubDate>Wed, 20 Sep 2017 19:56:08 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2017/09/patches-pins-other-accouterments.html</guid>
+            <rssTags:subject>steampunk</rssTags:subject>
+            <rssTags:subject>steampulp</rssTags:subject>
+        </item>
+        <item>
+            <title>Marriage Equality Plebicite</title>
+            <description>So.</description>
+            <pubDate>Thu, 14 Sep 2017 18:05:47 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2017/09/marriage-equality-plebicite.html</guid>
+        </item>
+        <item>
+            <title>Keeping Interest</title>
+            <description>My place of work has been a source of constant change for about 10 years now. Restructures, realignments, reorganizing; but we&#39;re just about to hit a change that&#39;s putting all the others to shame. Complete redesign. New reporting lines. External audit. The works. This is putting a strong strain on morale and...</description>
+            <pubDate>Sun, 10 Sep 2017 20:58:07 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2017/09/keeping-interest.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>community</rssTags:subject>
+            <rssTags:subject>craft</rssTags:subject>
+            <rssTags:subject>skunkworks</rssTags:subject>
+            <rssTags:subject>steampunk</rssTags:subject>
+        </item>
+        <item>
+            <title>WannaCry, parody song</title>
+            <description>I&#39;ll patch it later; I&#39;ll patch it later;</description>
+            <pubDate>Tue, 16 May 2017 08:35:29 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2017/05/wannacry-parody-song.html</guid>
+            <rssTags:subject>Code</rssTags:subject>
+            <rssTags:subject>comedy</rssTags:subject>
+            <rssTags:subject>parody</rssTags:subject>
+            <rssTags:subject>sorry SecuriTay</rssTags:subject>
+        </item>
+        <item>
+            <title>Needless subcategorisation</title>
+            <description>Thinking about Steampunk utopias/ dystopias/ window dressing. Dystopian/ dark future steampunk where the streets and lungs are choked with smoke and coated in ash. Smogpunk? I&#39;ve already claimed Steampulp for the utopian adventure theme.</description>
+            <pubDate>Tue, 28 Mar 2017 19:05:44 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2017/03/needless-subcategorisation.html</guid>
+            <rssTags:subject>Steampulp</rssTags:subject>
+            <rssTags:subject>steampunk</rssTags:subject>
+        </item>
+        <item>
+            <title>Social break</title>
+            <description>Social butterfly that I am1, I&#39;m taking a break from Facebook2. It&#39;s day three and... I feel quite a bit less stressed. I&#39;m not sure the root cause is yet, I have theories about habit and unexpected-terrible-news-when-I&#39;m-looking-to-catch-up-with-friends, but I&#39;m going to keep the hiatus up for the time...</description>
+            <pubDate>Sat, 07 Jan 2017 09:12:55 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2017/01/social-break.html</guid>
+            <rssTags:subject>colin</rssTags:subject>
+        </item>
+        <item>
+            <title>IT Playbook</title>
+            <description>I could post an attempted summary about what I like about the Digital Services Playbook. But I recommend you read it. And if you can, fork it for your own work. An index of the plays:</description>
+            <pubDate>Wed, 02 Nov 2016 19:15:28 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2016/11/it-playbook.html</guid>
+            <rssTags:subject>Code</rssTags:subject>
+            <rssTags:subject>colin</rssTags:subject>
+            <rssTags:subject>common-book</rssTags:subject>
+        </item>
+        <item>
+            <title>$21K</title>
+            <description>That’s how much money, over three years, the Steampunk Ghostbusters Charity ball raised for the Cancer Council Queensland. With immeasurable thanks to our guests, to the venue and staff, but most of all due to the amazing efforts of our coordinating committee and the volunteers. Honoured to have been a...</description>
+            <pubDate>Wed, 05 Oct 2016 22:24:00 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2016/10/-21k.html</guid>
+            <rssTags:subject>cancer council queensland</rssTags:subject>
+            <rssTags:subject>charity</rssTags:subject>
+            <rssTags:subject>event</rssTags:subject>
+            <rssTags:subject>steampunk</rssTags:subject>
+            <rssTags:subject>steampunk ghostbusters</rssTags:subject>
+        </item>
+        <item>
+            <title>Steampunk Ghostbusters Charity Ball 3</title>
+            <description>This year is the last year the Steampunk Ghostbuseters Charity Ball will be run in its current format, so it&#39;s going out with an apocalypse. Specifically, the end of the world that happens Valentines Day 2016 as stated in Ghostbusters 2. So the floor is being opened to classic steampunk, post apocalyptic...</description>
+            <pubDate>Thu, 10 Mar 2016 12:26:22 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2016/03/steampunk-ghostbusters-charity-ball-3.html</guid>
+            <rssTags:subject>cancer council queensland</rssTags:subject>
+            <rssTags:subject>charity</rssTags:subject>
+            <rssTags:subject>event</rssTags:subject>
+            <rssTags:subject>steampunk</rssTags:subject>
+            <rssTags:subject>steampunk ghostbusters</rssTags:subject>
+        </item>
+        <item>
+            <title>Endorsing a candidate: Clockwork Cabaret</title>
+            <description>I like the Clockwork Cabaret. Great music selection and fun + funny DJs. Their current backstory is Lady Attercop is running for president, so Professor von Explaino is throwing his support behind her campaign.</description>
+            <pubDate>Tue, 08 Mar 2016 07:14:45 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2016/03/endorsing-a-candidate-clockwork-cabaret.html</guid>
+            <rssTags:subject>clockwork cabaret</rssTags:subject>
+            <rssTags:subject>politics</rssTags:subject>
+            <rssTags:subject>professor von explaino</rssTags:subject>
+            <rssTags:subject>Steampulp</rssTags:subject>
+            <rssTags:subject>steampunk</rssTags:subject>
+            <rssTags:subject>video</rssTags:subject>
+        </item>
+        <item>
+            <title>Outside at Lunch</title>
+            <description>I’m making an effort this year to eat lunch not at my work desk. I work in IT, with the computer on my desk connected to the ever-full-shiny Internet, so eating at the desk seemed OK. I don’t think it was. Outside has air for a start.</description>
+            <pubDate>Sat, 23 Jan 2016 11:26:00 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2016/01/outside-at-lunch.html</guid>
+            <rssTags:subject>colin</rssTags:subject>
+        </item>
+        <item>
+            <title>Steampunk Music suggestions</title>
+            <description>Steampunk is a many-splendored thing (sorry Ms Suyin), touching many eras and ideaologies; similarly steampunk music is just as varied as the waistcoats on a steampunk model. Maybe you haven&#39;t heard of some of the following and you&#39;d like to try them, or maybe you&#39;ve heard of others you think we should listen...</description>
+            <pubDate>Sun, 18 Oct 2015 10:48:25 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2015/10/steampunk-music-suggestions.html</guid>
+            <rssTags:subject>Fiction</rssTags:subject>
+            <rssTags:subject>Steampulp</rssTags:subject>
+            <rssTags:subject>steampunk</rssTags:subject>
+        </item>
+        <item>
+            <title>Second Annual Steampunk Ghostbuster charity ball.</title>
+            <description>Even though it is now over a month since the second annual Steampunk Ghostbusters Charity Ball for 2015, I’m still watching the amount of money raised rise. We had thought we’d put in a magnificent total with the first estimate of just over $7000, but thanks to the tireless efforts of our talented...</description>
+            <pubDate>Mon, 10 Aug 2015 22:32:00 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2015/08/second-annual-steampunk-ghostbuster-charity-ball..html</guid>
+            <rssTags:subject>cancer council queensland</rssTags:subject>
+            <rssTags:subject>charity</rssTags:subject>
+            <rssTags:subject>event</rssTags:subject>
+            <rssTags:subject>steampunk</rssTags:subject>
+            <rssTags:subject>steampunk ghostbusters</rssTags:subject>
+        </item>
+        <item>
+            <title>Laboratory no more</title>
+            <description>I no longer have a laboratory.</description>
+            <pubDate>Sun, 31 May 2015 23:05:00 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2015/05/laboratory-no-more.html</guid>
+            <rssTags:subject>laboratory</rssTags:subject>
+            <rssTags:subject>steampulp</rssTags:subject>
+            <rssTags:subject>steampunk</rssTags:subject>
+        </item>
+        <item>
+            <title>Combining interests: Application Graveyard</title>
+            <description>Looking around my site you’ll see some of the applications I’ve toyed with over the years; I’m a web application programmer by trade and I love to tinker. Today walking into the office with a coworker and we were discussion decommissioning a number of applications from a server and I decided we needed...</description>
+            <pubDate>Wed, 11 Feb 2015 09:15:00 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2015/02/combining-interests-application-graveyard.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>devices</rssTags:subject>
+        </item>
+        <item>
+            <title>Steampunk Hands Around the World 2015</title>
+            <description>Once again it&#39;s time for Steampunk Hands Around the World. A wonderful event of inclusion and camaraderie, reinforcing the togetherness of steampunk. This year&#39;s theme is &amp;quot;Our Playground, Our Classroom, Our Workshop&amp;quot;. I like it, how could I not, Professors exist in classrooms and workshops, and all...</description>
+            <pubDate>Sun, 01 Feb 2015 22:23:42 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2015/02/steampunk-hands-around-the-world-2015.html</guid>
+            <rssTags:subject>Events</rssTags:subject>
+        </item>
+        <item>
+            <title>Recommended reading: Cogpunk Steamscribe</title>
+            <description>One of the blogs I follow that is also someone I know in real life. Celebrating two years of online updates, the blog covers all sorts of steampunk and writery aspects. Well worth a subscribe.</description>
+            <pubDate>Tue, 07 Oct 2014 07:29:08 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2014/10/recommended-reading-cogpunk-steamscribe.html</guid>
+            <rssTags:subject>research</rssTags:subject>
+            <rssTags:subject>Writing</rssTags:subject>
+        </item>
+        <item>
+            <title>Success! The Steampunk Ghostbusters Charity Ball</title>
+            <description>Quite tardily, my apologies, I can report the Steampunk Ghostbusters Charity Ball held last month was an outstanding success. The event raised just under $5,000 for the Cancer Council Queensland, yet apart from the charity effort – the outfit effort was positively amazing. There were steampunked green...</description>
+            <pubDate>Wed, 13 Aug 2014 22:17:00 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2014/08/success-the-steampunk-ghostbusters-charity-ball.html</guid>
+            <rssTags:subject>cancer council queensland</rssTags:subject>
+            <rssTags:subject>charity</rssTags:subject>
+            <rssTags:subject>event</rssTags:subject>
+            <rssTags:subject>steampunk</rssTags:subject>
+            <rssTags:subject>steampunk ghostbusters</rssTags:subject>
+        </item>
+        <item>
+            <title>With apologies to Dr Seuss.</title>
+            <description>Steampunk meets Dr. Seuss</description>
+            <pubDate>Thu, 26 Jun 2014 23:30:00 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2014/06/with-apologies-to-dr-seuss..html</guid>
+            <rssTags:subject>dr seuss</rssTags:subject>
+            <rssTags:subject>fiction</rssTags:subject>
+            <rssTags:subject>comedy</rssTags:subject>
+            <rssTags:subject>steampulp</rssTags:subject>
+            <rssTags:subject>steampunk</rssTags:subject>
+        </item>
+        <item>
+            <title>2014 Budget, explained by Beer.</title>
+            <description>Abbott buys everyone a beer, it&#39;s his round.</description>
+            <pubDate>Wed, 28 May 2014 09:19:41 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2014/05/2014-budget-explained-by-beer..html</guid>
+            <rssTags:subject>2014 budget</rssTags:subject>
+            <rssTags:subject>professor von explaino</rssTags:subject>
+            <rssTags:subject>pseuddoscientific paper</rssTags:subject>
+        </item>
+        <item>
+            <title>Steam at Old Petrie Town</title>
+            <description>This week I received an invitation from the Queensland Steam and Vintage Machinery Society to bring S.T.E.A.M along to see their works at Old Petrie Town&#39;s regular markets. Unfortunately it clashed with some already organised SEQ steampunk events, but I made sure to go to the QSVMS demonstrations and WOW were...</description>
+            <pubDate>Sun, 25 May 2014 18:02:59 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2014/05/steam-at-old-petrie-town.html</guid>
+            <rssTags:subject>devices</rssTags:subject>
+            <rssTags:subject>Events</rssTags:subject>
+            <rssTags:subject>real steam</rssTags:subject>
+            <rssTags:subject>real victoriana</rssTags:subject>
+            <rssTags:subject>steam engines</rssTags:subject>
+            <rssTags:subject>steampunk</rssTags:subject>
+            <rssTags:subject>vintage machinery</rssTags:subject>
+        </item>
+        <item>
+            <title>Steampunk Charity Ball</title>
+            <description>Well I’m excited. The Steampunk Ghostbusters are hosting a charity ball to raise money for the Queensland Cancer Council. There’ll be a short performance by amateur thespians, an auction, nibblies and everyone MUST attend in a steampunk/ victorian outfit. New bonus, each paying attendee will receive a...</description>
+            <pubDate>Fri, 02 May 2014 16:25:00 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2014/05/steampunk-charity-ball.html</guid>
+            <rssTags:subject>cancer council queensland</rssTags:subject>
+            <rssTags:subject>charity</rssTags:subject>
+            <rssTags:subject>event</rssTags:subject>
+            <rssTags:subject>steampunk</rssTags:subject>
+            <rssTags:subject>steampunk ghostbusters</rssTags:subject>
+        </item>
+        <item>
+            <title>Types of Steampunk</title>
+            <description>With invited guest Baron von Borg, we explore different flavours of steampunk. Video cuts out before the discussion devolves into an additional 30 minutes of pure, steampunk rambling (but there&#39;s now a link at the end of the video if you&#39;re keen). You do get a nicer look at the lab at least.</description>
+            <pubDate>Thu, 01 May 2014 06:29:59 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2014/05/types-of-steampunk.html</guid>
+            <rssTags:subject>baron von borg</rssTags:subject>
+            <rssTags:subject>professor von explaino</rssTags:subject>
+            <rssTags:subject>Steampulp</rssTags:subject>
+            <rssTags:subject>steampunk</rssTags:subject>
+            <rssTags:subject>types of steampunk</rssTags:subject>
+        </item>
+        <item>
+            <title>Restarting steaming</title>
+            <description>Trying to get things happening again. Why are hobbies hard?</description>
+            <pubDate>Sun, 13 Apr 2014 20:14:31 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2014/04/restarting-steaming.html</guid>
+            <rssTags:subject>devices</rssTags:subject>
+            <rssTags:subject>fashion</rssTags:subject>
+            <rssTags:subject>outfit</rssTags:subject>
+            <rssTags:subject>professor von explaino</rssTags:subject>
+            <rssTags:subject>steam-o-meter</rssTags:subject>
+            <rssTags:subject>Steampulp</rssTags:subject>
+            <rssTags:subject>steampunk</rssTags:subject>
+        </item>
+        <item>
+            <title>South-East Queensland Steampunk</title>
+            <description>Professor von Explaino talks about a few steampunk groups and events happening in and around Brisbane.</description>
+            <pubDate>Sun, 23 Feb 2014 18:11:42 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2014/02/south-east-queensland-steampunk.html</guid>
+            <rssTags:subject>Events</rssTags:subject>
+            <rssTags:subject>fashion</rssTags:subject>
+            <rssTags:subject>get involved</rssTags:subject>
+            <rssTags:subject>professor von explaino</rssTags:subject>
+            <rssTags:subject>Steampulp</rssTags:subject>
+            <rssTags:subject>steampunk</rssTags:subject>
+        </item>
+        <item>
+            <title>New Device: Telecommunicator Re-Enpowerer.</title>
+            <description>Finally getting around to working on my iPhone dock. I&#39;ve had this partially envisioned for over a year, but never dedicated the time required to get building/ designing work happening. I&#39;d sketch a few ideas and immediately self-distract with something pointless. I&#39;d stain the plaque walnut and then give it...</description>
+            <pubDate>Sat, 01 Feb 2014 13:03:50 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2014/02/new-device-telecommunicator-re-enpowerer..html</guid>
+            <rssTags:subject>devices</rssTags:subject>
+            <rssTags:subject>iphone charger</rssTags:subject>
+            <rssTags:subject>professor von explaino</rssTags:subject>
+        </item>
+        <item>
+            <title>PB 2013</title>
+            <description>It looks like Icarus used Phoenix wing feathers, because Prometheus Bound rose again in September. Check/ join the PB facebook group to see more pictures - and to hopefully come along next time if you haven&#39;t already. Thanks to Loose Lemur from Steamfest, Professor von Explaino attended in a brand new formal...</description>
+            <pubDate>Wed, 13 Nov 2013 22:58:48 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2013/11/pb-2013.html</guid>
+            <rssTags:subject>fashion</rssTags:subject>
+            <rssTags:subject>professor von explaino</rssTags:subject>
+            <rssTags:subject>steampunk</rssTags:subject>
+        </item>
+        <item>
+            <title>Back into Devices</title>
+            <description>It&#39;s been a while but I&#39;m starting to get back into tinkering. Inspired by a friend showing me how his 3D printer worked I downloaded Blender and after HOURS of work (I&#39;m more mathematical than artistic - I think it&#39;d be easier to learn Python and use that to create images than spend all the time I did trying...</description>
+            <pubDate>Wed, 13 Nov 2013 22:43:59 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2013/11/back-into-devices.html</guid>
+            <rssTags:subject>devices</rssTags:subject>
+            <rssTags:subject>professor von explaino</rssTags:subject>
+            <rssTags:subject>Steampulp</rssTags:subject>
+        </item>
+        <item>
+            <title>Projémon: The Dead Weight</title>
+            <description>The Dead Weight (Pondus mortuus) is a resource-substitute that starves the Project without the Project knowing it is perishing.</description>
+            <pubDate>Wed, 18 Sep 2013 18:00:51 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2013/09/proj-mon-the-dead-weight.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>comedy</rssTags:subject>
+            <rssTags:subject>projemon</rssTags:subject>
+        </item>
+        <item>
+            <title>Projémon: The Scope Creep</title>
+            <description>The Scope Creep (Reperet scopo) is a parasite that causes Projects to collapse under their own weight</description>
+            <pubDate>Wed, 11 Sep 2013 18:00:13 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2013/09/proj-mon-the-scope-creep.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>comedy</rssTags:subject>
+            <rssTags:subject>projemon</rssTags:subject>
+        </item>
+        <item>
+            <title>Projémon: The All-consuming Meeting</title>
+            <description>The All-consuming Meeting (Congressus totus-consumens) is another resource-competitor to the Project, which focuses on the environment, rather than the Project itself.</description>
+            <pubDate>Wed, 04 Sep 2013 18:00:53 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2013/09/proj-mon-the-all-consuming-meeting.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>comedy</rssTags:subject>
+            <rssTags:subject>projemon</rssTags:subject>
+        </item>
+        <item>
+            <title>Projémon: The Looming Deadline</title>
+            <description>The Looming Deadline (Tempus advenientis) is an ambush predator that has a highly evolved camouflage technique.</description>
+            <pubDate>Wed, 28 Aug 2013 18:03:18 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2013/08/proj-mon-the-looming-deadline.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>comedy</rssTags:subject>
+            <rssTags:subject>projemon</rssTags:subject>
+        </item>
+        <item>
+            <title>Projémon: The Code Fairy</title>
+            <description>The Code Fairy (Fairy codices) is a species of Fairy, a creature that feeds off the belief of other species.</description>
+            <pubDate>Wed, 21 Aug 2013 18:00:26 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2013/08/proj-mon-the-code-fairy.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>comedy</rssTags:subject>
+            <rssTags:subject>projemon</rssTags:subject>
+        </item>
+        <item>
+            <title>Projémon: The Project</title>
+            <description>The Project. Like the may fly, its lifespan is predefined on its inception (although some have seemingly endless extensions). Like the bowerbird it creates an item of attraction and wonder in order to appear more enticing than its fellow Projects. And like the dodo, the sheer number of predators (colloq:...</description>
+            <pubDate>Wed, 14 Aug 2013 17:59:16 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2013/08/proj-mon-the-project.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>comedy</rssTags:subject>
+            <rssTags:subject>projemon</rssTags:subject>
+        </item>
+        <item>
+            <title>First Annual Steamfest event</title>
+            <description>This weekend just gone was emblazoned mightily in local steampunkian calendars; lo (and/ or verily) it held the first Steamfest annual convention - celebrating steampunk loudly, proudly and with the help of international guests.</description>
+            <pubDate>Sat, 10 Aug 2013 17:09:59 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2013/08/first-annual-steamfest-event.html</guid>
+            <rssTags:subject>Australia</rssTags:subject>
+            <rssTags:subject>Events</rssTags:subject>
+            <rssTags:subject>fashion</rssTags:subject>
+            <rssTags:subject>steampunk</rssTags:subject>
+        </item>
+        <item>
+            <title>First Contest</title>
+            <description>Inspired by an article on Silver Goggles (&amp;quot;Friendly&amp;quot; Tech) I&#39;m holding a contest. I&#39;d like submissions of the finest FRIENDLY1 personally carried steampunk devices that you wear. A whole swathe of the costumed focus in Steampunk regalia is weapon related2, and I think we need to shift gears3. I know...</description>
+            <pubDate>Mon, 06 May 2013 12:43:52 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2013/05/first-contest.html</guid>
+            <rssTags:subject>contest</rssTags:subject>
+            <rssTags:subject>devices</rssTags:subject>
+            <rssTags:subject>Events</rssTags:subject>
+            <rssTags:subject>steampunk</rssTags:subject>
+        </item>
+        <item>
+            <title>Explaining: DRM Using Greek Mythology</title>
+            <description>Digital Rights Management has always had more basis in faith than science. Media companies cling to it as holy doctrine, quoting scripture and verse about fiscal damage caused by a single shared song that impacts the studio&#39;s bottom line with a Fibonnacian acceleration. Even their own publicising of evidence...</description>
+            <pubDate>Sat, 16 Mar 2013 21:55:23 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2013/03/explaining-drm-using-greek-mythology.html</guid>
+            <rssTags:subject>DRM</rssTags:subject>
+            <rssTags:subject>EA</rssTags:subject>
+            <rssTags:subject>Gaming</rssTags:subject>
+            <rssTags:subject>PseudoScientific Paper</rssTags:subject>
+        </item>
+        <item>
+            <title>Finished reading: The Constantine Affliction</title>
+            <description></description>
+            <pubDate>Tue, 22 Jan 2013 21:09:40 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2013/01/finished-reading-the-constantine-affliction.html</guid>
+            <rssTags:subject>Review</rssTags:subject>
+            <rssTags:subject>steampunk</rssTags:subject>
+        </item>
+        <item>
+            <title>Antipodean Steampunk Show</title>
+            <description></description>
+            <pubDate>Wed, 07 Nov 2012 11:36:04 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2012/11/antipodean-steampunk-show.html</guid>
+            <rssTags:subject>Events</rssTags:subject>
+            <rssTags:subject>steampunk</rssTags:subject>
+        </item>
+        <item>
+            <title>Steampunk Strides</title>
+            <description>On Saturday 6th, Brisbane hosted the inaugural Steampunk Strides event.</description>
+            <pubDate>Sun, 14 Oct 2012 13:52:43 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2012/10/steampunk-strides.html</guid>
+            <rssTags:subject>Events</rssTags:subject>
+            <rssTags:subject>fashion</rssTags:subject>
+            <rssTags:subject>steampunk</rssTags:subject>
+        </item>
+        <item>
+            <title>ROSEA rides the Steamtrain</title>
+            <description>This year when planning the STEAM picnic, a clever chap noted that there was a Steam train that left the station near our traditional Roma Street Parklands picnic spot on Sundays. The idea was thrown around and a group of us decided to steam train before picnicking that afternoon.</description>
+            <pubDate>Wed, 22 Aug 2012 21:48:13 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2012/08/rosea-rides-the-steamtrain.html</guid>
+            <rssTags:subject>Events</rssTags:subject>
+            <rssTags:subject>fashion</rssTags:subject>
+            <rssTags:subject>steampunk</rssTags:subject>
+        </item>
+        <item>
+            <title>Roving Antipodean Steampunk Show</title>
+            <description>A Brisbane craft and design gallery called Artisan is holding a steampunk exhibit in October.</description>
+            <pubDate>Sat, 02 Jun 2012 07:08:08 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2012/06/roving-antipodean-steampunk-show.html</guid>
+            <rssTags:subject>Events</rssTags:subject>
+            <rssTags:subject>fashion</rssTags:subject>
+            <rssTags:subject>steampunk</rssTags:subject>
+        </item>
+        <item>
+            <title>Welcome, Courier Mail readers</title>
+            <description>Recently the Steampunks of Brisbane were interviewed by Michael Lund of the Courier Mail regarding, well, Steampunk. Entitled &amp;quot;Letting off steam&amp;quot;, the article paints quite a good picture of the Steampunk subculture&#39;s life in the city and has a number of stop-off points to find out more. One of them...</description>
+            <pubDate>Sat, 17 Mar 2012 20:40:14 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2012/03/welcome-courier-mail-readers.html</guid>
+            <rssTags:subject>devices</rssTags:subject>
+            <rssTags:subject>Events</rssTags:subject>
+            <rssTags:subject>fashion</rssTags:subject>
+            <rssTags:subject>Fiction</rssTags:subject>
+            <rssTags:subject>Laboratory</rssTags:subject>
+            <rssTags:subject>steampunk</rssTags:subject>
+        </item>
+        <item>
+            <title>Royal Omnitological Society for Electrodyne Adventurers</title>
+            <description>ROSEA is an acronym for the Royal Omnitological Society for Electrodyne Adventurers. It was founded in the late 1800s to combine the talents of various skilled individuals from across the globe into one organisation, ostensibly to centrally resource exploration and discovery. Digging deeper, some people have...</description>
+            <pubDate>Sat, 17 Mar 2012 10:00:00 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2012/03/royal-omnitological-society-for-electrodyne-adventurers.html</guid>
+            <rssTags:subject>Australia</rssTags:subject>
+            <rssTags:subject>steampunk</rssTags:subject>
+        </item>
+        <item>
+            <title>Australian Steampunk</title>
+            <description>I like Silver Goggles. It&#39;s been part of my required reading RSS repository1 for ages. This week, Jaymee interviewed Stephanie Lai, an Australian-Malaysian-Chinese lass, about Steampunk and Australia. Huzzah!</description>
+            <pubDate>Sat, 04 Feb 2012 19:56:30 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2012/02/australian-steampunk.html</guid>
+            <rssTags:subject>Australia</rssTags:subject>
+            <rssTags:subject>devices</rssTags:subject>
+            <rssTags:subject>Events</rssTags:subject>
+            <rssTags:subject>fashion</rssTags:subject>
+            <rssTags:subject>Fiction</rssTags:subject>
+            <rssTags:subject>steampunk</rssTags:subject>
+        </item>
+        <item>
+            <title>Mandatory Bieber Thoughts</title>
+            <description>My thoughts are similar to other thoughts, however it appears that you must write a blog post about Bieber&#39;s Christmas song in order to keep your steampunk license, so here goes.</description>
+            <pubDate>Fri, 16 Dec 2011 06:25:40 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2011/12/mandatory-bieber-thoughts.html</guid>
+            <rssTags:subject>review</rssTags:subject>
+            <rssTags:subject>steampunk</rssTags:subject>
+        </item>
+        <item>
+            <title>Rosencrantz and Guildenstern are Reanimated</title>
+            <description>There was a call for submissions to a Steampunk Shakespeare anthology in 2010, I made a comment on Twitter about &amp;quot;Rosencrantz and Guildenstern are Reanimated&amp;quot;. There was enough amused responses that I wrote something up. I spoke to one of the editors of the anthology and they said they were only...</description>
+            <pubDate>Mon, 05 Dec 2011 07:03:11 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2011/12/rosencrantz-and-guildenstern-are-reanimated.html</guid>
+            <rssTags:subject>comedy</rssTags:subject>
+            <rssTags:subject>Fiction</rssTags:subject>
+            <rssTags:subject>shakespeare</rssTags:subject>
+            <rssTags:subject>steampunk</rssTags:subject>
+        </item>
+        <item>
+            <title>Prometheus Bound/ Bloodlust Ball</title>
+            <description>The August Prometheus Bound held something different this year, a cross-over with the event organiser&#39;s 90&#39;s event for goths: the Bloodlust Ball. Combining the two was a lot of fun; especially for those of us who like adjusting their outfits to fit the PB&#39;s many themes.</description>
+            <pubDate>Mon, 19 Sep 2011 22:30:21 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2011/09/prometheus-bound-bloodlust-ball.html</guid>
+        </item>
+        <item>
+            <title>Steampunk Picnic</title>
+            <description>The Queen&#39;s Birthday weekend was the perfect time to schedule a steampunk picnic in Brisbane. So, ROSEA did.</description>
+            <pubDate>Wed, 15 Jun 2011 19:10:33 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2011/06/steampunk-picnic.html</guid>
+            <rssTags:subject>Events</rssTags:subject>
+            <rssTags:subject>steampunk</rssTags:subject>
+        </item>
+        <item>
+            <title>Changes and Supanova 2011</title>
+            <description>I haven’t posted for a while as my wife and I have been getting ready for a rather large change in our lives. We now have a son! Sean is his name, and we’re very proud. Getting used to a lot less sleep is… interesting, but today my wife told me to go out and have fun because Supanova, the premier...</description>
+            <pubDate>Sun, 03 Apr 2011 20:42:37 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2011/04/changes-and-supanova-2011.html</guid>
+            <rssTags:subject>events</rssTags:subject>
+            <rssTags:subject>steampunk</rssTags:subject>
+        </item>
+        <item>
+            <title>Euchronia</title>
+            <description>Euchronia was the Steampunk New Years Eve party organised by the Antipodean League of Temporal Voyagers. It last ran in 2008 and was so successful they postponed it for a year to make sure it remained novel. I&#39;m not entirely certain how that works, but boy was this year&#39;s a hum-dinger! Baron von Borg, Lady...</description>
+            <pubDate>Wed, 19 Jan 2011 22:29:16 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2011/01/euchronia.html</guid>
+            <rssTags:subject>Events</rssTags:subject>
+            <rssTags:subject>steampunk</rssTags:subject>
+        </item>
+        <item>
+            <title>Books: Parasol Protectorate</title>
+            <description>A while ago I was contacted by the makers of Steampunk Magazine for the iPhone and asked to check out their application. I did, and it was fun, and inspired me to look into more Steampunk Books. A series that I really enjoy is the Parasol Protectorate by Gail Carriger.</description>
+            <pubDate>Wed, 29 Sep 2010 14:00:00 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2010/09/books-parasol-protectorate.html</guid>
+            <rssTags:subject>reviews</rssTags:subject>
+            <rssTags:subject>steampunk</rssTags:subject>
+        </item>
+        <item>
+            <title>Devices: Corset inspector, RandOmniscope, Corset Inspector ID</title>
+            <description>Continuing Professor von Explaino&#39;s investigations into every realm of science (due to his expertise in the field of Omniology), and inspired by Cheyenne Wright&#39;s Corset Inspector badge, I have created two new devices that were to be shown off at the next Prometheus Bound. As that was unfortunately cancelled,...</description>
+            <pubDate>Tue, 21 Sep 2010 14:32:51 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2010/09/devices-corset-inspector-randomniscope-corset-inspector-id.html</guid>
+            <rssTags:subject>devices</rssTags:subject>
+            <rssTags:subject>professor von explaino</rssTags:subject>
+            <rssTags:subject>steampulp</rssTags:subject>
+        </item>
+        <item>
+            <title>The Australian Internet Filter as explained via Beer</title>
+            <description>It has occurred to me that the Australian Internet Filter is being debated at such a high level that the average person will not understand what the fuss is about. After all, child pornography is bad and the filter will stop that badness (so they&#39;ve been told), which means people are either pro-filter or...</description>
+            <pubDate>Wed, 17 Mar 2010 21:51:56 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2010/03/the-australian-internet-filter-as-explained-via-beer.html</guid>
+            <rssTags:subject>comedy</rssTags:subject>
+            <rssTags:subject>PseudoScientific Paper</rssTags:subject>
+        </item>
+        <item>
+            <title>Phrases and thoughts</title>
+            <description>&amp;quot;If I have seen further it is by standing on ye shoulders of Giants.&amp;quot; --Isaac Newton</description>
+            <pubDate>Mon, 26 Oct 2009 13:11:32 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2009/10/phrases-and-thoughts.html</guid>
+            <rssTags:subject>Fiction</rssTags:subject>
+        </item>
+        <item>
+            <title>Devices: Think tank and Hypno-ray</title>
+            <description>A few weekends ago GenCon came to Brisbane and the Royal Omnitological Society for Electrodyne Adventurers had to make an attendance. Feeling that the Clue-o-meter lacked the punch required for the latest event, I started work on the next Professor device.</description>
+            <pubDate>Mon, 28 Sep 2009 22:05:23 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2009/09/devices-think-tank-and-hypno-ray.html</guid>
+            <rssTags:subject>devices</rssTags:subject>
+            <rssTags:subject>professor von explaino</rssTags:subject>
+            <rssTags:subject>Steampulp</rssTags:subject>
+            <rssTags:subject>steampunk</rssTags:subject>
+        </item>
+        <item>
+            <title>ROSEA vs. Baseball</title>
+            <description>Pushing their way through the thronging masses, Professor von Explaino and young Christoph force their way as politely as possible to the wings of the auditorium. The general hubbub shows no sign of abating but, as Christoph well knows, it takes an act of extreme interruption to silence a group of scientists...</description>
+            <pubDate>Wed, 23 Sep 2009 21:58:39 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2009/09/rosea-vs.-baseball.html</guid>
+            <rssTags:subject>comedy</rssTags:subject>
+            <rssTags:subject>Fiction</rssTags:subject>
+            <rssTags:subject>professor von explaino</rssTags:subject>
+            <rssTags:subject>steampunk</rssTags:subject>
+        </item>
+        <item>
+            <title>Professor von Explaino: next device</title>
+            <description>I appologise for being dark, but I haven&#39;t completed any new works to write about; instead I&#39;m going to canvas for opinions on the Professor&#39;s next device. The thing-o-meter has been grand, but I think it&#39;s time to upgrade to something backpack powered. So far the logic is as follows</description>
+            <pubDate>Sun, 30 Aug 2009 21:35:44 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2009/08/professor-von-explaino-next-device.html</guid>
+            <rssTags:subject>devices</rssTags:subject>
+            <rssTags:subject>professor von explaino</rssTags:subject>
+            <rssTags:subject>Steampulp</rssTags:subject>
+            <rssTags:subject>steampunk</rssTags:subject>
+        </item>
+        <item>
+            <title>Steampunk Picnic 2009</title>
+            <description>An Australian Steampunk event was held for Brisbane Steampunkers on Saturday, we had about 35 people turn up all told and some fantastic outfits. Most of the pictures are on the Facebook event but we’re working on moving some of them to non-Facebook areas so non-Facebook people can see the outstanding...</description>
+            <pubDate>Wed, 05 Aug 2009 19:51:30 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2009/08/steampunk-picnic-2009.html</guid>
+            <rssTags:subject>brisbane</rssTags:subject>
+            <rssTags:subject>Events</rssTags:subject>
+            <rssTags:subject>fashion</rssTags:subject>
+            <rssTags:subject>FAUST</rssTags:subject>
+            <rssTags:subject>ROSEA</rssTags:subject>
+            <rssTags:subject>steampunk</rssTags:subject>
+        </item>
+        <item>
+            <title>Professor von Explaino: Moo cards</title>
+            <description>I was lucky enough to notice Moo when they did their first cross-promotion with LiveJournal, where you could get 10 free mini-moo cards, delivered anywhere. Yes, even down here to Australia. I put up a few of the photos I really liked and the resultant cards came out very nifty; everyone I showed them to...</description>
+            <pubDate>Mon, 27 Jul 2009 10:11:26 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2009/07/professor-von-explaino-moo-cards.html</guid>
+            <rssTags:subject>Code</rssTags:subject>
+            <rssTags:subject>PHP</rssTags:subject>
+        </item>
+        <item>
+            <title>Professor von Explaino: Thing-o-meter</title>
+            <description>Blast, late. Sorry about that.</description>
+            <pubDate>Sun, 26 Jul 2009 18:06:44 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2009/07/professor-von-explaino-thing-o-meter.html</guid>
+            <rssTags:subject>devices</rssTags:subject>
+            <rssTags:subject>professor von explaino</rssTags:subject>
+            <rssTags:subject>Steampulp</rssTags:subject>
+            <rssTags:subject>steampunk</rssTags:subject>
+        </item>
+        <item>
+            <title>Steampunk picnic, Brisbane</title>
+            <description>As the weather&#39;s still cold enough to get away with layering, it&#39;s a great time in Brisbane to get out to a morning tea/ picnic in the Roma Street parklands. ROSEA and FAUST will be there, and we want to meet as many other individuals and groups with Steampunk aficionado-ness to socialise and talk shop. If I...</description>
+            <pubDate>Sun, 12 Jul 2009 21:57:33 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2009/07/steampunk-picnic-brisbane.html</guid>
+            <rssTags:subject>Events</rssTags:subject>
+            <rssTags:subject>steampunk</rssTags:subject>
+        </item>
+        <item>
+            <title>ROSEA and the Duplimorphs, part five</title>
+            <description>Again the group ran through the darkened alleyways of London. This time they were blessed with an interruption free journey, the unearthly glow of the Professor&#39;s detection device lit the concentration in his features to a degree that even the faithless, forgotten masses crossed themselves fervently as they...</description>
+            <pubDate>Sun, 12 Jul 2009 18:57:48 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2009/07/rosea-and-the-duplimorphs-part-five.html</guid>
+            <rssTags:subject>Fiction</rssTags:subject>
+            <rssTags:subject>R.O.S.E.A</rssTags:subject>
+            <rssTags:subject>steampunk</rssTags:subject>
+        </item>
+        <item>
+            <title>ROSEA and the Duplimorphs, part four</title>
+            <description>Ignorning the casino&#39;s glitzy and glamourous (according to their flyers) exterior, the Cerulean led the way into the first of many darkened and seedy alleyways that nested behind the safe, shiny front. People looked up at the group as they ran past, the scream not having any to do with them some complained...</description>
+            <pubDate>Sun, 05 Jul 2009 19:50:04 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2009/07/rosea-and-the-duplimorphs-part-four.html</guid>
+            <rssTags:subject>Fiction</rssTags:subject>
+            <rssTags:subject>R.O.S.E.A</rssTags:subject>
+            <rssTags:subject>steampunk</rssTags:subject>
+        </item>
+        <item>
+            <title>ROSEA and the Duplimorphs, part three</title>
+            <description>With regrettable haste1 ROSEA left the suare of the Duke and Duchess of Kent in order to investigate the objects Captain Adventure and the Cerulean had manage to bring down using the Centurian Eagle&#39;s starboard arsenal. Part of this haste was due to the strange metal spheres&#39; downward trajectory, Professor...</description>
+            <pubDate>Sun, 28 Jun 2009 20:04:53 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2009/06/rosea-and-the-duplimorphs-part-three.html</guid>
+            <rssTags:subject>Fiction</rssTags:subject>
+            <rssTags:subject>R.O.S.E.A</rssTags:subject>
+            <rssTags:subject>steampunk</rssTags:subject>
+        </item>
+        <item>
+            <title>Steampunk Laboratory: Overview</title>
+            <description>It occurred to me that I was doing this demonstration a bit backwards, showing the individual components of the laboratory without showing the laboratory as a whole. To make up for that, here&#39;s a few shots of the &#39;completed&#39; laboratory before I dive back into showing the laboratory sections in detail.</description>
+            <pubDate>Sun, 21 Jun 2009 18:55:26 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2009/06/steampunk-laboratory-overview.html</guid>
+            <rssTags:subject>Fiction</rssTags:subject>
+            <rssTags:subject>R.O.S.E.A</rssTags:subject>
+            <rssTags:subject>steampunk</rssTags:subject>
+        </item>
+        <item>
+            <title>Steampunk Laboratory: Desk</title>
+            <description>There cannot be a laboratory without a workbench for the Professor to plan his science. Placing this desk in the corner means there&#39;s two walls to work with as well as blocking off a lot of the desk making it easier to fit in with the rest of the laboratory.</description>
+            <pubDate>Sun, 14 Jun 2009 12:00:06 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2009/06/steampunk-laboratory-desk.html</guid>
+            <rssTags:subject>desk</rssTags:subject>
+            <rssTags:subject>Laboratory</rssTags:subject>
+            <rssTags:subject>samples</rssTags:subject>
+            <rssTags:subject>steampunk</rssTags:subject>
+        </item>
+        <item>
+            <title>Steampunk laboratory - Wunderkammer</title>
+            <description>The wunderkammer translates from German into cabinet of curiosity. From Wikipedia:</description>
+            <pubDate>Sun, 07 Jun 2009 13:29:00 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2009/06/steampunk-laboratory-wunderkammer.html</guid>
+            <rssTags:subject>professor von explaino</rssTags:subject>
+            <rssTags:subject>Steampulp</rssTags:subject>
+            <rssTags:subject>steampunk</rssTags:subject>
+        </item>
+        <item>
+            <title>Laboratory, basics</title>
+            <description>So, in the new house we&#39;ve established there&#39;s a large, concrete floored room with three walls (2 sides brick, one side fibrous cement) and panelled ceiling under the house. What&#39;s the first thing that should be done in such an area?</description>
+            <pubDate>Sun, 31 May 2009 20:30:14 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2009/05/laboratory-basics.html</guid>
+            <rssTags:subject>Laboratory</rssTags:subject>
+            <rssTags:subject>professor von explaino</rssTags:subject>
+            <rssTags:subject>Steampulp</rssTags:subject>
+            <rssTags:subject>steampunk</rssTags:subject>
+        </item>
+        <item>
+            <title>Professor von Explaino: Inspiration</title>
+            <description>I&#39;m a child of the late 80&#39;s and early 90&#39;s. Inspirations for the Prof are drawn from the media that was prevalent at the time, yes we had inspiration before the wide-spread installation of cable modems.</description>
+            <pubDate>Sun, 24 May 2009 19:31:19 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2009/05/professor-von-explaino-inspiration.html</guid>
+            <rssTags:subject>professor von explaino</rssTags:subject>
+            <rssTags:subject>Steampulp</rssTags:subject>
+            <rssTags:subject>steampunk</rssTags:subject>
+        </item>
+        <item>
+            <title>Steampulp Laboratory - Beginnings</title>
+            <description>When my wife and I were going house hunting, I had a simple requirement for any house we were looking at. There had to be a room that could be come my &#39;laboratory&#39;. Or, rather, the laboratory of Professor von Explaino. We looked at a number of houses that had spare rooms where I could have a combined study/...</description>
+            <pubDate>Sun, 17 May 2009 09:22:34 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2009/05/steampulp-laboratory-beginnings.html</guid>
+            <rssTags:subject>Laboratory</rssTags:subject>
+            <rssTags:subject>professor von explaino</rssTags:subject>
+            <rssTags:subject>Steampulp</rssTags:subject>
+            <rssTags:subject>steampunk</rssTags:subject>
+        </item>
+    </channel>
+</rss>

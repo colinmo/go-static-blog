@@ -2,8 +2,10 @@ package cmd
 
 import (
 	"os"
+	"path/filepath"
 	"testing"
 
+	testdataloader "github.com/peteole/testdata-loader"
 	"github.com/spf13/viper"
 )
 
@@ -16,8 +18,8 @@ func TestGitRunCommand(t *testing.T) {
 
 func TestProcessEnvVariables(t *testing.T) {
 	var err error
-	testroot := "c:/users/relap/dropbox/swap/golang/vonblog/features/tests/gits/config/"
-	viper.SetConfigFile(testroot + "empty.yaml")
+	testroot := filepath.Clean(testdataloader.GetBasePath() + "/../features/tests/gits/config/")
+	viper.SetConfigFile(filepath.Join(testroot, "empty.yaml"))
 	viper.ReadInConfig()
 	setEnvironments()
 	if gitEnvSet {
@@ -28,7 +30,7 @@ func TestProcessEnvVariables(t *testing.T) {
 		t.Fatalf(`Somehow managed to set GIT_SSH_COMMAND %s`, x)
 	}
 
-	viper.SetConfigFile(testroot + "noequals.yaml")
+	viper.SetConfigFile(filepath.Join(testroot, "noequals.yaml"))
 	viper.ReadInConfig()
 	setEnvironments()
 	if gitEnvSet {
@@ -39,7 +41,7 @@ func TestProcessEnvVariables(t *testing.T) {
 		t.Fatalf(`Somehow managed to set GIT_SSH_COMMAND %s`, x)
 	}
 
-	viper.SetConfigFile(testroot + "full.yaml")
+	viper.SetConfigFile(filepath.Join(testroot, "full.yaml"))
 	err = viper.ReadInConfig()
 	if err != nil {
 		t.Fatalf(`Failed to read in %v`, err)

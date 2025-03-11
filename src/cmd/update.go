@@ -31,8 +31,6 @@ import (
 	"time"
 
 	"github.com/spf13/cobra"
-	"github.com/tyler-sommer/stick"
-	"github.com/tyler-sommer/stick/twig"
 )
 
 var formatStringDMonthYear = "2 January 2006"
@@ -42,14 +40,19 @@ Perform a full regenerate from source.
 1. Build the new site in a new folder under TempDir.
 2. Replace the existing symlink with this location
 */
-func updateFullRegenerate() (RSS, map[string][]FrontMatter, map[string]Item, map[string]struct{}, GitDiffs, error) {
+func updateFullRegenerate() (
+	allPosts RSS,
+	tags map[string][]FrontMatter,
+	postsById map[string]Item,
+	filesToDelete map[string]struct{},
+	changes GitDiffs,
+	err error) {
+
 	PrintIfNotSilent("Full\n")
-	postsById := map[string]Item{}
-	allPosts := RSS{}
-	tags := map[string][]FrontMatter{}
-	filesToDelete := map[string]struct{}{}
-	var changes GitDiffs
-	var err error
+	postsById = map[string]Item{}
+	allPosts = RSS{}
+	tags = map[string][]FrontMatter{}
+	filesToDelete = map[string]struct{}{}
 
 	// Make new target directory
 	PrintIfNotSilent("Temp Dir\n")
@@ -70,13 +73,15 @@ func updateFullRegenerate() (RSS, map[string][]FrontMatter, map[string]Item, map
 			log.Fatalf("%s is not a directory", dirPath)
 		}
 	}
+
 	// Run the generate into the target directory
 	GitPull()
 	changes, err = PopulateAllGitFiles(ConfigData.RepositoryDir)
 	if err != nil {
 		os.RemoveAll(ConfigData.BaseDir)
 		ConfigData.BaseDir = SwapDir2
-		return allPosts, tags, postsById, filesToDelete, changes, fmt.Errorf("failed to get files in the directory %s [%s]", ConfigData.RepositoryDir, err)
+		err = fmt.Errorf("failed to get files in the directory %s [%s]", ConfigData.RepositoryDir, err)
+		return
 	}
 	tags, filesToDelete, postsById = getAllChangedTagsAndDeletedFiles(changes, postsById)
 	tags, postsById, _ = processFileUpdates(changes, tags, postsById)
@@ -87,7 +92,7 @@ func updateFullRegenerate() (RSS, map[string][]FrontMatter, map[string]Item, map
 	// Remove old dir
 	clearOtherPaths(ConfigData.TempDir, dirName)
 	ConfigData.BaseDir = SwapDir2
-	return allPosts, tags, postsById, filesToDelete, changes, err
+	return
 }
 
 func clearOtherPaths(inDir, notThisOne string) {
@@ -101,27 +106,35 @@ func clearOtherPaths(inDir, notThisOne string) {
 
 func replaceDirectory(tempDir, blogDir string) {
 	var err error
-	err = os.Remove(filepath.Dir(blogDir))
-	if err != nil {
-		log.Fatalf("Could not remove dir %v\n", filepath.Dir(blogDir))
+	blogDir = filepath.Clean(blogDir)
+	err = os.Remove(blogDir)
+	if err != nil && (len(err.Error()) <= 25 || err.Error()[len(err.Error())-25:] != `no such file or directory`) {
+		log.Fatalf("Could not remove dir %v for linking to %v\n%v", blogDir, tempDir, err.Error())
 	}
-	err = os.Symlink(tempDir, filepath.Dir(blogDir))
+	err = os.Symlink(tempDir, blogDir)
 	if err != nil {
 		log.Fatalf("one: %s\n", err)
 	}
 }
 
-func updateChangedRegenerate() (RSS, map[string][]FrontMatter, map[string]Item, map[string]struct{}, GitDiffs, error) {
+func updateChangedRegenerate() (
+	allPosts RSS,
+	tags map[string][]FrontMatter,
+	postsById map[string]Item,
+	filesToDelete map[string]struct{},
+	changes GitDiffs,
+	err error) {
+
 	PrintIfNotSilent("Changed\n")
-	postsById := map[string]Item{}
-	tags := map[string][]FrontMatter{}
-	filesToDelete := map[string]struct{}{}
-	var changes GitDiffs
+	postsById = map[string]Item{}
+	tags = map[string][]FrontMatter{}
+	filesToDelete = map[string]struct{}{}
 
 	// Get all posts from the all published posts RSS file
-	allPosts, err := ReadRSS(filepath.Join(ConfigData.BaseDir, "all-rss.xml"))
+	allPosts, err = ReadRSS(filepath.Join(ConfigData.BaseDir, "all-rss.xml"))
 	if err != nil {
-		return allPosts, tags, postsById, filesToDelete, changes, fmt.Errorf("failed to read the RSS file %v", err)
+		err = fmt.Errorf("failed to read the RSS file %v", err)
+		return
 	}
 	for _, i := range allPosts.Channel.Items {
 		postsById[i.GUID] = i
@@ -133,7 +146,7 @@ func updateChangedRegenerate() (RSS, map[string][]FrontMatter, map[string]Item, 
 	GitPull()
 	// Get the changed tags, building the new pages as we go
 	tags, postsById, err = processFileUpdates(changes, tags, postsById)
-	return allPosts, tags, postsById, filesToDelete, changes, err
+	return
 }
 
 func deleteFiles(filesToDelete map[string]struct{}) {
@@ -199,7 +212,7 @@ func deleteAndRegenerate(
 	// Create tag-page for Code and Steampunk embedding
 	for _, tag := range ConfigData.TagSnippets {
 		PrintIfNotSilent(fmt.Sprintf("Regenerating snippet for %s (%d) - ", tag, len(allTagMap[tag])))
-		content, err := createTagPageSnippetForTag(tag, allTagMap[tag], postsById)
+		content, err := createTagPageSnippetForTag(tag, allTagMap[tag])
 		if err == nil {
 			PrintIfNotSilent("ok\n")
 			os.WriteFile(filepath.Join(ConfigData.BaseDir, "tag-snippet-"+tag+".html"), content, 0666)
@@ -211,16 +224,14 @@ func deleteAndRegenerate(
 	outputStats(changes)
 }
 
-func createTagPageSnippetForTag(tag string, tagsForString []FrontMatter, postsById map[string]Item) ([]byte, error) {
-	var twigTags map[string]stick.Value
+func createTagPageSnippetForTag(tag string, tagsForString []FrontMatter) ([]byte, error) {
+	var templateTags map[string]interface{}
 	var relatedTags map[string][]struct {
 		Link  string
 		Title string
 	}
 	var err error
 
-	tDir := ConfigData.TemplateDir
-	env := twig.New(stick.NewFilesystemLoader(tDir))
 	relatedTags = map[string][]struct {
 		Link  string
 		Title string
@@ -241,13 +252,19 @@ func createTagPageSnippetForTag(tag string, tagsForString []FrontMatter, postsBy
 			}
 		}
 	}
-	twigTags = map[string]stick.Value{}
-	twigTags["related_tags"] = relatedTags
 	buf := bytes.NewBufferString("")
-	err = env.Execute(
-		"tag-related-tags.html.twig",
+
+	templateTags = map[string]interface{}{}
+	templateTags["related_tags"] = relatedTags
+	if err := templ.ExecuteTemplate(
 		buf,
-		twigTags)
+		"tag-related-tags",
+		templateTags,
+	); err != nil {
+		fmt.Printf("Couldn't write the file3\n")
+		log.Fatal(err)
+	}
+
 	return buf.Bytes(), err
 }
 
@@ -265,11 +282,14 @@ var updateCmd = &cobra.Command{
 		var filesToDelete map[string]struct{}
 		var postsById map[string]Item
 
+		SetupTemplate()
+
 		if FullRegenerate {
 			allPosts, tags, postsById, filesToDelete, changes, err = updateFullRegenerate()
 		} else {
 			allPosts, tags, postsById, filesToDelete, changes, err = updateChangedRegenerate()
 		}
+
 		if err != nil {
 			log.Fatalf("Something happened updating files\n%v\n", err)
 		} else {
@@ -336,7 +356,7 @@ func getTargetFilenameFromPost(postName string, files map[string]struct{}) (map[
 		files = make(map[string]struct{})
 	}
 	if postName[len(postName)-3:] == ".md" {
-		_, frontmatter, err := parseFile(ConfigData.RepositoryDir + postName)
+		_, frontmatter, err := parseFile(filepath.Join(ConfigData.RepositoryDir, postName))
 		if err == nil {
 			files[frontmatter.RelativeLink] = struct{}{}
 			link = frontmatter.Link
@@ -592,7 +612,7 @@ func createPageAndRSSForTags(tags map[string][]FrontMatter) {
 	}
 }
 
-func TwigifyPage(
+func TemplatifyPage(
 	feed *[]FrontMatter,
 	fileStrings []string,
 	fileInts []int,
@@ -614,48 +634,47 @@ func TwigifyPage(
 		chunkSize = len(*feed)
 		lastPage = true
 	}
+	buf := bytes.NewBufferString("")
 	posts := (*feed)[0:chunkSize]
-	twigTags := toTwigListVariables(posts, title, page)
-	tDir := ConfigData.TemplateDir
-	env := twig.New(stick.NewFilesystemLoader(tDir))
-	env.Filters["tag_link"] = filterTagLink
+	templateTags := toTemplateListVariables(posts, title, page)
+	templateTags["created_date"] = time.Now()
+	templateTags["updated_date"] = time.Now()
 
-	twigTags["base_url"] = ConfigData.BaseURL
-	twigTags["link_prefix"], _ = url.JoinPath(ConfigData.BaseURL, filenamePrefix+"-")
-	twigTags["last_page"] = pageCount
-	twigTags["next_page"] = page + 1
-	twigTags["prev_page"] = page - 1
-	twigTags["first_page_start"] = firstPageStart
-	twigTags["first_page_end"] = firstPageEnd
-	twigTags["last_page_start"] = lastPageStart
-	twigTags["last_page_end"] = lastPageEnd
+	templateTags["base_url"] = ConfigData.BaseURL
+	templateTags["link_prefix"], _ = url.JoinPath(ConfigData.BaseURL, filenamePrefix+"-")
+	templateTags["last_page"] = pageCount
+	templateTags["next_page"] = page + 1
+	templateTags["prev_page"] = page - 1
+	templateTags["first_page_start"] = firstPageStart
+	templateTags["first_page_end"] = firstPageEnd
+	templateTags["last_page_start"] = lastPageStart
+	templateTags["last_page_end"] = lastPageEnd
 	if page > 1 {
-		twigTags["prev_page_start"] = prevPageStart.Format(formatStringDMonthYear)
-		twigTags["prev_page_end"] = prevPageEnd.Format(formatStringDMonthYear)
+		templateTags["prev_page_start"] = prevPageStart.Format(formatStringDMonthYear)
+		templateTags["prev_page_end"] = prevPageEnd.Format(formatStringDMonthYear)
 	}
 	*prevPageStart = posts[0].CreatedDate
 	*prevPageEnd = posts[chunkSize-1].CreatedDate
 	*feed = (*feed)[chunkSize:]
 	if !lastPage {
 		feedLen := len(*feed)
-		twigTags["next_page_start"] = (*feed)[0].CreatedDate.Format(formatStringDMonthYear)
+		templateTags["next_page_start"] = (*feed)[0].CreatedDate.Format(formatStringDMonthYear)
 		if feedLen < chunkSize {
-			twigTags["next_page_end"] = (*feed)[feedLen-1].CreatedDate.Format(formatStringDMonthYear)
+			templateTags["next_page_end"] = (*feed)[feedLen-1].CreatedDate.Format(formatStringDMonthYear)
 			chunkSize = feedLen
 		} else {
-			twigTags["next_page_end"] = (*feed)[chunkSize-1].CreatedDate.Format(formatStringDMonthYear)
+			templateTags["next_page_end"] = (*feed)[chunkSize-1].CreatedDate.Format(formatStringDMonthYear)
 		}
 	}
 
-	buf := bytes.NewBufferString("")
-	if err := env.Execute(
-		"list.html.twig",
+	if err := templ.ExecuteTemplate(
 		buf,
-		twigTags); err != nil {
+		"list",
+		templateTags,
+	); err != nil {
 		log.Fatal(err)
 	}
-	err := os.WriteFile(fmt.Sprintf("%s%s-%d.html", ConfigData.BaseDir, filenamePrefix, page), buf.Bytes(), 0777)
-	return err
+	return os.WriteFile(fmt.Sprintf("%s-%d.html", filepath.Join(ConfigData.BaseDir, filenamePrefix), page), buf.Bytes(), 0777)
 }
 
 func WriteListHTML(feed []FrontMatter, filenamePrefix string, title string) error {
@@ -686,7 +705,7 @@ func WriteListHTML(feed []FrontMatter, filenamePrefix string, title string) erro
 		if len(feed) == 0 {
 			break
 		}
-		err := TwigifyPage(
+		err := TemplatifyPage(
 			&feed,
 			[]string{
 				filenamePrefix,
@@ -715,14 +734,13 @@ func WriteListHTML(feed []FrontMatter, filenamePrefix string, title string) erro
 }
 
 func WriteLatestPost(entry FrontMatter) error {
-	tDir := ConfigData.TemplateDir
-	env := twig.New(stick.NewFilesystemLoader(tDir))
-	env.Filters["tag_link"] = filterTagLink
 	buf := bytes.NewBufferString("")
-	if err := env.Execute(
-		"latest-article.html.twig",
+	if err := templ.ExecuteTemplate(
 		buf,
-		toTwigVariables(&entry, "")); err != nil {
+		"latest-article",
+		toTemplateVariables(&entry, ""),
+	); err != nil {
+		fmt.Printf("Couldn't write the file1\n")
 		log.Fatal(err)
 	}
 

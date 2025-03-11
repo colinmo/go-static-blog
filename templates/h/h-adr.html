@@ -1,0 +1,6 @@
+<p class="h-adr">
+    {{ if .street }}<span class="p-street-address">{{ .street }}</span>{{end}}
+    {{ if .locality }}<span class="p-locality">{{ .locality }}</span>{{end}}
+    {{ if .country }}<span class="p-country-name">{{ .country }}</span>{{end}}
+    {{ if .postcode }}<span class="p-postal-code">{{ .postcode }}</span>{{end}}
+</p>

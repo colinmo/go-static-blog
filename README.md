@@ -5,14 +5,14 @@ This is a command line tool to integrate a git repository with a blog template s
 # TASKS
 
 * [ ] Script to convert Golang test output to Sonarqube
-* [ ] Pull out HTML access component so it can be passed through as a parameter for mocking/ testing
-* [ ] Refactoring the codebase (buzzwords)
-* [ ] More unit tests for resiliance
-* [ ] Change the code-window image holders so they look less pillowy
+* [x] Pull out HTML access component so it can be passed through as a parameter for mocking/ testing
+* [x] Refactoring the codebase (buzzwords)
+* [x] More unit tests for resiliance
+* [x] Change the code-window image holders so they look less pillowy
 * [ ] Add a Webmention extension
   * [ ] Verifies incoming webmentions
   * [ ] Saves it to a .js file specific to the file ID
-* [ ] Fix RSS feeds to not include drafts
+* [x] Fix RSS feeds to not include drafts
 
 ## Build
 
@@ -22,8 +22,6 @@ go get github.com/spf13/cobra
 go get github.com/spf13/viper
 go get github.com/gernest/front
 go get github.com/gomarkdown/markdown 
-go get -u github.com/tyler-sommer/stick
-go get -u github.com/tyler-sommer/stick/twig
 go get github.com/hashicorp/go-memdb
 go get github.com/cucumber/gherkin-go  
 go get github.com/cucumber/godog
@@ -41,12 +39,6 @@ JSON or YAML frontmatter parser
 
 Converts markdown into HTML
 
-### Stick
-
-Golang conversion of `twig` template tool for PHP
-
-Twig extra extensions adds macros familiar to twig authors
-
 ### Godog
 
 Cucumber style Go testing
@@ -55,11 +47,11 @@ Cucumber style Go testing
 
 * Server
   * [Local run server](https://docs.sonarqube.org/latest/setup/get-started-2-minutes/)
-  * Docker: `docker run -d --name sonarqube -e SONAR_ES_BOOTSTRAP_CHECKS_DISABLE=true -p 9000:9000 -vc:/laboratory/sonarqubedata:/opt/sonarqube/data sonarqube:latest `
+  * Docker: `docker run -d --name sonarqube -e SONAR_ES_BOOTSTRAP_CHECKS_DISABLE=true -p 9000:9000 -v../sonarqubedata:/opt/sonarqube/data docker.io/library/sonarqube:latest `
 * Client
   * [Local run client](https://docs.sonarqube.org/latest/analysis/scan/sonarscanner/)
-  * Docker: `docker run --rm -v "%cd%:/usr/src" sonarsource/sonar-scanner-cli`
-  * Docker: `docker run --rm -v ${PWD}:/usr/src sonarsource/sonar-scanner-cli`
+  * Docker: `docker run --rm -v "%cd%:/usr/src" docker.io/library/sonarsource/sonar-scanner-cli`
+  * Docker: `docker run --rm -v ${PWD}:/usr/src docker.io/library/sonarsource/sonar-scanner-cli`
 * Coverage - https://community.sonarsource.com/t/sonargo-code-coverage-0/19473
   * `go test "./..." -coverprofile="coverage.out"`
   * `go test "./..." -coverprofile="coverage.out" -json > test-report.json`

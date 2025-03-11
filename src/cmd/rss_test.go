@@ -2,14 +2,17 @@ package cmd
 
 import (
 	"os"
+	"path/filepath"
 	"regexp"
 	"sort"
 	"testing"
+
+	testdataloader "github.com/peteole/testdata-loader"
 )
 
 // TestReadRSS test parses some RSS Feeds
 func TestReadRSS(t *testing.T) {
-	mek, err := ReadRSS(`c:/users/relap/dropbox\swap\golang\vonblog\features\tests\rss\rss1.xml`)
+	mek, err := ReadRSS(testdataloader.GetBasePath() + `/../features/tests/rss/rss1.xml`)
 	if err != nil {
 		t.Fatalf(`Failed to parse %s`, err)
 	}
@@ -31,9 +34,9 @@ func TestReadWriteRSS(t *testing.T) {
 	ConfigData.Metadata.Language = `en-au`
 	ConfigData.Metadata.Webmaster = `professor@vonexplaino.com (Colin Morris)`
 	ConfigData.Metadata.Ttl = 40
-	ConfigData.BaseDir = `c:/users/relap/dropbox\swap\golang\vonblog\features\tests\rss\`
+	ConfigData.BaseDir = filepath.Clean(testdataloader.GetBasePath() + `/../features/tests/rss/`)
 
-	mek, err := ReadRSS(ConfigData.BaseDir + `rss1.xml`)
+	mek, err := ReadRSS(filepath.Join(ConfigData.BaseDir, `rss1.xml`))
 	if err != nil {
 		t.Fatalf(`Failed to parse %s`, err)
 	}
@@ -46,8 +49,8 @@ func TestReadWriteRSS(t *testing.T) {
 		t.Fatalf(`Could not load tags`)
 	}
 
-	f1, _ := os.ReadFile(ConfigData.BaseDir + `rss1.xml`)
-	f2, _ := os.ReadFile(ConfigData.BaseDir + `rss1_out.xml`)
+	f1, _ := os.ReadFile(filepath.Join(ConfigData.BaseDir, `rss1.xml`))
+	f2, _ := os.ReadFile(filepath.Join(ConfigData.BaseDir, `rss1_out.xml`))
 
 	rep := regexp.MustCompile(`\n\s*`)
 
@@ -66,7 +69,7 @@ func TestReadWriteRSS(t *testing.T) {
 }
 
 func TestSortRSS(t *testing.T) {
-	mek, err := ReadRSS(`c:/users/relap/dropbox\swap\golang\vonblog\features\tests\rss\rss1.xml`)
+	mek, err := ReadRSS(testdataloader.GetBasePath() + `/../features/tests/rss/rss1.xml`)
 	if err != nil {
 		t.Fatalf(`Failed to parse %s`, err)
 	}

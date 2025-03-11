@@ -18,6 +18,7 @@ package cmd
 import (
 	"bufio"
 	"bytes"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"log"
@@ -30,12 +31,12 @@ import (
 	"strings"
 	"time"
 
+	"html/template"
+
 	html2 "github.com/alecthomas/chroma/v2/formatters/html"
 	figure "github.com/mangoumbrella/goldmark-figure"
 	"github.com/spf13/cobra"
 	fences "github.com/stefanfritsch/goldmark-fences"
-	"github.com/tyler-sommer/stick"
-	"github.com/tyler-sommer/stick/twig"
 	"github.com/yuin/goldmark"
 	highlighting "github.com/yuin/goldmark-highlighting/v2"
 	meta "github.com/yuin/goldmark-meta"
@@ -195,8 +196,32 @@ func convertMarkdownHtml(mep []byte) []byte {
 var gallery_index int
 var md goldmark.Markdown
 
-func filterTagLink(ctx stick.Context, val stick.Value, args ...stick.Value) stick.Value {
-	return "tag/" + textToSlug(stick.CoerceString(val))
+func filterTagLink(tag interface{}) string {
+	return "tag/" + textToSlug(fmt.Sprintf("%s", tag))
+}
+
+func defaultFor(value, defvalue interface{}) string {
+	val := fmt.Sprintf("%s", value)
+	if value == nil || len(val) == 0 {
+		return defvalue.(string)
+	}
+	return val
+}
+
+func dateFormat(value interface{}, format string) string {
+	return value.(time.Time).Format(format)
+}
+
+func rawHTML(value interface{}) template.HTML {
+	return template.HTML(fmt.Sprint(value))
+}
+
+func toJSON(value interface{}) string {
+	result, err := json.Marshal(value)
+	if err != nil {
+		return ""
+	}
+	return string(result)
 }
 
 func getFirstWords(text string, lineWidth int) string {
@@ -239,6 +264,51 @@ func parseFile(filename string) (string, FrontMatter, error) {
 	return parseString(string(txt), filename)
 }
 
+var templ *template.Template
+
+func SetupTemplate() string {
+	d, _ := os.Getwd()
+	tDir := filepath.Join(d, "templates")
+	if len(ConfigData.TemplateDir) > 0 {
+		tDir = ConfigData.TemplateDir
+	}
+	if templ == nil {
+		templ = template.Must(
+			template.Must(
+				template.New("base").
+					Funcs(template.FuncMap{
+						"tag_link":   filterTagLink,
+						"defaultFor": defaultFor,
+						"dateFormat": dateFormat,
+						"toJson":     toJSON,
+						"html":       rawHTML,
+						"lower":      strings.ToLower,
+						"replace":    strings.Replace,
+						"map": func(pairs ...any) (map[string]any, error) {
+							if len(pairs)%2 != 0 {
+								return nil, errors.New("misaligned map")
+							}
+
+							m := make(map[string]any, len(pairs)/2)
+
+							for i := 0; i < len(pairs); i += 2 {
+								key, ok := pairs[i].(string)
+
+								if !ok {
+									return nil, fmt.Errorf("cannot use type %T as map key", pairs[i])
+								}
+								m[key] = pairs[i+1]
+							}
+							return m, nil
+						},
+					}).
+					ParseGlob(filepath.Join(tDir, "h/*.html")),
+			).ParseGlob(filepath.Join(tDir, "*.html")),
+		)
+	}
+	return tDir
+}
+
 // parseString parses the passed string and returns the html conversion and yaml frontmatter
 func parseString(body string, filename string) (string, FrontMatter, error) {
 	var html2 string
@@ -279,21 +349,14 @@ func parseString(body string, filename string) (string, FrontMatter, error) {
 	}
 
 	// Run HTML into Template
-	articleType := fmt.Sprintf("%v", frontMatter.Type)
-	d, _ := os.Getwd()
-	tDir := filepath.Join(d, "templates")
-	if len(ConfigData.TemplateDir) > 0 {
-		tDir = ConfigData.TemplateDir
-	}
-	env := twig.New(stick.NewFilesystemLoader(tDir))
-
 	buf := bytes.NewBufferString("")
-	env.Filters["tag_link"] = filterTagLink
-	if err := env.Execute(
-		strings.ToLower(articleType)+".html.twig",
+
+	if err := templ.ExecuteTemplate(
 		buf,
-		toTwigVariables(&frontMatter, html2)); err != nil {
-		fmt.Printf("Couldn't write the file\n")
+		strings.ToLower(frontMatter.Type),
+		toTemplateVariables(&frontMatter, html2),
+	); err != nil {
+		fmt.Printf("Couldn't write the file2\n")
 		log.Fatal(err)
 	}
 
@@ -556,6 +619,7 @@ func frontMatterValidate(frontMatter *FrontMatter, filename string) []string {
 	if len(frontMatter.Resume.Contact.Name) > 0 {
 		frontMatterValidateExperience(frontMatter)
 	}
+	frontMatter.Title = titleWithIcons(*frontMatter)
 	return collectedErrors
 }
 func defaultType(validTypes []string, filename string) string {
@@ -568,18 +632,22 @@ func defaultType(validTypes []string, filename string) string {
 }
 
 func defaultFeatureImage(frontMatter *FrontMatter) string {
-	if len(frontMatter.InReplyTo) > 0 {
-		return fmt.Sprintf(wordpressThumbnailTemplate, url.QueryEscape(frontMatter.InReplyTo))
-	} else if len(frontMatter.BookmarkOf) > 0 {
-		return fmt.Sprintf(wordpressThumbnailTemplate, url.QueryEscape(frontMatter.BookmarkOf))
-	} else if len(frontMatter.FavoriteOf) > 0 {
-		return fmt.Sprintf(wordpressThumbnailTemplate, url.QueryEscape(frontMatter.FavoriteOf))
-	} else if len(frontMatter.RepostOf) > 0 {
-		return fmt.Sprintf(wordpressThumbnailTemplate, url.QueryEscape(frontMatter.RepostOf))
-	} else if len(frontMatter.LikeOf) > 0 {
-		return fmt.Sprintf(wordpressThumbnailTemplate, url.QueryEscape(frontMatter.LikeOf))
+	var returning string
+	switch true {
+	case len(frontMatter.InReplyTo) > 0:
+		returning = frontMatter.InReplyTo
+	case len(frontMatter.BookmarkOf) > 0:
+		returning = frontMatter.BookmarkOf
+	case len(frontMatter.FavoriteOf) > 0:
+		returning = frontMatter.FavoriteOf
+	case len(frontMatter.RepostOf) > 0:
+		returning = frontMatter.RepostOf
+	case len(frontMatter.LikeOf) > 0:
+		returning = frontMatter.LikeOf
+	default:
+		returning = frontMatter.Link
 	}
-	return fmt.Sprintf(wordpressThumbnailTemplate, url.QueryEscape(frontMatter.Link))
+	return fmt.Sprintf(wordpressThumbnailTemplate, url.QueryEscape(returning))
 }
 
 func parseFrontMatter(inFrontMatter string, filename string) (FrontMatter, error) {
@@ -587,6 +655,7 @@ func parseFrontMatter(inFrontMatter string, filename string) (FrontMatter, error
 	err := yaml.Unmarshal([]byte(inFrontMatter), &frontMatter)
 	if err != nil {
 		fmt.Println("Failed to parse frontmatter")
+		fmt.Printf(" - %s\n", filename)
 		log.Fatal(err)
 		return frontMatter, err
 	}
@@ -720,7 +789,7 @@ func contains(arr []string, str string) bool {
 	return false
 }
 
-func toTwigVariables(frontMatter *FrontMatter, content string) map[string]stick.Value {
+func toTemplateVariables(frontMatter *FrontMatter, content string) map[string]interface{} {
 
 	if frontMatter.Link == "" {
 		frontMatter.Link, _ = url.JoinPath(ConfigData.BaseURL, baseDirectoryForPosts, strings.ToLower(frontMatter.Type), frontMatter.CreatedDate.Format("2006/01/02"), frontMatter.Slug)
@@ -729,7 +798,7 @@ func toTwigVariables(frontMatter *FrontMatter, content string) map[string]stick.
 	frontMatter.Resume.FlatSkills.LanguageOrder = alphaOrderMap(frontMatter.Resume.FlatSkills.Languages)
 	frontMatter.Resume.FlatSkills.LibraryOrder = alphaOrderMap(frontMatter.Resume.FlatSkills.Libraries)
 
-	return map[string]stick.Value{
+	return map[string]interface{}{
 		"id":               frontMatter.ID,
 		"title":            frontMatter.Title,
 		"tags":             frontMatter.Tags,
@@ -751,11 +820,11 @@ func toTwigVariables(frontMatter *FrontMatter, content string) map[string]stick.
 	}
 }
 
-func toTwigListVariables(frontMatters []FrontMatter, title string, page int) map[string]stick.Value {
+func toTemplateListVariables(frontMatters []FrontMatter, title string, page int) map[string]interface{} {
 
-	x := make([]map[string]stick.Value, 0)
+	x := make([]map[string]interface{}, 0)
 	for _, mep := range frontMatters {
-		x = append(x, map[string]stick.Value{
+		x = append(x, map[string]interface{}{
 			"id":               mep.ID,
 			"title":            mep.Title,
 			"tags":             mep.Tags,
@@ -778,16 +847,40 @@ func toTwigListVariables(frontMatters []FrontMatter, title string, page int) map
 			"repostof":         mep.RepostOf,
 			"likeof":           mep.LikeOf,
 			"relativelink":     mep.RelativeLink,
-			"createddate":      mep.CreatedDate,
-			"updateddate":      mep.UpdatedDate,
+			"created_date":     mep.CreatedDate,
+			"updated_date":     mep.UpdatedDate,
 			"item":             mep.Item,
 		})
 	}
 	baseDir, _ := url.JoinPath(ConfigData.BaseURL, "posts/")
-	return map[string]stick.Value{
+	return map[string]interface{}{
 		"title":       title + " Page " + strconv.Itoa(page),
 		"page":        page,
 		"link_prefix": baseDir,
 		"list":        x,
 	}
+}
+
+func titleWithIcons(fm FrontMatter) string {
+	icons := map[string]string{
+		"&#x1F496;": fm.LikeOf,
+		"&#x1F516;": fm.BookmarkOf,
+		"&#x1F5EA;": fm.InReplyTo,
+		"&#x1F31F;": fm.FavoriteOf,
+		"&#x3003;":  fm.RepostOf,
+	}
+	toprefix := []string{}
+	for c, r := range icons {
+		if len(r) > 0 {
+			toprefix = append(toprefix, c)
+		}
+	}
+
+	if contains(fm.Tags, "wilt") {
+		toprefix = append(toprefix, "&#x1F9E0;")
+	}
+	if len(toprefix) > 0 {
+		fm.Title = strings.Join(toprefix, "") + " " + fm.Title
+	}
+	return fm.Title
 }

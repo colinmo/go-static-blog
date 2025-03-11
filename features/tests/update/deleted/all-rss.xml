@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<rss version="2.0"
+    xmlns:atom="http://www.w3.org/2005/Atom"
+    xmlns:rssTags="http://purl.org/dc/elements/1.1/">
+    <channel>
+        <title>Professor von Explaino</title>
+        <link>https://vonexplaino.com/blog/</link>
+        <description>Steampunk, PHP coding, Brisbane</description>
+        <language>en-au</language>
+        <copyright>Creative Commons 3.0 with Attribution</copyright>
+        <lastBuildDate>Tue, 02 Jul 2024 22:09:47 +1000</lastBuildDate>
+        <generator>Ridiculous Go Homebrew</generator>
+        <webMaster>professor@vonexplaino.com (Colin Morris)</webMaster>
+        <ttl>40</ttl>
+        <atom:link href="https://vonexplaino.com/blog/rss.xml" rel="self" type="application/rss+xml"></atom:link>
+        <item>
+            <title>Bookmark: Scaling the Practice of Architecture, Conversationally</title>
+            <description>A great way of retooling some aspects of architecture decisionising</description>
+            <pubDate>Thu, 16 Dec 2021 12:34:04 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/indieweb/2021/12/bookmark-scaling-the-practice-of-architecture-conversationally.html</guid>
+            <rssTags:subject>architecture</rssTags:subject>
+        </item>
+        <item>
+            <title>Building a Docker container for Puppeteer testing</title>
+            <description>A Docker container to run your Puppeteer tests in</description>
+            <pubDate>Tue, 14 Dec 2021 19:46:13 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2021/12/building-a-docker-container-for-puppeteer-testing.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>testing</rssTags:subject>
+            <rssTags:subject>puppeteer</rssTags:subject>
+            <rssTags:subject>docker</rssTags:subject>
+        </item>
+    </channel>
+</rss>

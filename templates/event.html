@@ -1,0 +1,32 @@
+{{ define "event" }}
+{{ template "head" .}}
+{{- $c := "2006-01-02T15:04:05-07:00" -}}
+{{- $longdate := `2 January 2006  3:04 pm MST` -}}
+    <article class="h-event" data-info="{{ toJson . }}" data-tags="{{ toJson .tags }}" data-article-id="{{ .id }}">
+        <div class="row">
+            <header class="col-12">
+                <h1 class="p-name"><a href="{{ .link }}" class="u-url">{{ .title }}</a></h1>
+                <div class="post-meta">
+                    <div class="p-event-status status-{{ (defaultFor .event.status `Confirmed`)|lower }}">{{ defaultFor .event.status `Confirmed` }}</div>
+                    <a class="p-author h-card" href="https://vonexplaino.com/">Colin Morris</a>, 
+                    <time class="dt-start" datetime="{{ html (dateFormat .event.startdate $c) }}">{{ dateFormat .event.startdate $longdate }}</time>
+                    {{ if and (.event.enddate) (ne .event.startdate .event.enddate) }} - <time class="dt-end" datetime="{{ html (dateFormat .event.enddate $c) }}">{{ dateFormat .event.enddate $longdate }}</time>{{end}}
+                    {{ template "tagslist" .tags }}
+                    {{ if .event.location }}
+                    {# @todo: Check the type of location and use h-adr or h-geo as appropriate #}
+                    <div class="p-location">{{ .event.location }}</div>
+                    {{ end }}
+                </div>
+            </header>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="e-content p-description">
+                {{ html .content }}
+                </div>
+                <hr style="clear:both;">
+            </div>
+        </div>
+    </article>
+{{ template "foot" .}}    
+{{end}}

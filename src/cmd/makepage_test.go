@@ -2,11 +2,16 @@ package cmd
 
 import (
 	"fmt"
+	"log"
+	"path/filepath"
+	"slices"
 	"strings"
 	"testing"
 	"time"
 
 	"github.com/cucumber/godog"
+
+	testdataloader "github.com/peteole/testdata-loader"
 )
 
 func pageExists(filename string) error {
@@ -63,14 +68,16 @@ func TestParseUnknownDateFormat(t *testing.T) {
 }
 
 func TestCreateCodePage(t *testing.T) {
-	testroot := `E:\xampp\vonexplaino-bitbucket-static`
+	testroot := filepath.Clean(testdataloader.GetBasePath() + "/statictest")
 	ConfigData.RepositoryDir = testroot
 	ConfigData.BaseURL = "https://vonexplaino.com/blog/"
-	ConfigData.TemplateDir = "c:/users/relap/dropbox/swap/golang/vonblog/templates/"
+	ConfigData.TemplateDir = filepath.Clean(testdataloader.GetBasePath() + "/../templates/")
 	result, frontMatter, error := parseString(`---
 Title: Code
 Created: 2015-11-18 20:32:00 +1000
+Updated: 2024-05-15 19:23:49 +1000
 Type: page
+Tags: [left,right]
 ---
 ## Common book
 
@@ -133,22 +140,24 @@ See more of [Trinity](http://theonyxpath.com/category/worlds/trinitycontinuum/).
 }
 
 func TestCreateResume(t *testing.T) {
-	testroot := `C:\Laboratory\temp\`
+	testroot := filepath.Clean(testdataloader.GetBasePath() + "/statictest/")
 	ConfigData.RepositoryDir = testroot
 	ConfigData.BaseURL = "https://vonexplaino.com/blog/"
-	ConfigData.TemplateDir = "c:/users/relap/dropbox/swap/golang/vonblog/templates/"
+	ConfigData.TemplateDir = filepath.Clean(testdataloader.GetBasePath() + "/../templates/")
+	SetupTemplate()
 	result, frontMatter, error := parseString(`---
 Title: Colin Morris
 Created: 2024-04-06T22:15:50+1000
 Updated: 2024-04-06T22:15:50+1000
 Tags: [code,colin]
+Type: resume
 Slug: resume-of-colin-morris
-Synopsis: I strive to use my analytical, organisational and technical skills and experience to facilitate long lasting and enjoyable solutions for a variety of user desires.
+Synopsis: I strive to use my analytical, organisational and technical skills and experience to facilitate long lasting and enjoyable solutions for a variety of user desires. 
 Resume:
     Contact:
         name: Colin Morris
         honorific: Mr.
-        email: professor@vonexplaino.com
+        email: contact-about-my-resume@proton.me
         p-job-title: Solution Architect and Programmer
         u-photo: "/blog/media/2022/01/23/BusinessCard-Thumb.png"
         u-url: "https://vonexplaino.com/"
@@ -174,14 +183,14 @@ Resume:
             p-location: Microsoft Learn
     FlatSkills:
         Methodologies:
-            Agile: "p"
-            Behaviour Driven Development: "p"
-            Business_Analysis: "p"
-            Business_Process_Improvement: "p"
-            ITIL: ""
-            Prince2: ""
-            Solution_Architecture: "p"
-            TOGAF: "p"
+            Agile: p
+            Behaviour Driven Development (BDD): p
+            Business Analysis: p
+            Business Process Improvement: p
+            ITIL: 
+            Prince2: 
+            Solution Architecture: p
+            TOGAF: p
         Languages:
             CSS: p
             Go: p
@@ -211,22 +220,36 @@ Resume:
             Symfony: 
     Affiliation: []
     Experience:
-        -   p-name: Solution Architect (Integrator)
-            p-summary: Provide expertise to identify and translate system requirements into software design documentation, identifying possible existing solutions (internal and external).
-            dt-start: 2021-02-01T00:00:00 +1000
+        -   p-name: Solution Architect
+            p-summary: Provided expertise to identify and translate system requirements into software design documentation, identified possible existing solutions (internal and external).
+            dt-start: 2016-01-01T00:00:00 +1000
             p-description: |
-                Working with researchers, academics, fellow architects, technical staff, and vendors to collaborately design, document, review, and implement solutions to the benefit of the university. I am attached to the research area, so the work includes novel areas and novel technologies such as AI. The architects work very closely with information management and cybersecurity, so we require a knowledge of these areas to coordinate well.
-                
-                Griffith is a TOGAF-based architecture structure.
-            u-url: "https://www.griffith.edu.au/"
+                <ul>
+                <li>Spearheaded improvements in the governance process to reduce time to approve from months to less than a week for low complexity solutions.</li>
+                <li>Architecture responsibility for the department assisting researchers, health systems, and data/ information management, manging multiple concurrent initiatives to completion in long term support states.</li>
+                <li>Running the Developer Community of Practice I started in 2021, enhancing cross-domain collaboration and collective upskilling with a yearly focus on testing (Y1), version control (Y2), and pipelines (Y3).</li></ul>
             p-location: Griffith University
             p-category: Work History
-        -   p-name: Previous experience
-            p-summary: I've been working in the education industry for over twenty years.
-            dt-start: 1997-12-01T00:00:00 +1000
-            dt-end: 2021-02-01T00:00:00 +1000
+        -   p-name: Web development team lead
+            p-summary: Provided leadership and development expertise to plug gaps and found solutions for staff at Griffith (research, academic, and administrative).
+            dt-start: 2004-01-01T00:00:00 +1000
+            dt-end: 2016-01-01T00:00:00 +1000
             p-description: |
-                At Griffith University I've worked with the finance systems, the student systems, the HR systems, research systems, and everything in between. The roles have covered dedicated system support, project development, development team leader, and custom development lead.
+                <ul>
+                <li>Created the first online Course Profiles system, replacing paper based advertising and administrative control.</li>
+                <li>Lead the team in customising an off-the-shelf shopping cart into Griffith's specific single signon and payment gateway structure, which is still in use.</li>
+                <li>Implemented and instructed the team in version control and automated deployment into various environments, before Jira/ Jenkins was developed.</li></ul>
+            p-location: Griffith University
+            p-category: Work History
+        -   p-name: Unix/ PeopleSoft Developer
+            p-summary: Worked with the finance systems, the student systems, the HR systems, research systems, and everything in between. The roles covered dedicated system support, project development, and solutions development.
+            dt-start: 1997-01-01T00:00:00 +1000
+            dt-end: 2004-01-01T00:00:00 +1000
+            p-description: |
+                <ul>
+                <li>Implemented and customised the PeopleSoft initial web portal through direct ASP/ web service integrations and alterations.</li>
+                <li>On a team of two developers supporting the FinanceOne application for the whole of university.</li>
+                <li>Presented on the Griffith PeopleSoft implementation at the PeopleSoft Higher Education User Group conference.</li></ul>
             p-location: Griffith University
             p-category: Work History
         -   p-name: "Code of the Coder"
@@ -240,8 +263,9 @@ Resume:
                     People claim to be Code Ninja or CSS Samurai, but how many of them follow a code? How many of them practice daily katas to keep in the best condition? This book foolishly applies the Seven Virtues of Bushido and the Eighteen Disciplines of Togekure-ryu ninjutsu to the coding arts, mistakenly finding some wisdom along the way.
                 </blockquote>
 ---
-I've been working in the information technology industry since 1997. During that time I've had a variety of roles - from finance system maintenance through to an engineer on PeopleSoft technologies through to web development and currently I'm a solution architect. That's been a great benefit from working at Griffith University - the breadth of experiences and people I've been able to work with.
-	`, ConfigData.RepositoryDir+"posts/resume/2021.md")
+I bring a breadth of experience by working in IT since 1997. Hiring me adds a highly experienced solution engine, having worked from the coalface of raw coding up to the boardrooms of horizon strategy and architecting for the future.`,
+		ConfigData.RepositoryDir+"posts/resume/2021.md",
+	)
 	if error != nil {
 		t.Fatalf("Failed to parse Code: %v\n", error)
 	}
@@ -265,10 +289,11 @@ I've been working in the information technology industry since 1997. During that
 
 func TestCreateReview(t *testing.T) {
 
-	testroot := `C:\Laboratory\temp\`
+	testroot := filepath.Clean(testdataloader.GetBasePath() + "/statictest")
 	ConfigData.RepositoryDir = testroot
 	ConfigData.BaseURL = "https://vonexplaino.com/blog/"
-	ConfigData.TemplateDir = "c:/users/relap/dropbox/swap/golang/vonblog/templates/"
+	ConfigData.TemplateDir = filepath.Clean(testdataloader.GetBasePath() + "/../templates/")
+	SetupTemplate()
 	result, frontMatter, error := parseString(`---
 Title: "Review: In Sound Mind"
 Tags: [game,epic]
@@ -282,7 +307,7 @@ Item:
     image: /blog/media/2022/04/in-sound-mind.webp
     name: In Sound Mind
     type: item
-    rating: 5
+    rating: 3.5
 ---
 In Sound Mind was one of the weekly free games earlier this year. Most of these games I pick up, play for a bit, get a smile, get bored, and get on with things. In Sound Mind's gameplay, steady reveal, tape-based psychology gimick and the "GOTY 10/10" acheivement had me hooked. Very little in the way of shooty times, really; and the stealth statistic seemed entirely pointless - but the game, atmosphere, and sheer mind-squirreliness was enthralling.
 
@@ -305,6 +330,7 @@ You can pet the cat.
 	if frontMatter.Item.Name == "" {
 		t.Fatalf("Failed to get name")
 	}
+	log.Fatal(result)
 }
 
 func TestTextToSlug(t *testing.T) {
@@ -346,8 +372,8 @@ func TestDefaultFeatureImage(t *testing.T) {
 			xpct: `https://wp.dude.com/thumbnail?https%3A%2F%2Ftestme.com%2F`,
 		},
 		{
-			fm:   FrontMatter{FavoriteOf: "https://testme.com/"},
-			xpct: `https://wp.dude.com/thumbnail?https%3A%2F%2Ftestme.com%2F`,
+			fm:   FrontMatter{FavoriteOf: "https://testme2.com/"},
+			xpct: `https://wp.dude.com/thumbnail?https%3A%2F%2Ftestme2.com%2F`,
 		},
 		{
 			fm:   FrontMatter{RepostOf: "https://testme.com/"},
@@ -371,16 +397,52 @@ func TestDefaultFeatureImage(t *testing.T) {
 	}
 }
 
-func TestToTwigVariables(t *testing.T) {
+func TestToTemplateVariables(t *testing.T) {
 	dude := FrontMatter{
 		Title: "Dude",
 	}
 	content := "xxXX!"
-	mike := toTwigVariables(&dude, content)
+	mike := toTemplateVariables(&dude, content)
 	if mike["content"] != "xxXX!" {
 		t.Fatalf("Did not get content")
 	}
 	if mike["title"] != "Dude" {
 		t.Fatalf("Did not get title %v\n", mike)
+	}
+}
+
+func TestTitleWithIcons(t *testing.T) {
+	var dude FrontMatter
+	var expected []string
+	var got string
+	dude = FrontMatter{Title: "Dude"}
+	if titleWithIcons(dude) != "Dude" {
+		t.Fatalf("Polluted the title")
+	}
+
+	dude = FrontMatter{Title: "Dude", LikeOf: "X"}
+	if titleWithIcons(dude) != "&#x1F496; Dude" {
+		t.Fatalf("Unliked the title")
+	}
+
+	dude = FrontMatter{Title: "Dude", RepostOf: "X", InReplyTo: "X"}
+	expected = []string{"&#x3003;&#x1F5EA; Dude", "&#x1F5EA;&#x3003; Dude"}
+	got = titleWithIcons(dude)
+	if !slices.Contains(expected, got) {
+		t.Fatalf("Wrong prefixed the title\n[%s]\n[%s]", got, expected)
+	}
+
+	dude = FrontMatter{Title: "Dude", BookmarkOf: "X", FavoriteOf: "X", Tags: []string{"x", "wilt", "y", "z"}}
+	expected = []string{
+		"&#x1F516;&#x1F31F;&#x1F9E0; Dude",
+		"&#x1F31F;&#x1F516;&#x1F9E0; Dude",
+		"&#x1F516;&#x1F9E0;&#x1F31F; Dude",
+		"&#x1F31F;&#x1F9E0;&#x1F516; Dude",
+		"&#x1F9E0;&#x1F516;&#x1F31F; Dude",
+		"&#x1F9E0;&#x1F31F;&#x1F516; Dude",
+	}
+	got = titleWithIcons(dude)
+	if !slices.Contains(expected, got) {
+		t.Fatalf("Wrong prefixed the title2\n[%s]\n[%s]", got, expected)
 	}
 }

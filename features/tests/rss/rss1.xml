@@ -1,0 +1,105 @@
+<?xml version="1.0"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:rssTags="http://purl.org/dc/elements/1.1/">
+    <channel>
+        <title>Professor von Explaino</title>
+        <link>https://vonexplaino.com/blog/</link>
+        <description>Steampunk, PHP coding, Brisbane</description>
+        <language>en-au</language>
+        <copyright>Creative Commons 3.0 with Attribution</copyright>
+        <lastBuildDate>Wed, 22 Dec 2021 20:05:48 +1100</lastBuildDate>
+        <generator>Ridiculous Go Homebrew</generator>
+        <webMaster>professor@vonexplaino.com (Colin Morris)</webMaster>
+        <ttl>40</ttl>
+        <atom:link href="https://vonexplaino.com/blog/rss.xml" rel="self" type="application/rss+xml"></atom:link>
+        <item>
+            <title>Bookmark: Scaling the Practice of Architecture, Conversationally</title>
+            <description>A great way of retooling some aspects of architecture decisionising</description>
+            <pubDate>Thu, 16 Dec 2021 12:34:04 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/indieweb/2021/12/bookmark-scaling-the-practice-of-architecture-conversationally.html</guid>
+            <rssTags:subject>architecture</rssTags:subject>
+        </item>
+        <item>
+            <title>Building a Docker container for Puppeteer testing</title>
+            <description>A Docker container to run your Puppeteer tests in</description>
+            <pubDate>Tue, 14 Dec 2021 19:46:13 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2021/12/building-a-docker-container-for-puppeteer-testing.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>testing</rssTags:subject>
+            <rssTags:subject>puppeteer</rssTags:subject>
+            <rssTags:subject>docker</rssTags:subject>
+        </item>
+        <item>
+            <title>Spiderverse2</title>
+            <description>First trailer for Across the Spider-Verse (Part One)</description>
+            <pubDate>Sun, 05 Dec 2021 11:21:42 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2021/12/spiderverse2.html</guid>
+            <rssTags:subject>comics</rssTags:subject>
+            <rssTags:subject>spiderman</rssTags:subject>
+            <rssTags:subject>spiderman-2099</rssTags:subject>
+            <rssTags:subject>2099</rssTags:subject>
+        </item>
+        <item>
+            <title>Bookmark: Showdownjs - A markdown to HTML converter</title>
+            <description>Nice little markdown library</description>
+            <pubDate>Sun, 28 Nov 2021 14:03:24 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2021/11/bookmark-showdownjs-a-markdown-to-html-converter.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>javascript</rssTags:subject>
+            <rssTags:subject>markdown</rssTags:subject>
+        </item>
+        <item>
+            <title>Bookmark of: jq</title>
+            <description>jq is like sed for JSON data</description>
+            <pubDate>Tue, 23 Nov 2021 16:45:25 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2021/11/bookmark-of-jq.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>graphapi</rssTags:subject>
+            <rssTags:subject>commonbook</rssTags:subject>
+        </item>
+        <item>
+            <title>GraphAPI Basics Intro</title>
+            <description>Summary of a GraphAPI quick-presentation I did at work</description>
+            <pubDate>Fri, 12 Nov 2021 11:58:29 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2021/11/graphapi-basics-intro.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>work</rssTags:subject>
+            <rssTags:subject>graphapi</rssTags:subject>
+        </item>
+        <item>
+            <title>Like: Make a personal changelog</title>
+            <description>Using the changelog type of file log format for personal changes</description>
+            <pubDate>Wed, 27 Oct 2021 13:32:38 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/indieweb/2021/10/like-make-a-personal-changelog.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>personal</rssTags:subject>
+        </item>
+        <item>
+            <title>Like: My first attempt at computational line art!</title>
+            <description>This and the subsequent AxiDraw outputs are very cool. Must resist more gadgets!</description>
+            <pubDate>Thu, 21 Oct 2021 18:36:23 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/indieweb/2021/10/like-my-first-attempt-at-computational-line-art-.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>physical</rssTags:subject>
+            <rssTags:subject>art</rssTags:subject>
+            <rssTags:subject>axidraw</rssTags:subject>
+        </item>
+        <item>
+            <title>Parallel Go command line program to read GraphQL and process private team members</title>
+            <description>Working out a not-slow way of getting private Microsoft Team channel membership</description>
+            <pubDate>Wed, 13 Oct 2021 16:32:30 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/article/2021/10/parallel-go-command-line-program-to-read-graphql-and-process-private-team-members.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+            <rssTags:subject>golang</rssTags:subject>
+            <rssTags:subject>graphql</rssTags:subject>
+            <rssTags:subject>microsoft teams</rssTags:subject>
+            <rssTags:subject>parallel programming</rssTags:subject>
+        </item>
+        <item>
+            <title>Like: https://ronjeffries.com/articles/020-dung/-v022f/d-229/</title>
+            <description>The latest in his series on coding a hex-map-game thing in great detail, but the quote at the start...</description>
+            <pubDate>Tue, 28 Sep 2021 21:48:07 +1000</pubDate>
+            <guid>https://vonexplaino.com/blog/posts/indieweb/2021/09/like-https-ronjeffries.com-articles-020-dung-v022f-d-229-.html</guid>
+            <rssTags:subject>code</rssTags:subject>
+        </item>
+    </channel>
+</rss>

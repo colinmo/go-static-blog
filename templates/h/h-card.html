@@ -1,0 +1,6 @@
+<div class="h-card">
+    {{ if .photo }}<img class="u-photo" src="{{ html .photo }}" alt="" />{{end}}
+    <a class="p-name u-url" href="{{ .url }}">{{ .name }}</a>
+    {{ if .email }}<a class="u-email" href="mailto:{{ .email }}">{{ .email }}</a>,{{end}}
+    {{ if .adr }}{{ template "h/h-adr.html" .adr }}{{end}}
+</div>

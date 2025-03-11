@@ -1,0 +1,42 @@
+{{define "article" -}}
+{{ template "head" .}}
+{{ $cdate := dateFormat .created_date `2006-01-02T15:04:05-07:00` -}}
+{{ $udate := dateFormat .updated_date `2006-01-02T15:04:05-07:00` -}}
+    <article class="h-entry" data-article-id="{{ .id }}">
+        <header>
+            <h1 class="p-name"><a href="{{ html .link }}" class="u-url">{{ if ne .type "reply"}}{{ html .title }}{{end}}</a></h1>
+            <div class="post-meta">
+                {{ template "dt-published" . }}
+                {{ template "tagslist" .}}
+            </div>
+        </header>
+        <div>
+            <section class="e-content">
+            {{ html .content }}
+            </section>
+            <div class="post-meta">
+                <a rel="author" class="p-author h-card" href="https://vonexplaino.com/"><img src="/theme/images/favicon/favicon.svg" class="u-photo" />Colin Morris</a>
+                {{ if .inreplyto }}<p> In reply to <a href="{{ .inreplyto }}" class="u-in-reply-to">{{ .inreplyto }}</a></p>{{end}}
+                {{ if .repostof }}<p> A repost of <a href="{{ .repostof }}" class="u-repost-of">{{ .repostof }}</a></p>{{end}}
+                {{ if .likeof }}<p> A like of <a href="{{ .likeof }}" class="u-like-of">{{ .likeof }}</a></p>{{end}}
+                {{ if .favoriteof }}<p> A favourite of <a href="{{ .favoriteof }}" class="u-favorite-of">{{ .favoriteof }}</a></p>{{end}}
+                {{ if .bookmarkof }}<p> A bookmark of <a href="{{ .bookmarkof }}" class="u-bookmark-of">{{ .bookmarkof }}</a></p>{{end}}
+                {{ template "syndication" .syndicationlinks }}                
+            </div>
+            <hr style="clear:both;">
+            <p><a href="https://shareopenly.org/share/?url={{ .link }}&text={{ .summary }}">ShareOpenly</a>, or just like it: <open-heart href="https://corazon.sploot.com?id={{ .link }}" emoji="❤️">❤️</open-heart></p>
+            <script src="https://unpkg.com/open-heart-element" type="module"></script>
+            <script>
+            window.customElements.whenDefined('open-heart').then(() => {
+                for (const oh of document.querySelectorAll('open-heart')) {
+                    oh.getCount()
+                }
+            })
+            window.addEventListener('open-heart', e => {
+                e && e.target && e.target.getCount && e.target.getCount()
+            })
+            </script>
+        </div>
+    </article>
+{{ template "foot" .}}    
+{{end}}

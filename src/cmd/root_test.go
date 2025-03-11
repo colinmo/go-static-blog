@@ -4,11 +4,14 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"path/filepath"
 	"testing"
+
+	testdataloader "github.com/peteole/testdata-loader"
 )
 
 func TestFullRebuild(t *testing.T) {
-	testroot := `c:/users/relap/dropbox\swap\golang\vonblog\features\tests\update\tags\`
+	testroot := filepath.Clean(testdataloader.GetBasePath() + `/../features/tests/update/tags/`)
 	type testexpect struct {
 		filename string
 		expected map[string][]FrontMatter
@@ -23,7 +26,7 @@ func TestFullRebuild(t *testing.T) {
 	} {
 		ConfigData.RepositoryDir = testroot
 		ConfigData.BaseURL = "https://vonexplaino.com/blog/"
-		ConfigData.TemplateDir = "c:/users/relap/dropbox/swap/golang/vonblog/templates/"
+		ConfigData.TemplateDir = filepath.Clean(testdataloader.GetBasePath() + `/../templates/`)
 		var tags map[string][]FrontMatter
 		tags, _, _ = getTagsFromPost(thing.filename, tags)
 

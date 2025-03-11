@@ -1,0 +1,11 @@
+moods:
+  2023:
+    1:
+      2:
+        text: OK
+        score: 3
+  2025:
+    1:
+      20:
+        text: Yo
+        score: 1
