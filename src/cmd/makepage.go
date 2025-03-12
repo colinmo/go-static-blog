@@ -865,7 +865,7 @@ func titleWithIcons(fm FrontMatter) string {
 	icons := map[string]string{
 		"&#x1F496;": fm.LikeOf,
 		"&#x1F516;": fm.BookmarkOf,
-		"&#x1F5EA;": fm.InReplyTo,
+		"&#x1F4AC;": fm.InReplyTo,
 		"&#x1F31F;": fm.FavoriteOf,
 		"&#x3003;":  fm.RepostOf,
 	}
