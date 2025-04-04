@@ -112,10 +112,12 @@
 {{- define "dt-published" -}}
 {{- $cdate := dateFormat .created_date `2006-01-02T15:04:05-07:00` -}}
 {{- $udate := dateFormat .updated_date `2006-01-02T15:04:05-07:00` -}}
-{{- $longdate := `2 January 2006 3:04 pm MST` -}}
+{{- $cdate2:= dateFormat .created_date `2006-01-02` -}}
+{{- $udate2:= dateFormat .updated_date `2006-01-02` -}}
+{{- $longdate := `2 Jan 2006 3:04 pm MST` -}}
 <time class="dt-published" datetime="{{ html $cdate }}">{{ dateFormat .created_date $longdate }}</time>
-{{ if ne $cdate $udate }}(&Delta; <time class="dt-updated" datetime="{{ html $udate }}">{{ if eq $cdate $udate }}{{
-	dateFormat .updated_date `h:i a` }}{{ else }}{{ dateFormat .updated_date $longdate }}{{end}}</time>){{end}}
+{{ if ne $cdate $udate }}(&Delta; <time class="dt-updated" datetime="{{ html $udate }}">{{ if eq $cdate2 $udate2 }}{{
+        dateFormat .updated_date `3:04 pm MST` }}{{ else }}{{ dateFormat .updated_date $longdate }}{{end}}</time>){{end}}
 {{- end -}}
 {{ define "tagslist" -}}
 {{ if .tags }}

@@ -1,7 +1,7 @@
 {{ define "event" }}
 {{ template "head" .}}
 {{- $c := "2006-01-02T15:04:05-07:00" -}}
-{{- $longdate := `2 January 2006  3:04 pm MST` -}}
+{{- $longdate := `2 Jan 2006  3:04 pm MST` -}}
     <article class="h-event" data-info="{{ toJson . }}" data-tags="{{ toJson .tags }}" data-article-id="{{ .id }}">
         <div class="row">
             <header class="col-12">

@@ -1,5 +1,5 @@
 {{ $c := `2006-01-02T15:04:05-07:00` -}}
-{{ $longdate := `2 January 2006  3:04 pm MST` -}}
+{{ $longdate := `2 Jan 2006  3:04 pm MST` -}}
 <div class="h-event">
     <h1 class="p-name">{{ .name }}</h1>
     <p>From <time class="dt-start" datetime="{{ .start_date|dateFormat $c }}">{{ .start_date|dateFormat $longdate }}</time>{{ if .end_date }}to <time class="dt-end" datetime="{{ .end_date|dateFormat $c }}">{{ .end_date|dateFormat $longdate }}</time>{{end}}{{ if .adr }}{{ template "h-adr.html" .adr }}{{end}}
