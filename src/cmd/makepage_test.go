@@ -426,7 +426,7 @@ func TestTitleWithIcons(t *testing.T) {
 	}
 
 	dude = FrontMatter{Title: "Dude", RepostOf: "X", InReplyTo: "X"}
-	expected = []string{"&#x3003;&#x1F5EA; Dude", "&#x1F5EA;&#x3003; Dude"}
+	expected = []string{"&#x3003;&#128172; Dude", "&#128172;&#x3003; Dude"}
 	got = titleWithIcons(dude)
 	if !slices.Contains(expected, got) {
 		t.Fatalf("Wrong prefixed the title\n[%s]\n[%s]", got, expected)

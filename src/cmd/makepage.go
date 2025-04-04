@@ -103,7 +103,7 @@ func init() {
 			extension.Footnote,
 			meta.New(meta.WithStoresInDocument()),
 			highlighting.NewHighlighting(
-				highlighting.WithStyle("monokai"),
+				highlighting.WithStyle("bw"),
 				highlighting.WithFormatOptions(
 					html2.WithLineNumbers(true),
 				),
@@ -865,7 +865,7 @@ func titleWithIcons(fm FrontMatter) string {
 	icons := map[string]string{
 		"&#x1F496;": fm.LikeOf,
 		"&#x1F516;": fm.BookmarkOf,
-		"&#x1F5EA;": fm.InReplyTo,
+		"&#128172;": fm.InReplyTo,
 		"&#x1F31F;": fm.FavoriteOf,
 		"&#x3003;":  fm.RepostOf,
 	}
