@@ -5,7 +5,7 @@
 {{- if gt (len $value) 2 -}}
 <details>
     <summary>{{ $index }}</summary>
-    <ul>{{ range $value }}<li><a href="{{.Link}}">{{.Title}}</a></li>{{end}}</ul>
+    <ul>{{ range $value }}<li><a href="{{.Link}}">{{html .Title}}</a></li>{{end}}</ul>
 </details>
 {{- end -}}
 {{- end -}}
